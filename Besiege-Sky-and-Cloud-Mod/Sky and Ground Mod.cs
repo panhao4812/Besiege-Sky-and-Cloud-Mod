@@ -1,13 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 //using System.Threading.Tasks;
 using System.IO;
-using UnityEngine;
 using spaar.ModLoader;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Collections;
+using UnityEngine;
 
 namespace SkyAndCloud
 {
@@ -16,24 +12,17 @@ namespace SkyAndCloud
     {
         public override string Name { get { return "Sky_and_Ground_Mod"; } }
         public override string DisplayName { get { return "Sky and Ground Mod"; } }
-        public override string BesiegeVersion { get { return "v0.25"; } }
-        public override string Author { get { return "覅是"; } }
-        public override Version Version { get { return new Version("0.85"); } }
+        public override string BesiegeVersion { get { return "v0.27"; } }
+        public override string Author { get { return "覅是&zian1"; } }
+        public override Version Version { get { return new Version("0.86"); } }
         public override bool CanBeUnloaded { get { return true; } }
-
         public GameObject temp;
-
-
-
         public override void OnLoad()
         {
-
-
             temp = new GameObject();
             temp.name = "Sky and Ground Mod";
             temp.AddComponent<SkyAndCloudMod>();
             GameObject.DontDestroyOnLoad(temp);
-
         }
         public override void OnUnload()
         {
@@ -47,9 +36,9 @@ namespace SkyAndCloud
         /*private GameObject floatingRock = new GameObject();
         private int floatingrocksCloneCount = 0;*/
         private GameObject cloudTemp;
-        private GameObject godLightTemp;
-        private GameObject rainTemp;
-        private GameObject thunderCloudTemp;
+      //  private GameObject godLightTemp;
+     //   private GameObject rainTemp;
+     //   private GameObject thunderCloudTemp;
 
         private int cloudAmount = 60;
         private int cloudAmountTemp = 0;
@@ -765,7 +754,7 @@ sun.GetComponent<LensFlare>().color = Color.yellow;
                 {
                    // GameObject.Find("Main Camera").GetComponent<Camera>().backgroundColor = Color.cyan;
                     tempLevel = Application.loadedLevel;
-                    读取设定();
+                    ReadSetting();
                 }
                 catch { }
                 }
@@ -936,7 +925,7 @@ sun.GetComponent<LensFlare>().color = Color.yellow;
                 }
             }
             }
-        void 读取设定()
+        void ReadSetting()
         {
             if (File.Exists(Application.dataPath + "/Mods/Sky and GroundTexture Mod Setting Tempelate.txt") && new FileInfo((Application.dataPath + "/Mods/Sky and GroundTexture Mod Setting Tempelate.txt")).Length >= 5)
             {
@@ -1039,7 +1028,7 @@ sun.GetComponent<LensFlare>().color = Color.yellow;
         public Color FireColor;
         public Light ThisLight;
         public bool ShakeTheLight = true;
-        private float lastFUTime;
+    //    private float lastFUTime;
         /*private int FUcount;*/
 
         void Start ()
