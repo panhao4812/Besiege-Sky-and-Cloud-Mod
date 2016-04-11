@@ -5,7 +5,7 @@ using spaar.ModLoader;
 using System.Collections;
 using UnityEngine;
 
-namespace SkyAndCloud
+namespace Besiege_Sky_and_Cloud_Mod
 {
 
     public class BesiegeModLoader : Mod
@@ -21,7 +21,7 @@ namespace SkyAndCloud
         {
             temp = new GameObject();
             temp.name = "Sky and Ground Mod";
-            temp.AddComponent<SkyAndCloudMod>();
+            temp.AddComponent<CloudAndTerrain>();
             GameObject.DontDestroyOnLoad(temp);
         }
         public override void OnUnload()
@@ -39,42 +39,29 @@ namespace SkyAndCloud
       //  private GameObject godLightTemp;
      //   private GameObject rainTemp;
      //   private GameObject thunderCloudTemp;
-
         private int cloudAmount = 60;
         private int cloudAmountTemp = 0;
-
         private float cloudSizeScale = 1;
-
         private float lowerCloudsMinHeight = 130f;
         private float lowerCloudsMaxHeight = 200f;
         private float higherCloudsMinHeight = 300;
         private float higherCloudsMaxHeight = 377.25f;
-
         private Color higherCloudsColor = new Color(1f, 1f, 1f, 1f);
         private Color lowerCloudsColor = new Color(0.92f, 0.9f, 0.8f, 1);
-
         private Color SkyColor;
-
         private float[] cloudSpeed = new float[2];
         public bool CustomCloudSpeed = false;
-
         private bool isFogAway = false;
-
         public Vector3 floorScale = new Vector3(911,10,900);
-
         public float cameraDrawingRange = 1500;
-
         private bool isShadowOff = false;
-
         public bool isBoundairesAway = false;
         public bool IsNightMode = false;
-
         private bool resetCloudsNow = false;
         private int tempLevel;
         private GameObject sunS = new GameObject();
         private GameObject sun;
         public GameObject[] shadow;
-
         public string settingTemp;
         public string[] Settings;
         public bool settingTempHasBeenChanged = false;
@@ -570,9 +557,7 @@ sun.GetComponent<LensFlare>().color = Color.yellow;
                 catch { return "The Main Camera does not exists!"; }
 
             }, "Turn on/off the night mode");//Night
-        }
-            
-
+        }        
         //public int CurrentLevel = 2;
         IEnumerator groundTexture()
         {
@@ -621,8 +606,6 @@ sun.GetComponent<LensFlare>().color = Color.yellow;
             catch { }
             StartCoroutine(groundTexture());
         }
-
-
         void Update()
         {
             try

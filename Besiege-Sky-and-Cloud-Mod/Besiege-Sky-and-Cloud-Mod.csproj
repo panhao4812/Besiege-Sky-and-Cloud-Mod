@@ -55,6 +55,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CloudAndTerrain.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sky and Ground Mod.cs" />
   </ItemGroup>
