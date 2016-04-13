@@ -7,15 +7,16 @@ namespace Besiege_Sky_and_Cloud_Mod
 {
     public class SkyAndCloudMod2 : MonoBehaviour
     {
-        //cloud
-        private GameObject[] clouds = new GameObject[100];
-        private GameObject cloudTemp;
         private bool isBoundairesAway = false;
-        private Color CloudsColor = new Color(0.96f, 0.96f, 0.96f, 1);
-        private float CloudBoxSize = 1000f;
+        //cloud
+        private GameObject[] clouds = new GameObject[50];
+        private Vector3[] axis = new Vector3[50];
+        private GameObject cloudTemp;
+        private bool IsCloudActice = true;
+        private Color CloudsColor = new Color(1f, 1f, 1f, 1);
         //terrain
-        public Vector3 floorScale = new Vector3(1000, 500, 1000);
-        float MapHeight = 100f;
+        private Vector3 floorScale = new Vector3(1000, 400, 1000);
+        private float MapHeight = 100f;
 
         // Object.Destroy(GameObject.Find("Terrain"));
         // Object.Destroy(GameObject.Find("FloorBig"));
@@ -71,75 +72,52 @@ namespace Besiege_Sky_and_Cloud_Mod
         {
             while (true)
             {
-                yield return new WaitForSeconds(0.02f);
-
-                if (Input.GetKey(KeyCode.F5))
-                {
-                    ResetCloud();
-                    // ResetFloor();
-                }
-
+                yield return new WaitForSeconds(0.1f);
             }
         }
-        public void ResetCloud()
+        void ResetCloud()
         {
             if (clouds[1] == null)
             {
-                clouds = new GameObject[100];
+                clouds = new GameObject[50];
 
                 for (int i = 0; i < clouds.Length; i++)
                 {
                     GameObject.DontDestroyOnLoad(clouds[i]);
-                    clouds[i] = (GameObject)UnityEngine.Object.Instantiate(cloudTemp, new Vector3(UnityEngine.Random.Range(-floorScale.x / 2 - 200, floorScale.x / 2 + 200), UnityEngine.Random.Range(floorScale.y, floorScale.y * 2), UnityEngine.Random.Range(-floorScale.z / 2 - 200, floorScale.z / 2 + 200)), new Quaternion(0, 0, 0, 0));
-                    clouds[i].GetComponent<ParticleSystem>().startColor = CloudsColor;
+                    clouds[i] = (GameObject)UnityEngine.Object.Instantiate(cloudTemp, new Vector3(
+                        UnityEngine.Random.Range(-floorScale.x, floorScale.x),
+                        UnityEngine.Random.Range(floorScale.y, floorScale.y * 2),
+                        UnityEngine.Random.Range(-floorScale.z, floorScale.z)),
+                        new Quaternion(0, 0, 0, 0));
                     clouds[i].layer = 12;
-                    Debug.Log(i.ToString() + ":" + clouds[i].name);
+                    //Debug.Log(i.ToString() + ":" + clouds[i].name);
                     clouds[i].SetActive(true);
                     clouds[i].transform.SetParent(GameObject.Find("Sky and Ground Mod").transform);
-                    clouds[i].GetComponent<ParticleSystem>().startSize = 30;
-                    clouds[i].GetComponent<ParticleSystem>().startLifetime = 5;
                     clouds[i].transform.localScale = new Vector3(15, 15, 15);
-                    clouds[i].GetComponent<ParticleSystem>().maxParticles = (int)clouds[i].transform.position.y;
-                    clouds[i].transform.LookAt(new Vector3(UnityEngine.Random.Range(-floorScale.x / 2 - 200, floorScale.x / 2 + 200), UnityEngine.Random.Range(-700f, 700f), UnityEngine.Random.Range(-floorScale.z / 2 - 200, floorScale.z / 2 + 200)));
+                    Camera cam = GameObject.Find("Main Camera").GetComponent<Camera>();
+                    //clouds[i].transform.LookAt();
+                    clouds[i].GetComponent<ParticleSystem>().startColor = CloudsColor;
+                    clouds[i].GetComponent<ParticleSystem>().startSize = 30;
+                    clouds[i].GetComponent<ParticleSystem>().startLifetime = 6;
+                    clouds[i].GetComponent<ParticleSystem>().startSpeed = 1.6f;
+                    clouds[i].GetComponent<ParticleSystem>().emissionRate = 3;
+                    clouds[i].GetComponent<ParticleSystem>().maxParticles = 18;
+                    axis[i] = new Vector3(UnityEngine.Random.Range(-0.02f, 0.02f), 1, UnityEngine.Random.Range(-0.02f, 0.02f));
                 }
+                Debug.Log("Besiege_Sky_and_Cloud_Mod==> Reset Cloud Successfully");
             }
             else
             {
-                if (clouds[1] == null) { Debug.Log("UpdateCloud Failed!"); return; }
-                foreach (GameObject cloud in clouds)
-                {
-                    float randomMove = UnityEngine.Random.Range(0.01f, 0.02f);
-                    cloud.transform.position += new Vector3(randomMove, randomMove - 0.015f, randomMove);
-                    cloud.transform.localScale *= 1 + randomMove - 0.015f;
-
-                    if (cloud.transform.position.x > CloudBoxSize)
-                    {
-                        cloud.transform.position =
-    new Vector3(-CloudBoxSize, cloud.transform.position.y, cloud.transform.position.z);
-                    }
-                    if (cloud.transform.position.z > CloudBoxSize)
-                    {
-                        cloud.transform.position =
-    new Vector3(cloud.transform.position.x, cloud.transform.position.y, -CloudBoxSize);
-                    }
-                    if (cloud.transform.position.x < -CloudBoxSize)
-                    {
-                        cloud.transform.position =
-    new Vector3(CloudBoxSize, cloud.transform.position.y, cloud.transform.position.z);
-                    }
-                    if (cloud.transform.position.z < -CloudBoxSize)
-                    {
-                        cloud.transform.position =
-    new Vector3(cloud.transform.position.x, cloud.transform.position.y, CloudBoxSize);
-                    }
+                if (clouds[1] == null || IsCloudActice == false) return;
+                for (int i = 0; i < clouds.Length; i++)
+                {              
+                        clouds[i].transform.RotateAround(new Vector3(0, 0, 0), axis[i], Time.deltaTime);
+                        clouds[i].GetComponent<ParticleSystem>().startSize = UnityEngine.Random.Range(30, 200);
                 }
 
             }
         }
-        void OnLoad()
-        {
-        }
-      
+
         void MoveBoundary()
         {
             if (isBoundairesAway)
@@ -158,123 +136,66 @@ namespace Besiege_Sky_and_Cloud_Mod
                 }
             }
         }
+        int debugsign1 = 0;
         void FixedUpdate()
         {
-
-            if (cloudTemp == null) { cloudTemp = (GameObject)UnityEngine.Object.Instantiate(GameObject.Find("CLoud")); cloudTemp.SetActive(false); }
-
-            DontDestroyOnLoad(cloudTemp);
-            //这个要获取很多次才能成功
-             try
+            if (AddPiece.isSimulating) MoveBoundary();
+            if (cloudTemp == null)
             {
-                //参数不要设置太离谱 否则找不到（摄像机视野有限）
-                this.ResetCloud();
-             
+                //这个有时候要获取很多次才能成功
+                cloudTemp = (GameObject)UnityEngine.Object.Instantiate(GameObject.Find("CLoud"));
+                cloudTemp.SetActive(false);
+                DontDestroyOnLoad(cloudTemp);
+                Debug.Log(debugsign1.ToString() + ": Besiege_Sky_and_Cloud_Mod==> Get Cloud Temp Successfully"); debugsign1++;
+            }
+            try
+            {
+                this.ResetCloud();//参数不要设置太离谱 否则找不到（摄像机视野有限）
             }
             catch (Exception ex)
             {
                 Debug.Log(ex.ToString());
+            }
+        }
+        void Update()
+        {
+
+            if (Input.GetKeyDown(KeyCode.F6))
+            {
+                IsCloudActice = !IsCloudActice;
+                Debug.Log("IsCloudActice=" + IsCloudActice.ToString());
+                foreach (GameObject cloud in clouds)
+                {
+                    if (!IsCloudActice) cloud.GetComponent<ParticleSystem>().Pause();
+                    else cloud.GetComponent<ParticleSystem>().Play();
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.F5))
+            {
+
+                // ResetFloor();
             }
         }
         void Start()
         {
-            // StartCoroutine(Function());
+            //StartCoroutine(Function());
         }
-    }
-
-    public class SkyAndCloudMod3 : MonoBehaviour
-    {
-        private GameObject[] clouds = new GameObject[60];
-        private GameObject cloudTemp;
-        private int cloudAmount = 60;
-        private float lowerCloudsMinHeight = 130f;
-        private float lowerCloudsMaxHeight = 200f;
-        private float higherCloudsMinHeight = 300;
-        private float higherCloudsMaxHeight = 377.25f;
-        private Color higherCloudsColor = new Color(1f, 1f, 1f, 1f);
-        private Color lowerCloudsColor = new Color(0.92f, 0.9f, 0.8f, 1);
-        public Vector3 floorScale = new Vector3(911, 10, 900);
-
-        void OnLoad()
+        void ClearResource()
         {
-        }
-        void FixedUpdate()
-        {
-
-            if (cloudTemp == null) { cloudTemp = (GameObject)UnityEngine.Object.Instantiate(GameObject.Find("CLoud")); cloudTemp.SetActive(false); }
-
-            DontDestroyOnLoad(cloudTemp);
-
-            //   if (cloudAmountTemp != cloudAmount) { resetCloudsNow = true; clouds[1] = null; cloudAmountTemp = cloudAmount; try { for (int k = cloudAmount; k < clouds.Length; k++) { Destroy(clouds[k].gameObject); Destroy(shadow[k].gameObject); } } catch { } }
-            try
+            UnityEngine.Object.Destroy(this.cloudTemp);
+            for (int i = 0; i < clouds.Length; i++)
             {
-                floorScale = GameObject.Find("FloorBig").transform.localScale;
-                if (clouds[1] == null && cloudAmount > 1)
-                {
-                    clouds = new GameObject[cloudAmount];
-
-                    for (int i = 0; i < clouds.Length; i++)
-                    {
-
-                        GameObject.DontDestroyOnLoad(clouds[i]);
-                        if (i < (int)clouds.Length / 3)
-                        {
-                            clouds[i] = (GameObject)UnityEngine.Object.Instantiate(cloudTemp, new Vector3(UnityEngine.Random.Range(-floorScale.x / 2 - 200, floorScale.x / 2 + 200), UnityEngine.Random.Range(higherCloudsMinHeight, higherCloudsMaxHeight), UnityEngine.Random.Range(-floorScale.z / 2 - 200, floorScale.z / 2 + 200)), new Quaternion(0, 0, 0, 0));
-                            clouds[i].GetComponent<ParticleSystem>().startColor = higherCloudsColor;
-                            clouds[i].layer = 12;
-                        }
-                        else
-                        {
-                            clouds[i] = (GameObject)UnityEngine.Object.Instantiate(cloudTemp, new Vector3(UnityEngine.Random.Range(-floorScale.x / 2 - 200, floorScale.x / 2 + 200), UnityEngine.Random.Range(lowerCloudsMinHeight, lowerCloudsMaxHeight), UnityEngine.Random.Range(-floorScale.z / 2 - 200, floorScale.z / 2 + 200)), new Quaternion(0, 0, 0, 0));
-                            clouds[i].GetComponent<ParticleSystem>().startColor = lowerCloudsColor;
-                            clouds[i].layer = 12;
-                        }
-                        Debug.Log(i.ToString() + ":" + clouds[i].name);
-                        clouds[i].SetActive(true);
-                        clouds[i].transform.SetParent(GameObject.Find("Sky and Ground Mod").transform);
-                        clouds[i].GetComponent<ParticleSystem>().startSize = 30;
-                        clouds[i].GetComponent<ParticleSystem>().startLifetime = 5;
-                        clouds[i].transform.localScale = new Vector3(15, 15, 15);
-                        clouds[i].GetComponent<ParticleSystem>().maxParticles = (int)clouds[i].transform.position.y;
-
-                        clouds[i].transform.LookAt(new Vector3(UnityEngine.Random.Range(-floorScale.x / 2 - 200, floorScale.x / 2 + 200), UnityEngine.Random.Range(-700f, 700f), UnityEngine.Random.Range(-floorScale.z / 2 - 200, floorScale.z / 2 + 200)));
-
-                    }
-                }
-                else
-                {
-                    /*
-                    foreach (GameObject cloud in clouds)
-                    {
-                        float randomMove = UnityEngine.Random.Range(0.01f, 0.02f);
-
-                        if (Application.loadedLevel == 2) { cloud.transform.position = new Vector3(-9999, -9999, -9999); }
-                        if (CustomCloudSpeed) { cloud.transform.position += new Vector3(cloudSpeed[0], randomMove - 0.015f, cloudSpeed[1]); }
-                        else
-                        {
-                            cloud.transform.position += new Vector3(randomMove, randomMove - 0.015f, randomMove);
-                        }
-                        cloud.transform.localScale *= 1 + randomMove - 0.015f;
-                        cloud.GetComponent<ParticleSystem>().startLifetime = 0.01f;
-                        cloud.GetComponent<ParticleSystem>().startSize = cloudSizeScale * 30;
-                        cloud.transform.localScale = new Vector3(15 * cloudSizeScale, 15 * cloudSizeScale, 15 * cloudSizeScale);
-                        cloud.GetComponent<ParticleSystem>().startLifetime = 5;
-
-                        if (cloud.transform.position.x > floorScale.x / 2 + 200) { cloud.transform.position = new Vector3(-floorScale.x / 2 - 195, cloud.transform.position.y, cloud.transform.position.z); }
-                        if (cloud.transform.position.z > floorScale.z / 2 + 200) { cloud.transform.position = new Vector3(cloud.transform.position.x, cloud.transform.position.y, -floorScale.z / 2 - 195); }
-                        if (cloud.transform.position.x < -floorScale.x / 2 - 200) { cloud.transform.position = new Vector3(floorScale.x / 2 + 195, cloud.transform.position.y, cloud.transform.position.z); }
-                        if (cloud.transform.position.z < -floorScale.z / 2 - 200) { cloud.transform.position = new Vector3(cloud.transform.position.x, cloud.transform.position.y, floorScale.z / 2 + 195); }
-
-                    }
-                    */
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.Log(ex.ToString());
+                Destroy(clouds[i]);
             }
         }
-
+        void OnDisable()
+        {
+            ClearResource();
+        }
+        void OnDestroy()
+        {
+            ClearResource();
+        }
     }
 }
 
