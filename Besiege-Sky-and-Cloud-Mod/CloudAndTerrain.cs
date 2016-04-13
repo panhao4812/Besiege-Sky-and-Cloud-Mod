@@ -53,7 +53,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                 FB.GetComponent<Renderer>().material.mainTexture = LoadTexture("GroundTexture"); 
                  Destroy(FB.GetComponent<BoxCollider>());
                 Mesh mesh = FB.GetComponent<MeshFilter>().mesh;                
-                int u = 65, v = 65;
+                int u = 99, v = 99;
                 for (int i = 0; i < u; i++)
                 {
                     for (int j = 0; j < v; j++)
@@ -195,7 +195,7 @@ namespace Besiege_Sky_and_Cloud_Mod
         }
         void MoveBoundary()
         {
-            if (isBoundairesAway)
+            if (!isBoundairesAway)
             {
                 isBoundairesAway = true;
                 try
@@ -247,7 +247,7 @@ namespace Besiege_Sky_and_Cloud_Mod
             }
             if (Input.GetKeyDown(KeyCode.F5))
             {
-                ResetFloor();
+                //ResetFloor();
             }
             if (Input.GetKeyDown(KeyCode.F6))
             {
