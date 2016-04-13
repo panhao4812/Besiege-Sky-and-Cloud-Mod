@@ -1,6 +1,7 @@
 ﻿//using System.Threading.Tasks;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Besiege_Sky_and_Cloud_Mod
@@ -18,46 +19,67 @@ namespace Besiege_Sky_and_Cloud_Mod
         private Vector3 floorScale = new Vector3(1000, 400, 1000);
         public static TerrainData terrainData = new TerrainData();
         public static GameObject terrainFinal = new GameObject();
-    
 
+
+        public Mesh MeshFromPoints(Vector3[] pl, int u, int v)
+        {
+            if (u * v > pl.Length || u < 2 || v < 2) return null;
+            Mesh mesh = new Mesh();
+            mesh.vertices = pl;
+            List<int> triangleslist = new List<int>();
+            for (int i = 1; i < u; i++)
+            {
+                for (int j = 1; j < v; j++)
+                {
+                    triangleslist.Add((j - 1) * u + i - 1);
+                    triangleslist.Add((j - 1) * u + i);
+                    triangleslist.Add((j) * u + i);
+                    triangleslist.Add((j - 1) * u + i - 1);
+                    triangleslist.Add((j) * u + i);
+                    triangleslist.Add((j) * u + i - 1);
+                }
+            }
+            mesh.triangles = triangleslist.ToArray();
+            return mesh;
+        }
 
         void ResetBigFloor()
         {
             try
             {
-                public Vector3[] newVertices;
-        public Vector2[] newUV;
-        public int[] newTriangles;
 
-        Texture2D te2 = (Texture2D)LoadTexture("1122512418-1");
+                List<Vector3> newVertices = new List<Vector3>();
+                List<Vector2> newUV = new List<Vector2>();
+                List<int> triangleslist = new List<int>();
+                Texture2D te2 = (Texture2D)LoadTexture("1122512418-1");
                 GameObject FB = GameObject.Find("FloorBig");
                 FB.GetComponent<Renderer>().material.mainTexture = te2;
                 Destroy(FB.GetComponent<BoxCollider>());
                 Mesh mesh = FB.GetComponent<MeshFilter>().mesh;
-                Vector3[] vertices = mesh.vertices; 
-                int i = 0;
-                while (i < vertices.Length)
-                { 
-                    Debug.Log(i.ToString() + "/" + vertices[i].ToString());
-                    i++;
+                mesh.Clear();
+               
+                int u = 65, v = 65;
+                for (int i = 0; i < u; i++)
+                {
+                    for (int j = 0; j < v; j++)
+                    {
+                        newVertices.Add(new Vector3(i / 100, j / 100, te2.GetPixel(i * 2, j * 2).grayscale / 2));
+                        newUV.Add(new Vector2(i, j));
+                        if (i > 0 && j > 0)
+                        {
+                            triangleslist.Add((j - 1) * u + i - 1);
+                            triangleslist.Add((j - 1) * u + i);
+                            triangleslist.Add((j) * u + i);
+                            triangleslist.Add((j - 1) * u + i - 1);
+                            triangleslist.Add((j) * u + i);
+                            triangleslist.Add((j) * u + i - 1);
+                        }
+                    }
                 }
-                mesh.vertices = vertices;  
-
-        public Vector3[] newVertices;
-    public Vector2[] newUV;
-    public int[] newTriangles;
-    void Start()
-    {
-        Mesh mesh = new Mesh();
-        GetComponent<MeshFilter>().mesh = mesh;
-        mesh.vertices = newVertices;
-        mesh.uv = newUV;
-        mesh.triangles = newTriangles;
-    }
-
-
-
-}
+                 mesh.vertices = newVertices.ToArray();
+                  mesh.uv = newUV.ToArray();
+                mesh.triangles = triangleslist.ToArray();
+            }
             catch (System.Exception ex)
             {
                 Debug.Log("ResetBigFloor Failed!");
@@ -76,9 +98,9 @@ namespace Besiege_Sky_and_Cloud_Mod
                 terrainFinal = (GameObject)Instantiate(terrainObject, position, rotation);
                 terrainFinal.name = "NewFloorBig";
                 terrainFinal.GetComponent<Terrain>().materialType = Terrain.MaterialType.Custom;
-                terrainFinal.GetComponent<Terrain>().materialTemplate = 
-                    GameObject.Find("FloorBig").GetComponent<Renderer>().material; 
-               // terrainFinal.GetComponent<Terrain>().materialTemplate.mainTexture = te2;
+                terrainFinal.GetComponent<Terrain>().materialTemplate =
+                    GameObject.Find("FloorBig").GetComponent<Renderer>().material;
+                // terrainFinal.GetComponent<Terrain>().materialTemplate.mainTexture = te2;
                 //new Material(Shader.Find("Nature / Terrain / Diffuse"));
                 terrainFinal.transform.Translate(new Vector3(0f, -100f, 0f));
                 terrainFinal.GetComponent<Terrain>().castShadows = true;
@@ -94,7 +116,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                     }
                 }
                 SkyAndCloudMod2.terrainData.SetHeights(0, 0, heights);
-               
+
                 Destroy(GameObject.Find("Terrain"));
                 Destroy(GameObject.Find("FloorBig"));
                 Destroy(te2);
