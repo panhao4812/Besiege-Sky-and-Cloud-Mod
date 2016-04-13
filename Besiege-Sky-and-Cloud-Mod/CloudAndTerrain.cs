@@ -53,8 +53,8 @@ namespace Besiege_Sky_and_Cloud_Mod
                 List<int> triangleslist = new List<int>();
                 Texture2D te2 = (Texture2D)LoadTexture("1122512418-1");
                 GameObject FB = GameObject.Find("FloorBig");
-                FB.GetComponent<Renderer>().material.mainTexture = te2;
-                Destroy(FB.GetComponent<BoxCollider>());
+                FB.GetComponent<Renderer>().material.mainTexture = LoadTexture("GroundTexture"); 
+                 Destroy(FB.GetComponent<BoxCollider>());
                 Mesh mesh = FB.GetComponent<MeshFilter>().mesh;
                 mesh.Clear();
                
@@ -63,8 +63,8 @@ namespace Besiege_Sky_and_Cloud_Mod
                 {
                     for (int j = 0; j < v; j++)
                     {
-                        newVertices.Add(new Vector3(i / 100, j / 100, te2.GetPixel(i * 2, j * 2).grayscale / 2));
-                        newUV.Add(new Vector2(i, j));
+                        newVertices.Add(new Vector3(i/100f-0.3f, te2.GetPixel(i * 2, j * 2).grayscale *5-2f, j /100f-0.3f));
+                        newUV.Add(new Vector2((float)i /(float)u, (float)j / (float)v));
                         if (i > 0 && j > 0)
                         {
                             triangleslist.Add((j - 1) * u + i - 1);
