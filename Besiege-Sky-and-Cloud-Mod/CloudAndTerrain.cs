@@ -19,8 +19,6 @@ namespace Besiege_Sky_and_Cloud_Mod
         private Vector3 floorScale = new Vector3(1000, 400, 1000);
         public static TerrainData terrainData = new TerrainData();
         public static GameObject terrainFinal = new GameObject();
-
-
         public Mesh MeshFromPoints(Vector3[] pl, int u, int v)
         {
             if (u * v > pl.Length || u < 2 || v < 2) return null;
@@ -42,7 +40,6 @@ namespace Besiege_Sky_and_Cloud_Mod
             mesh.triangles = triangleslist.ToArray();
             return mesh;
         }
-
         void ResetBigFloor()
         {
             try
@@ -51,13 +48,11 @@ namespace Besiege_Sky_and_Cloud_Mod
                 List<Vector3> newVertices = new List<Vector3>();
                 List<Vector2> newUV = new List<Vector2>();
                 List<int> triangleslist = new List<int>();
-                Texture2D te2 = (Texture2D)LoadTexture("1122512418-1");
+                Texture2D te2 = (Texture2D)LoadTexture("HeightMap");
                 GameObject FB = GameObject.Find("FloorBig");
                 FB.GetComponent<Renderer>().material.mainTexture = LoadTexture("GroundTexture"); 
                  Destroy(FB.GetComponent<BoxCollider>());
-                Mesh mesh = FB.GetComponent<MeshFilter>().mesh;
-                mesh.Clear();
-               
+                Mesh mesh = FB.GetComponent<MeshFilter>().mesh;                
                 int u = 65, v = 65;
                 for (int i = 0; i < u; i++)
                 {
@@ -79,6 +74,11 @@ namespace Besiege_Sky_and_Cloud_Mod
                  mesh.vertices = newVertices.ToArray();
                   mesh.uv = newUV.ToArray();
                 mesh.triangles = triangleslist.ToArray();
+                mesh.RecalculateBounds();
+                mesh.RecalculateNormals();
+                FB.AddComponent<MeshCollider>();
+                FB.GetComponent<MeshCollider>().sharedMesh = mesh;
+                Destroy(GameObject.Find("FloorGrid"));
             }
             catch (System.Exception ex)
             {
@@ -90,7 +90,7 @@ namespace Besiege_Sky_and_Cloud_Mod
         {
             try
             {
-                Texture2D te2 = (Texture2D)LoadTexture("1122512418-1");
+                Texture2D te2 = (Texture2D)LoadTexture("HeightMap");
                 terrainData.size = new Vector3(500f, 200f, 500f);
                 Vector3 position = new Vector3(-300f, GameObject.Find("FloorPos").transform.position.y - 0.1f, -300f);
                 Quaternion rotation = new Quaternion();
@@ -127,7 +127,6 @@ namespace Besiege_Sky_and_Cloud_Mod
                 Debug.Log(ex.ToString());
             }
         }
-
         Texture LoadTexture(string TextureName)
         {
             WWW png = new WWW("File:///" + Application.dataPath + "/Mods/Blocks/Textures/" + TextureName + ".png");
@@ -194,7 +193,6 @@ namespace Besiege_Sky_and_Cloud_Mod
 
             }
         }
-
         void MoveBoundary()
         {
             if (isBoundairesAway)
