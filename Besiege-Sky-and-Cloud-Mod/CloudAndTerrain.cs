@@ -16,33 +16,88 @@ namespace Besiege_Sky_and_Cloud_Mod
         private Color CloudsColor = new Color(1f, 1f, 1f, 1);
         //terrain
         private Vector3 floorScale = new Vector3(1000, 400, 1000);
-        private float MapHeight = 100f;
+        public static TerrainData terrainData = new TerrainData();
+        public static GameObject terrainFinal = new GameObject();
+    
 
-        // Object.Destroy(GameObject.Find("Terrain"));
-        // Object.Destroy(GameObject.Find("FloorBig"));
+
+        void ResetBigFloor()
+        {
+            try
+            {
+                public Vector3[] newVertices;
+        public Vector2[] newUV;
+        public int[] newTriangles;
+
+        Texture2D te2 = (Texture2D)LoadTexture("1122512418-1");
+                GameObject FB = GameObject.Find("FloorBig");
+                FB.GetComponent<Renderer>().material.mainTexture = te2;
+                Destroy(FB.GetComponent<BoxCollider>());
+                Mesh mesh = FB.GetComponent<MeshFilter>().mesh;
+                Vector3[] vertices = mesh.vertices; 
+                int i = 0;
+                while (i < vertices.Length)
+                { 
+                    Debug.Log(i.ToString() + "/" + vertices[i].ToString());
+                    i++;
+                }
+                mesh.vertices = vertices;  
+
+        public Vector3[] newVertices;
+    public Vector2[] newUV;
+    public int[] newTriangles;
+    void Start()
+    {
+        Mesh mesh = new Mesh();
+        GetComponent<MeshFilter>().mesh = mesh;
+        mesh.vertices = newVertices;
+        mesh.uv = newUV;
+        mesh.triangles = newTriangles;
+    }
+
+
+
+}
+            catch (System.Exception ex)
+            {
+                Debug.Log("ResetBigFloor Failed!");
+                Debug.Log(ex.ToString());
+            }
+        }
         void ResetFloor()
         {
             try
             {
-                Texture2D HeightMap = (Texture2D)LoadTexture("HeightMap");
-                TerrainData terrainData = new TerrainData();
-                terrainData.size = new Vector3(HeightMap.width, MapHeight, HeightMap.height);
-                terrainData.heightmapResolution = 513;
-                terrainData.baseMapResolution = 513;
-                terrainData.alphamapResolution = 512;
-                terrainData.SetDetailResolution(32, 8);
-                float[,] heights = terrainData.GetHeights(0, 0, terrainData.heightmapWidth, terrainData.heightmapHeight);
-                for (int i = 0; i < terrainData.heightmapWidth; i++)
+                Texture2D te2 = (Texture2D)LoadTexture("1122512418-1");
+                terrainData.size = new Vector3(500f, 200f, 500f);
+                Vector3 position = new Vector3(-300f, GameObject.Find("FloorPos").transform.position.y - 0.1f, -300f);
+                Quaternion rotation = new Quaternion();
+                GameObject terrainObject = Terrain.CreateTerrainGameObject(SkyAndCloudMod2.terrainData);
+                terrainFinal = (GameObject)Instantiate(terrainObject, position, rotation);
+                terrainFinal.name = "NewFloorBig";
+                terrainFinal.GetComponent<Terrain>().materialType = Terrain.MaterialType.Custom;
+                terrainFinal.GetComponent<Terrain>().materialTemplate = 
+                    GameObject.Find("FloorBig").GetComponent<Renderer>().material; 
+               // terrainFinal.GetComponent<Terrain>().materialTemplate.mainTexture = te2;
+                //new Material(Shader.Find("Nature / Terrain / Diffuse"));
+                terrainFinal.transform.Translate(new Vector3(0f, -100f, 0f));
+                terrainFinal.GetComponent<Terrain>().castShadows = true;
+                terrainFinal.AddComponent<OnCollisionMine>();
+                terrainData.heightmapResolution = 65;
+
+                float[,] heights = SkyAndCloudMod2.terrainData.GetHeights(0, 0, SkyAndCloudMod2.terrainData.heightmapWidth, SkyAndCloudMod2.terrainData.heightmapHeight);
+                for (int i = 0; i < SkyAndCloudMod2.terrainData.heightmapWidth; i++)
                 {
-                    for (int j = 0; j < terrainData.heightmapHeight; j++)
+                    for (int j = 0; j < SkyAndCloudMod2.terrainData.heightmapHeight; j++)
                     {
-                        heights[i, j] = HeightMap.GetPixel(i, j).grayscale * MapHeight;
+                        heights[i, j] = te2.GetPixel(i * 2, j * 2).grayscale / 2;
                     }
                 }
-                terrainData.SetHeights(0, 0, heights);
-                GameObject terrainObject = GameObject.Find("Terrain");
-                terrainObject = Terrain.CreateTerrainGameObject(terrainData);
-                Destroy(HeightMap);
+                SkyAndCloudMod2.terrainData.SetHeights(0, 0, heights);
+               
+                Destroy(GameObject.Find("Terrain"));
+                Destroy(GameObject.Find("FloorBig"));
+                Destroy(te2);
             }
             catch (System.Exception ex)
             {
@@ -110,9 +165,9 @@ namespace Besiege_Sky_and_Cloud_Mod
             {
                 if (clouds[1] == null || IsCloudActice == false) return;
                 for (int i = 0; i < clouds.Length; i++)
-                {              
-                        clouds[i].transform.RotateAround(new Vector3(0, 0, 0), axis[i], Time.deltaTime);
-                        clouds[i].GetComponent<ParticleSystem>().startSize = UnityEngine.Random.Range(30, 200);
+                {
+                    clouds[i].transform.RotateAround(new Vector3(0, 0, 0), axis[i], Time.deltaTime);
+                    clouds[i].GetComponent<ParticleSystem>().startSize = UnityEngine.Random.Range(30, 200);
                 }
 
             }
@@ -160,7 +215,7 @@ namespace Besiege_Sky_and_Cloud_Mod
         void Update()
         {
 
-            if (Input.GetKeyDown(KeyCode.F6))
+            if (Input.GetKeyDown(KeyCode.F7))
             {
                 IsCloudActice = !IsCloudActice;
                 Debug.Log("IsCloudActice=" + IsCloudActice.ToString());
@@ -172,8 +227,11 @@ namespace Besiege_Sky_and_Cloud_Mod
             }
             if (Input.GetKeyDown(KeyCode.F5))
             {
-
-                // ResetFloor();
+                ResetFloor();
+            }
+            if (Input.GetKeyDown(KeyCode.F6))
+            {
+                ResetBigFloor();
             }
         }
         void Start()
@@ -197,5 +255,34 @@ namespace Besiege_Sky_and_Cloud_Mod
             ClearResource();
         }
     }
+    public class OnCollisionMine : MonoBehaviour
+    {
+        // Methods
+        private void OnCollisionEnter(Collision c)
+        {
+            try
+            {
+                if (c.transform.GetComponent<MyBlockInfo>().blockName == "DRILL")
+                {
+                    int xBase = Mathf.RoundToInt(((c.transform.position.x - SkyAndCloudMod2.terrainFinal.transform.position.x) / SkyAndCloudMod2.terrainData.size.x) * SkyAndCloudMod2.terrainData.heightmapWidth);
+                    int yBase = Mathf.RoundToInt(((c.transform.position.z - SkyAndCloudMod2.terrainFinal.transform.position.z) / SkyAndCloudMod2.terrainData.size.z) * SkyAndCloudMod2.terrainData.heightmapWidth);
+                    float[,] heights = SkyAndCloudMod2.terrainData.GetHeights(xBase, yBase, 3, 3);
+                    for (int i = 0; i < 3; i++)
+                    {
+                        for (int j = 0; j < 3; j++)
+                        {
+                            heights[i, j] -= 0.005f;
+                        }
+                    }
+                    SkyAndCloudMod2.terrainData.SetHeights(xBase, yBase, heights);
+                }
+            }
+            catch
+            {
+            }
+        }
+    }
+
+
 }
 
