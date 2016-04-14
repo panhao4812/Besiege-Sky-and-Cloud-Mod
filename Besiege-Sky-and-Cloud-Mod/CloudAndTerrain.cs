@@ -149,6 +149,8 @@ namespace Besiege_Sky_and_Cloud_Mod
             mesh.normals = newNormals.ToArray();
             Debug.Log("The end of the file has been reached");
             srd.Close();
+            mesh.RecalculateBounds();
+            mesh.RecalculateNormals();
             return mesh;
         }
         void FloorBigFromData()
