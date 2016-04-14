@@ -52,6 +52,7 @@ namespace Besiege_Sky_and_Cloud_Mod
             List<Vector3> Normals = new List<Vector3>();
             List<Vector2> UV = new List<Vector2>();
             List<Vector3> newVertices = new List<Vector3>();
+            List<Vector3> Vertices = new List<Vector3>();
             List<Vector2> newUV = new List<Vector2>();
             List<int> triangleslist = new List<int>();
             List<Vector3> newNormals = new List<Vector3>();
@@ -78,14 +79,14 @@ namespace Besiege_Sky_and_Cloud_Mod
                           Convert.ToSingle(chara[1]),
                           Convert.ToSingle(chara[2]),
                           Convert.ToSingle(chara[3]));
-                        newVertices.Add(v1);
+                        Vertices.Add(v1);
                     }
                     else if (chara[0] == "vt")
                     {
                         Vector2 uv1 = new Vector2(
                           Convert.ToSingle(chara[1]),
                           Convert.ToSingle(chara[2]));
-                        newUV.Add(uv1);
+                        
                         UV.Add(uv1);
                     }
                     else if (chara[0] == "vn")
@@ -94,7 +95,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                           Convert.ToSingle(chara[1]),
                           Convert.ToSingle(chara[2]),
                           Convert.ToSingle(chara[3]));
-                        newNormals.Add(v2);
+                       
                         Normals.Add(v2);
                     }
                     else if (chara[0] == "f")
@@ -104,15 +105,18 @@ namespace Besiege_Sky_and_Cloud_Mod
                             int a = Convert.ToInt32(chara[1].Split('/')[0]);
                             int b = Convert.ToInt32(chara[2].Split('/')[0]);
                             int c = Convert.ToInt32(chara[3].Split('/')[0]);
-                            triangleslist.Add(a - 1);
-                            triangleslist.Add(b - 1);
-                            triangleslist.Add(c - 1);
-                            newNormals[a - 1] = Normals[Convert.ToInt32(chara[1].Split('/')[2]) - 1];
-                            newNormals[b - 1] = Normals[Convert.ToInt32(chara[2].Split('/')[2]) - 1];
-                            newNormals[c - 1] = Normals[Convert.ToInt32(chara[3].Split('/')[2]) - 1];
-                            newUV[a - 1] = UV[Convert.ToInt32(chara[1].Split('/')[1]) - 1];
-                            newUV[b - 1] = UV[Convert.ToInt32(chara[2].Split('/')[1]) - 1];
-                            newUV[c - 1] = UV[Convert.ToInt32(chara[3].Split('/')[1]) - 1];
+                            triangleslist.Add(newVertices.Count);
+                            triangleslist.Add(newVertices.Count+1);
+                            triangleslist.Add(newVertices.Count+2);
+                            newVertices.Add(Vertices[a-1]);
+                            newVertices.Add(Vertices[b-1]);
+                            newVertices.Add(Vertices[c-1]);
+                            newNormals.Add(Normals[Convert.ToInt32(chara[1].Split('/')[2]) - 1]);
+                            newNormals.Add(Normals[Convert.ToInt32(chara[2].Split('/')[2]) - 1]);
+                            newNormals.Add(Normals[Convert.ToInt32(chara[3].Split('/')[2]) - 1]);
+                            newUV.Add(UV[Convert.ToInt32(chara[1].Split('/')[1]) - 1]);
+                            newUV.Add(UV[Convert.ToInt32(chara[2].Split('/')[1]) - 1]);
+                            newUV.Add(UV[Convert.ToInt32(chara[3].Split('/')[1]) - 1]);
 
                         }
                         if (chara.Length == 5)
@@ -121,20 +125,24 @@ namespace Besiege_Sky_and_Cloud_Mod
                             int b = Convert.ToInt32(chara[2].Split('/')[0]);
                             int c = Convert.ToInt32(chara[3].Split('/')[0]);
                             int d = Convert.ToInt32(chara[4].Split('/')[0]);
-                            triangleslist.Add(a - 1);
-                            triangleslist.Add(b - 1);
-                            triangleslist.Add(c - 1);
-                            triangleslist.Add(a - 1);
-                            triangleslist.Add(c - 1);
-                            triangleslist.Add(d - 1);
-                            newNormals[a - 1] = Normals[Convert.ToInt32(chara[1].Split('/')[2]) - 1];
-                            newNormals[b - 1] = Normals[Convert.ToInt32(chara[2].Split('/')[2]) - 1];
-                            newNormals[c - 1] = Normals[Convert.ToInt32(chara[3].Split('/')[2]) - 1];
-                            newNormals[d - 1] = Normals[Convert.ToInt32(chara[4].Split('/')[2]) - 1];
-                            newUV[a - 1] = UV[Convert.ToInt32(chara[1].Split('/')[1]) - 1];
-                            newUV[b - 1] = UV[Convert.ToInt32(chara[2].Split('/')[1]) - 1];
-                            newUV[c - 1] = UV[Convert.ToInt32(chara[3].Split('/')[1]) - 1];
-                            newUV[d - 1] = UV[Convert.ToInt32(chara[4].Split('/')[1]) - 1];
+                            triangleslist.Add(newVertices.Count);
+                            triangleslist.Add(newVertices.Count+1);
+                            triangleslist.Add(newVertices.Count+2);
+                            triangleslist.Add(newVertices.Count);
+                            triangleslist.Add(newVertices.Count+2);
+                            triangleslist.Add(newVertices.Count+3);
+                            newVertices.Add(Vertices[a-1]);
+                            newVertices.Add(Vertices[b-1]);
+                            newVertices.Add(Vertices[c-1]);
+                            newVertices.Add(Vertices[d-1]);
+                            newNormals.Add(Normals[Convert.ToInt32(chara[1].Split('/')[2]) - 1]);
+                            newNormals.Add(Normals[Convert.ToInt32(chara[2].Split('/')[2]) - 1]);
+                            newNormals.Add(Normals[Convert.ToInt32(chara[3].Split('/')[2]) - 1]);
+                            newNormals.Add(Normals[Convert.ToInt32(chara[4].Split('/')[2]) - 1]);
+                            newUV.Add(UV[Convert.ToInt32(chara[1].Split('/')[1]) - 1]);
+                            newUV.Add(UV[Convert.ToInt32(chara[2].Split('/')[1]) - 1]);
+                            newUV.Add(UV[Convert.ToInt32(chara[3].Split('/')[1]) - 1]);
+                            newUV.Add(UV[Convert.ToInt32(chara[4].Split('/')[1]) - 1]);
                         }
                     }
                 }
@@ -231,7 +239,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                 FB.GetComponent<MeshCollider>().sharedMesh = mesh;
                 FB.GetComponent<MeshFilter>().mesh = mesh;
                 FB.transform.localScale = new Vector3(1, 1, 1);
-                FB.transform.position = new Vector3(0, -10, 0);
+                FB.transform.position = new Vector3(0, 0, 0);
                 Destroy(FB.GetComponent<BoxCollider>());
                 Destroy(GameObject.Find("FloorGrid"));
             }
