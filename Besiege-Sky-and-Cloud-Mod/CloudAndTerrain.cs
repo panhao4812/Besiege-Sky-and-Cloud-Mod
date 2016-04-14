@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 namespace Besiege_Sky_and_Cloud_Mod
@@ -15,51 +16,193 @@ namespace Besiege_Sky_and_Cloud_Mod
         private GameObject cloudTemp;
         private bool IsCloudActice = true;
         private Color CloudsColor = new Color(1f, 1f, 1f, 1);
-        //terrain
         private Vector3 floorScale = new Vector3(1000, 400, 1000);
-        public static TerrainData terrainData = new TerrainData();
-        public static GameObject terrainFinal = new GameObject();
-        public Mesh MeshFromPoints(Vector3[] pl, int u, int v)
+        public static Mesh MeshFromPoints(int u, int v)
         {
-            if (u * v > pl.Length || u < 2 || v < 2) return null;
             Mesh mesh = new Mesh();
-            mesh.vertices = pl;
+            List<Vector3> newVertices = new List<Vector3>();
+            List<Vector2> newUV = new List<Vector2>();
             List<int> triangleslist = new List<int>();
-            for (int i = 1; i < u; i++)
+            for (int i = 0; i < u; i++)
             {
-                for (int j = 1; j < v; j++)
+                for (int j = 0; j < v; j++)
                 {
-                    triangleslist.Add((j - 1) * u + i - 1);
-                    triangleslist.Add((j - 1) * u + i);
-                    triangleslist.Add((j) * u + i);
-                    triangleslist.Add((j - 1) * u + i - 1);
-                    triangleslist.Add((j) * u + i);
-                    triangleslist.Add((j) * u + i - 1);
+                    newVertices.Add(new Vector3(i, 0, j));
+                    newUV.Add(new Vector2((float)i / (float)u, (float)j / (float)v));
+                    if (i > 0 && j > 0)
+                    {
+                        triangleslist.Add((j - 1) * u + i - 1);
+                        triangleslist.Add((j - 1) * u + i);
+                        triangleslist.Add((j) * u + i);
+                        triangleslist.Add((j - 1) * u + i - 1);
+                        triangleslist.Add((j) * u + i);
+                        triangleslist.Add((j) * u + i - 1);
+                    }
                 }
             }
+            mesh.vertices = newVertices.ToArray();
+            mesh.uv = newUV.ToArray();
             mesh.triangles = triangleslist.ToArray();
+            mesh.RecalculateBounds();
+            mesh.RecalculateNormals();
             return mesh;
         }
-        void ResetBigFloor()
+        public static Mesh MeshFromObj(string ObjPath)
+        {
+            List<Vector3> Normals = new List<Vector3>();
+            List<Vector2> UV = new List<Vector2>();
+            List<Vector3> newVertices = new List<Vector3>();
+            List<Vector2> newUV = new List<Vector2>();
+            List<int> triangleslist = new List<int>();
+            List<Vector3> newNormals = new List<Vector3>();
+            Mesh mesh = new Mesh();
+            StreamReader srd;
+            try
+            {
+                srd = File.OpenText(ObjPath);
+            }
+            catch
+            {
+                Debug.Log("File open failed");
+                return null;
+            }
+            while (srd.Peek() != -1)
+            {
+                String str = srd.ReadLine();
+                string[] chara = str.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                if (chara.Length > 2)
+                {
+                    if (chara[0] == "v")
+                    {
+                        Vector3 v1 = new Vector3(
+                          Convert.ToSingle(chara[1]),
+                          Convert.ToSingle(chara[2]),
+                          Convert.ToSingle(chara[3]));
+                        newVertices.Add(v1);
+                    }
+                    else if (chara[0] == "vt")
+                    {
+                        Vector2 uv1 = new Vector2(
+                          Convert.ToSingle(chara[1]),
+                          Convert.ToSingle(chara[2]));
+                        newUV.Add(uv1);
+                        UV.Add(uv1);
+                    }
+                    else if (chara[0] == "vn")
+                    {
+                        Vector3 v2 = new Vector3(
+                          Convert.ToSingle(chara[1]),
+                          Convert.ToSingle(chara[2]),
+                          Convert.ToSingle(chara[3]));
+                        newNormals.Add(v2);
+                        Normals.Add(v2);
+                    }
+                    else if (chara[0] == "f")
+                    {
+                        if (chara.Length == 4)
+                        {
+                            int a = Convert.ToInt32(chara[1].Split('/')[0]);
+                            int b = Convert.ToInt32(chara[2].Split('/')[0]);
+                            int c = Convert.ToInt32(chara[3].Split('/')[0]);
+                            triangleslist.Add(a - 1);
+                            triangleslist.Add(b - 1);
+                            triangleslist.Add(c - 1);
+                            newNormals[a - 1] = Normals[Convert.ToInt32(chara[1].Split('/')[2]) - 1];
+                            newNormals[b - 1] = Normals[Convert.ToInt32(chara[2].Split('/')[2]) - 1];
+                            newNormals[c - 1] = Normals[Convert.ToInt32(chara[3].Split('/')[2]) - 1];
+                            newUV[a - 1] = UV[Convert.ToInt32(chara[1].Split('/')[1]) - 1];
+                            newUV[b - 1] = UV[Convert.ToInt32(chara[2].Split('/')[1]) - 1];
+                            newUV[c - 1] = UV[Convert.ToInt32(chara[3].Split('/')[1]) - 1];
+
+                        }
+                        if (chara.Length == 5)
+                        {
+                            int a = Convert.ToInt32(chara[1].Split('/')[0]);
+                            int b = Convert.ToInt32(chara[2].Split('/')[0]);
+                            int c = Convert.ToInt32(chara[3].Split('/')[0]);
+                            int d = Convert.ToInt32(chara[4].Split('/')[0]);
+                            triangleslist.Add(a - 1);
+                            triangleslist.Add(b - 1);
+                            triangleslist.Add(c - 1);
+                            triangleslist.Add(a - 1);
+                            triangleslist.Add(c - 1);
+                            triangleslist.Add(d - 1);
+                            newNormals[a - 1] = Normals[Convert.ToInt32(chara[1].Split('/')[2]) - 1];
+                            newNormals[b - 1] = Normals[Convert.ToInt32(chara[2].Split('/')[2]) - 1];
+                            newNormals[c - 1] = Normals[Convert.ToInt32(chara[3].Split('/')[2]) - 1];
+                            newNormals[d - 1] = Normals[Convert.ToInt32(chara[4].Split('/')[2]) - 1];
+                            newUV[a - 1] = UV[Convert.ToInt32(chara[1].Split('/')[1]) - 1];
+                            newUV[b - 1] = UV[Convert.ToInt32(chara[2].Split('/')[1]) - 1];
+                            newUV[c - 1] = UV[Convert.ToInt32(chara[3].Split('/')[1]) - 1];
+                            newUV[d - 1] = UV[Convert.ToInt32(chara[4].Split('/')[1]) - 1];
+                        }
+                    }
+                }
+            }
+            Debug.Log("newVertices==>" + newVertices.Count.ToString());
+            Debug.Log("newUV==>" + newUV.Count.ToString());
+            Debug.Log("triangleslist==>" + triangleslist.Count.ToString());
+            Debug.Log("newNormals==>" + newNormals.Count.ToString());
+            mesh.vertices = newVertices.ToArray();
+            mesh.uv = newUV.ToArray();
+            mesh.triangles = triangleslist.ToArray();
+            mesh.normals = newNormals.ToArray();
+            Debug.Log("The end of the file has been reached");
+            srd.Close();
+            return mesh;
+        }
+        void FloorBigFromData()
         {
             try
             {
-
+                GameObject FB = GameObject.Find("FloorBig");
+                FB.GetComponent<Renderer>().material.mainTexture = LoadTexture("GroundTexture");
+                Debug.Log(Application.dataPath);
+                Mesh mesh = MeshFromObj(Application.dataPath + "/Mods/Blocks/Floor/FloorBigMesh.obj");
+                if (mesh == null)
+                {
+                    Debug.Log("GetMeshFailed");
+                    return;
+                }
+                try { FB.GetComponent<MeshCollider>().sharedMesh.Clear(); }
+                catch
+                {
+                    FB.AddComponent<MeshCollider>();
+                    FB.GetComponent<MeshCollider>().sharedMesh.Clear();
+                }
+                FB.GetComponent<MeshFilter>().mesh.Clear();
+                FB.GetComponent<MeshCollider>().sharedMesh = mesh;
+                FB.GetComponent<MeshFilter>().mesh = mesh;
+                FB.transform.localScale = new Vector3(1, 1, 1);
+                FB.transform.position = new Vector3(0, -10, 0);
+                Destroy(FB.GetComponent<BoxCollider>());
+                Destroy(GameObject.Find("FloorGrid"));
+            }
+            catch (System.Exception ex)
+            {
+                Debug.Log("FloorBigFromData Failed!");
+                Debug.Log(ex.ToString());
+            }
+        }
+        void ResetFloorBig()
+        {
+            try
+            {
                 List<Vector3> newVertices = new List<Vector3>();
                 List<Vector2> newUV = new List<Vector2>();
                 List<int> triangleslist = new List<int>();
                 Texture2D te2 = (Texture2D)LoadTexture("HeightMap");
                 GameObject FB = GameObject.Find("FloorBig");
-                FB.GetComponent<Renderer>().material.mainTexture = LoadTexture("GroundTexture"); 
-                 Destroy(FB.GetComponent<BoxCollider>());
-                Mesh mesh = FB.GetComponent<MeshFilter>().mesh;                
-                int u = 99, v = 99;
+                FB.GetComponent<Renderer>().material.mainTexture = LoadTexture("GroundTexture");
+
+                Mesh mesh = new Mesh();
+                int u = 200, v = 200;
                 for (int i = 0; i < u; i++)
                 {
                     for (int j = 0; j < v; j++)
                     {
-                        newVertices.Add(new Vector3(i/100f-0.3f, te2.GetPixel(i * 2, j * 2).grayscale *5-2f, j /100f-0.3f));
-                        newUV.Add(new Vector2((float)i /(float)u, (float)j / (float)v));
+                        newVertices.Add(new Vector3(i * 5, te2.GetPixel(i, j).grayscale * 5, j * 5));
+                        newUV.Add(new Vector2((float)i / (float)u, (float)j / (float)v));
                         if (i > 0 && j > 0)
                         {
                             triangleslist.Add((j - 1) * u + i - 1);
@@ -71,13 +214,23 @@ namespace Besiege_Sky_and_Cloud_Mod
                         }
                     }
                 }
-                 mesh.vertices = newVertices.ToArray();
-                  mesh.uv = newUV.ToArray();
+                mesh.vertices = newVertices.ToArray();
+                mesh.uv = newUV.ToArray();
                 mesh.triangles = triangleslist.ToArray();
                 mesh.RecalculateBounds();
                 mesh.RecalculateNormals();
-                FB.AddComponent<MeshCollider>();
+                try { FB.GetComponent<MeshCollider>().sharedMesh.Clear(); }
+                catch
+                {
+                    FB.AddComponent<MeshCollider>();
+                    FB.GetComponent<MeshCollider>().sharedMesh.Clear();
+                }
+                FB.GetComponent<MeshFilter>().mesh.Clear();
                 FB.GetComponent<MeshCollider>().sharedMesh = mesh;
+                FB.GetComponent<MeshFilter>().mesh = mesh;
+                FB.transform.localScale = new Vector3(1, 1, 1);
+                FB.transform.position = new Vector3(0, -10, 0);
+                Destroy(FB.GetComponent<BoxCollider>());
                 Destroy(GameObject.Find("FloorGrid"));
             }
             catch (System.Exception ex)
@@ -86,47 +239,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                 Debug.Log(ex.ToString());
             }
         }
-        void ResetFloor()
-        {
-            try
-            {
-                Texture2D te2 = (Texture2D)LoadTexture("HeightMap");
-                terrainData.size = new Vector3(500f, 200f, 500f);
-                Vector3 position = new Vector3(-300f, GameObject.Find("FloorPos").transform.position.y - 0.1f, -300f);
-                Quaternion rotation = new Quaternion();
-                GameObject terrainObject = Terrain.CreateTerrainGameObject(SkyAndCloudMod2.terrainData);
-                terrainFinal = (GameObject)Instantiate(terrainObject, position, rotation);
-                terrainFinal.name = "NewFloorBig";
-                terrainFinal.GetComponent<Terrain>().materialType = Terrain.MaterialType.Custom;
-                terrainFinal.GetComponent<Terrain>().materialTemplate =
-                    GameObject.Find("FloorBig").GetComponent<Renderer>().material;
-                // terrainFinal.GetComponent<Terrain>().materialTemplate.mainTexture = te2;
-                //new Material(Shader.Find("Nature / Terrain / Diffuse"));
-                terrainFinal.transform.Translate(new Vector3(0f, -100f, 0f));
-                terrainFinal.GetComponent<Terrain>().castShadows = true;
-                terrainFinal.AddComponent<OnCollisionMine>();
-                terrainData.heightmapResolution = 65;
 
-                float[,] heights = SkyAndCloudMod2.terrainData.GetHeights(0, 0, SkyAndCloudMod2.terrainData.heightmapWidth, SkyAndCloudMod2.terrainData.heightmapHeight);
-                for (int i = 0; i < SkyAndCloudMod2.terrainData.heightmapWidth; i++)
-                {
-                    for (int j = 0; j < SkyAndCloudMod2.terrainData.heightmapHeight; j++)
-                    {
-                        heights[i, j] = te2.GetPixel(i * 2, j * 2).grayscale / 2;
-                    }
-                }
-                SkyAndCloudMod2.terrainData.SetHeights(0, 0, heights);
-
-                Destroy(GameObject.Find("Terrain"));
-                Destroy(GameObject.Find("FloorBig"));
-                Destroy(te2);
-            }
-            catch (System.Exception ex)
-            {
-                Debug.Log("ResetFloor Failed!");
-                Debug.Log(ex.ToString());
-            }
-        }
         Texture LoadTexture(string TextureName)
         {
             WWW png = new WWW("File:///" + Application.dataPath + "/Mods/Blocks/Textures/" + TextureName + ".png");
@@ -211,17 +324,17 @@ namespace Besiege_Sky_and_Cloud_Mod
                 }
             }
         }
-        int debugsign1 = 0;
+
         void FixedUpdate()
         {
             if (AddPiece.isSimulating) MoveBoundary();
             if (cloudTemp == null)
             {
-                //这个有时候要获取很多次才能成功
+                //这个在选择关口界面
                 cloudTemp = (GameObject)UnityEngine.Object.Instantiate(GameObject.Find("CLoud"));
                 cloudTemp.SetActive(false);
                 DontDestroyOnLoad(cloudTemp);
-                Debug.Log(debugsign1.ToString() + ": Besiege_Sky_and_Cloud_Mod==> Get Cloud Temp Successfully"); debugsign1++;
+                Debug.Log(": Besiege_Sky_and_Cloud_Mod==> Get Cloud Temp Successfully");
             }
             try
             {
@@ -245,13 +358,13 @@ namespace Besiege_Sky_and_Cloud_Mod
                     else cloud.GetComponent<ParticleSystem>().Play();
                 }
             }
-            if (Input.GetKeyDown(KeyCode.F5))
-            {
-                //ResetFloor();
-            }
             if (Input.GetKeyDown(KeyCode.F6))
             {
-                ResetBigFloor();
+                ResetFloorBig();
+            }
+            if (Input.GetKeyDown(KeyCode.F8))
+            {
+                FloorBigFromData();
             }
         }
         void Start()
@@ -273,33 +386,6 @@ namespace Besiege_Sky_and_Cloud_Mod
         void OnDestroy()
         {
             ClearResource();
-        }
-    }
-    public class OnCollisionMine : MonoBehaviour
-    {
-        // Methods
-        private void OnCollisionEnter(Collision c)
-        {
-            try
-            {
-                if (c.transform.GetComponent<MyBlockInfo>().blockName == "DRILL")
-                {
-                    int xBase = Mathf.RoundToInt(((c.transform.position.x - SkyAndCloudMod2.terrainFinal.transform.position.x) / SkyAndCloudMod2.terrainData.size.x) * SkyAndCloudMod2.terrainData.heightmapWidth);
-                    int yBase = Mathf.RoundToInt(((c.transform.position.z - SkyAndCloudMod2.terrainFinal.transform.position.z) / SkyAndCloudMod2.terrainData.size.z) * SkyAndCloudMod2.terrainData.heightmapWidth);
-                    float[,] heights = SkyAndCloudMod2.terrainData.GetHeights(xBase, yBase, 3, 3);
-                    for (int i = 0; i < 3; i++)
-                    {
-                        for (int j = 0; j < 3; j++)
-                        {
-                            heights[i, j] -= 0.005f;
-                        }
-                    }
-                    SkyAndCloudMod2.terrainData.SetHeights(xBase, yBase, heights);
-                }
-            }
-            catch
-            {
-            }
         }
     }
 
