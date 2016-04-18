@@ -59,7 +59,7 @@ namespace Besiege_Sky_and_Cloud_Mod
             mesh.RecalculateNormals();
             return mesh;
         }
-        public static Mesh MeshFromObj(string ObjPath)
+        public static Mesh MeshFromObj(string Objname)
         {
             List<Vector3> Normals = new List<Vector3>();
             List<Vector2> UV = new List<Vector2>();
@@ -72,7 +72,7 @@ namespace Besiege_Sky_and_Cloud_Mod
             StreamReader srd;
             try
             {
-                srd = File.OpenText(ObjPath);
+                srd = File.OpenText(Application.dataPath + "/Mods/Blocks/Floor/" + Objname + ".obj");
             }
             catch
             {
@@ -83,7 +83,7 @@ namespace Besiege_Sky_and_Cloud_Mod
             {
                 while (srd.Peek() != -1)
                 {
-                    String str = srd.ReadLine();
+                    string str = srd.ReadLine();
                     string[] chara = str.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
                     if (chara.Length > 2)
                     {
@@ -214,26 +214,74 @@ namespace Besiege_Sky_and_Cloud_Mod
                 StreamReader srd;
                 try
                 {
-                    srd = File.OpenText(SceneName);
+                    srd = File.OpenText(Application.dataPath + "/Mods/Blocks/Scene/" + SceneName + ".txt");
                     while (srd.Peek() != -1)
                     {
-                        String str = srd.ReadLine();
+                        string str = srd.ReadLine();
                         string[] chara = str.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
-                        if (chara[0] == "Mesh")
+                        if (chara.Length > 2)
                         {
-
-                        }
-                        else if(chara[0] == "Mesh")
-                        {
-
-                        }
-                        else if (chara[0] == "Mesh")
-                        {
-
-                        }
-                        else if (chara[0] == "Mesh")
-                        {
-
+                            if (chara[0] == "Mesh")
+                            {
+                                int i = Convert.ToInt32(chara[1]);
+                                if (chara[2] == "location")
+                                {
+                                    meshes[i].transform.localPosition = new Vector3(
+                                    Convert.ToSingle(chara[3]),
+                                    Convert.ToSingle(chara[4]),
+                                    Convert.ToSingle(chara[5]));
+                                    Debug.Log("meshes" + i.ToString() + ":" + meshes[i].transform.localPosition.ToString());
+                                }
+                                if (chara[2] == "scale")
+                                {
+                                    meshes[i].transform.localScale = new Vector3(
+                                    Convert.ToSingle(chara[3]),
+                                    Convert.ToSingle(chara[4]),
+                                    Convert.ToSingle(chara[5]));
+                                    Debug.Log("meshes" + i.ToString() + ":" + meshes[i].transform.localScale.ToString());
+                                }
+                                if (chara[2] == "rotaion")
+                                {
+                                    meshes[i].transform.localRotation = new Quaternion(
+                                    Convert.ToSingle(chara[3]),
+                                    Convert.ToSingle(chara[4]),
+                                    Convert.ToSingle(chara[5]),
+                                    Convert.ToSingle(chara[6]));     
+                                }
+                                if (chara[2] == "texture")
+                                {
+                                    meshes[i].GetComponent<MeshRenderer>().material.mainTexture = LoadTexture(chara[3]);
+                                }
+                                if (chara[2] == "mesh")
+                                {
+                                    meshes[i].GetComponent<MeshFilter>().mesh = MeshFromObj(chara[3]);
+                                }
+                                if (chara[2] == "meshcollider")
+                                {
+                                    meshes[i].GetComponent<MeshCollider>().sharedMesh = MeshFromObj(chara[3]);
+                                }
+                            }
+                            else if (chara[0] == "cloud")
+                            {
+                                if (chara[1] == "location")
+                                {
+                                    this.transform.localPosition = new Vector3(
+                                    Convert.ToSingle(chara[2]),
+                                    Convert.ToSingle(chara[3]),
+                                    Convert.ToSingle(chara[4]));
+                                }
+                                if (chara[1] == "scale")
+                                {
+                                    this.transform.localScale = new Vector3(
+                                    Convert.ToSingle(chara[2]),
+                                    Convert.ToSingle(chara[3]),
+                                    Convert.ToSingle(chara[4]));
+                                }
+                                if (chara[1] == "size")
+                                {
+                                    this.CloudSize = Convert.ToInt32(chara[2]);
+                                }
+                            }
                         }
                     }
                 }
@@ -245,6 +293,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                 }
                 Debug.Log("Besiege_Sky_and_Cloud_Mod==>LoadScene Completed!");
                 srd.Close();
+                ClearCloud();
             }
             catch (System.Exception ex)
             {
@@ -380,12 +429,13 @@ namespace Besiege_Sky_and_Cloud_Mod
                 if (meshes[1] == null) meshes = new GameObject[MeshSize];
                 for (int i = 0; i < meshes.Length; i++)
                 {
-                    if (meshes[1] == null) meshes[i] = GameObject.CreatePrimitive(PrimitiveType.Plane);
+                    if (meshes[i] == null) meshes[i] = GameObject.CreatePrimitive(PrimitiveType.Plane);
                     try
                     {
                         meshes[i].transform.localScale = new Vector3(0, 0, 0);
                         meshes[i].GetComponent<MeshCollider>().sharedMesh.Clear();
                         meshes[i].GetComponent<MeshFilter>().mesh.Clear();
+                        meshes[i].name = "_mesh" + i.ToString();
                     }
                     catch
                     {
@@ -481,7 +531,14 @@ namespace Besiege_Sky_and_Cloud_Mod
             if (Input.GetKeyDown(KeyCode.F9))
             {
                 ClearCloud();
+            }
+            if (Input.GetKeyDown(KeyCode.F6))
+            {
                 ResetFloorBig();
+            }
+            if (Input.GetKeyDown(KeyCode.F7))
+            {
+                LoadScene("MosaicHill");
             }
         }
         void Start()
