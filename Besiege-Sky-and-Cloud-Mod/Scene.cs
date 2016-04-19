@@ -26,7 +26,7 @@ namespace Besiege_Sky_and_Cloud_Mod
         {
             try
             {
-                ResetMesh();
+                
                 Debug.Log(Application.dataPath);
                 StreamReader srd;
                 try
@@ -43,6 +43,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                                 if (chara[1] == "size")
                                 {
                                     this.MeshSize = Convert.ToInt32(chara[2]);
+                                    ResetMesh();
                                 }
                             }
                             else if (chara[0] == "Mesh")
@@ -203,11 +204,10 @@ namespace Besiege_Sky_and_Cloud_Mod
             {
                 if (MeshSize > 30) MeshSize = 30;
                 if (MeshSize < 5) MeshSize = 5;
-                if (meshes[1] == null)
-                {
-                    //ClearMeshes();
+              
+                    ClearMeshes();
                     meshes = new GameObject[MeshSize];
-                }
+                
                 for (int i = 0; i < meshes.Length; i++)
                 {
                     if (meshes[i] == null) meshes[i] = GameObject.CreatePrimitive(PrimitiveType.Plane);
