@@ -65,10 +65,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CloudAndTerrain.cs" />
+    <Compile Include="Scene.cs" />
+    <Compile Include="GeoTools.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sky and Ground Mod.cs" />
-    <Compile Include="Terrian.cs" />
+    <Compile Include="Ground.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
