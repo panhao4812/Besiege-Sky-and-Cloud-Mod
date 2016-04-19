@@ -12,12 +12,10 @@ namespace Besiege_Sky_and_Cloud_Mod
         public int u = 200, v = 100;
         public float uscale = 5, vscale = 5, heightscale = 50;
         public float texturescale = 1f;
-        public static TerrainData terrainData = new TerrainData();
-        public static GameObject terrainFinal = new GameObject();
-        private GameObject Mesh = new GameObject();
+        private GameObject Mesh;
         void LoadHeightMap()
         {
-            if (Mesh == null) Mesh = GameObject.CreatePrimitive(PrimitiveType.Plane);
+            if (Mesh == null) { Mesh = GameObject.CreatePrimitive(PrimitiveType.Plane); Mesh.name = "Terrian1"; }
             try
             {               
                 Mesh.transform.position = new Vector3(-u * uscale / 2, -heightscale, -v * vscale / 2);

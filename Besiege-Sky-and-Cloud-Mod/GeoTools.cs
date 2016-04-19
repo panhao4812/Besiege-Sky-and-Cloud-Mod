@@ -199,7 +199,9 @@ namespace Besiege_Sky_and_Cloud_Mod
             try
             {
                 GameObject.Find("FloorBig").transform.localScale = new Vector3(1000, 1, 1000);
+                GameObject.Find("FloorBig").transform.localPosition = new Vector3(0, 0, 0);
                 GameObject.Find("FloorGrid").transform.localScale = new Vector3(1, 1, 1);
+                GameObject.Find("FloorGrid").transform.localPosition = new Vector3(0, 0, 0);
             }
             catch { }
         }

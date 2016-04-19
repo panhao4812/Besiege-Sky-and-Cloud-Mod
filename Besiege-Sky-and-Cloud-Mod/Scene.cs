@@ -10,7 +10,7 @@ namespace Besiege_Sky_and_Cloud_Mod
 {
     public class Scene : MonoBehaviour
     {
-        private bool isBoundairesAway = false;
+ 
         //cloud
         private GameObject[] clouds = new GameObject[30];
         private GameObject[] meshes = new GameObject[10];
@@ -21,7 +21,7 @@ namespace Besiege_Sky_and_Cloud_Mod
         private Vector3 floorScale = new Vector3(1000, 200, 1000);
         private int MeshSize = 10;
         private int CloudSize = 30;
-        public string DefaultSceneName = "MosaicHill";
+        public string DefaultSceneName = "SteelHill";
         void LoadScene(string SceneName)
         {
             try
