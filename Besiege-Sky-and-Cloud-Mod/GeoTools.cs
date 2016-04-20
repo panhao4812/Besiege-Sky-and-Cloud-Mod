@@ -191,6 +191,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                 GameObject.Find("FloorBig").transform.localScale = new Vector3(0, 0, 0);
                 GameObject.Find("FloorGrid").transform.localScale = new Vector3(0, 0, 0);
                 GameObject.Find("WORLD BOUNDARIES").transform.localScale = new Vector3(0, 0, 0);
+                GameObject.Find("Main Camera").GetComponent<Camera>().farClipPlane = 2500;
             }
             catch { }
         }
@@ -202,6 +203,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                 GameObject.Find("FloorBig").transform.localPosition = new Vector3(0, 0, 0);
                 GameObject.Find("FloorGrid").transform.localScale = new Vector3(1, 1, 1);
                 GameObject.Find("FloorGrid").transform.localPosition = new Vector3(0, 0, 0);
+                GameObject.Find("Main Camera").GetComponent<Camera>().farClipPlane = 1500;
             }
             catch { }
         }

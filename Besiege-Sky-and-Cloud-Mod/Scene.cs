@@ -10,7 +10,7 @@ namespace Besiege_Sky_and_Cloud_Mod
 {
     public class Scene : MonoBehaviour
     {
- 
+
         //cloud
         private GameObject[] clouds = new GameObject[30];
         private GameObject[] meshes = new GameObject[10];
@@ -26,7 +26,7 @@ namespace Besiege_Sky_and_Cloud_Mod
         {
             try
             {
-                
+
                 Debug.Log(Application.dataPath);
                 StreamReader srd;
                 try
@@ -57,6 +57,14 @@ namespace Besiege_Sky_and_Cloud_Mod
                                 {
                                     meshes[i].GetComponent<MeshRenderer>().material.mainTexture = GeoTools.LoadTexture(chara[3]);
                                 }
+                                else if (chara[2] == "color")
+                                {
+                                    meshes[i].GetComponent<MeshRenderer>().material.color = new Color(
+                                    Convert.ToSingle(chara[3]),
+                                    Convert.ToSingle(chara[4]),
+                                    Convert.ToSingle(chara[5]),
+                                    Convert.ToSingle(chara[6]));
+                                }
                                 else if (chara[2] == "meshcollider")
                                 {
                                     meshes[i].GetComponent<MeshCollider>().sharedMesh = GeoTools.MeshFromObj(chara[3]);
@@ -65,8 +73,8 @@ namespace Besiege_Sky_and_Cloud_Mod
                                 {
                                     float t = Convert.ToSingle(chara[3]);
                                     if (t < 0) t = 0;
-                                    if (t > 1 )t = 1;
-                                    meshes[i].GetComponent<MeshCollider>().material.dynamicFriction =t ;
+                                    if (t > 1) t = 1;
+                                    meshes[i].GetComponent<MeshCollider>().material.dynamicFriction = t;
                                 }
                                 else if (chara[2] == "staticFriction")
                                 {
@@ -81,7 +89,29 @@ namespace Besiege_Sky_and_Cloud_Mod
                                     if (t < 0) t = 0;
                                     if (t > 1) t = 1;
                                     meshes[i].GetComponent<MeshCollider>().material.bounciness = t;
-                                }                       
+                                }
+                                else if (chara[2] == "frictionCombine ")
+                                {
+                                    if (chara[3] == "Average" || chara[3] == "average")
+                                    { meshes[i].GetComponent<MeshCollider>().material.frictionCombine = PhysicMaterialCombine.Average; }
+                                    else if (chara[3] == "Multiply" || chara[3] == "multiply")
+                                    { meshes[i].GetComponent<MeshCollider>().material.frictionCombine = PhysicMaterialCombine.Multiply; }
+                                    else if (chara[3] == "Minimum" || chara[3] == "minimum")
+                                    { meshes[i].GetComponent<MeshCollider>().material.frictionCombine = PhysicMaterialCombine.Minimum; }
+                                    else if (chara[3] == "Maximum" || chara[3] == "maximum")
+                                    { meshes[i].GetComponent<MeshCollider>().material.frictionCombine = PhysicMaterialCombine.Maximum; }
+                                }
+                                else if (chara[2] == "bounceCombine  ")
+                                {
+                                    if (chara[3] == "Average" || chara[3] == "average")
+                                    { meshes[i].GetComponent<MeshCollider>().material.bounceCombine = PhysicMaterialCombine.Average; }
+                                    else if (chara[3] == "Multiply" || chara[3] == "multiply")
+                                    { meshes[i].GetComponent<MeshCollider>().material.bounceCombine = PhysicMaterialCombine.Multiply; }
+                                    else if (chara[3] == "Minimum" || chara[3] == "minimum")
+                                    { meshes[i].GetComponent<MeshCollider>().material.bounceCombine = PhysicMaterialCombine.Minimum; }
+                                    else if (chara[3] == "Maximum" || chara[3] == "maximum")
+                                    { meshes[i].GetComponent<MeshCollider>().material.bounceCombine = PhysicMaterialCombine.Maximum; }
+                                }
                                 else if (chara[2] == "location")
                                 {
                                     meshes[i].transform.localPosition = new Vector3(
@@ -127,6 +157,14 @@ namespace Besiege_Sky_and_Cloud_Mod
                                     Convert.ToSingle(chara[3]),
                                     Convert.ToSingle(chara[4]));
                                 }
+                                ClearCloud();
+                            }
+                            else if (chara[0] == "Camera")
+                            {
+                                if (chara[1] == "farClipPlane")
+                                {
+                                    GameObject.Find("Main Camera").GetComponent<Camera>().farClipPlane = Convert.ToInt32(chara[2]);
+                                }
                             }
                         }
                     }
@@ -139,7 +177,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                 }
                 Debug.Log("Besiege_Sky_and_Cloud_Mod==>LoadScene Completed!");
                 srd.Close();
-                ClearCloud();
+
             }
             catch (System.Exception ex)
             {
@@ -204,10 +242,10 @@ namespace Besiege_Sky_and_Cloud_Mod
             {
                 if (MeshSize > 30) MeshSize = 30;
                 if (MeshSize < 5) MeshSize = 5;
-              
-                    ClearMeshes();
-                    meshes = new GameObject[MeshSize];
-                
+
+                ClearMeshes();
+                meshes = new GameObject[MeshSize];
+
                 for (int i = 0; i < meshes.Length; i++)
                 {
                     if (meshes[i] == null) meshes[i] = GameObject.CreatePrimitive(PrimitiveType.Plane);
