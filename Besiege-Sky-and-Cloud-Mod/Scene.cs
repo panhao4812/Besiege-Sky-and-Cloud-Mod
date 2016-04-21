@@ -10,7 +10,6 @@ namespace Besiege_Sky_and_Cloud_Mod
 {
     public class Scene : MonoBehaviour
     {
-
         //cloud
         private GameObject[] clouds = new GameObject[30];
         private GameObject[] meshes = new GameObject[10];
@@ -26,7 +25,6 @@ namespace Besiege_Sky_and_Cloud_Mod
         {
             try
             {
-
                 Debug.Log(Application.dataPath);
                 StreamReader srd;
                 try
@@ -53,6 +51,10 @@ namespace Besiege_Sky_and_Cloud_Mod
                                 {
                                     meshes[i].GetComponent<MeshFilter>().mesh = GeoTools.MeshFromObj(chara[3]);
                                 }
+                                if (chara[2] == "wmesh")
+                                {
+                                    meshes[i].GetComponent<MeshFilter>().mesh = GeoTools.WMeshFromObj(chara[3]);
+                                }
                                 else if (chara[2] == "texture")
                                 {
                                     meshes[i].GetComponent<MeshRenderer>().material.mainTexture = GeoTools.LoadTexture(chara[3]);
@@ -67,7 +69,11 @@ namespace Besiege_Sky_and_Cloud_Mod
                                 }
                                 else if (chara[2] == "meshcollider")
                                 {
-                                    meshes[i].GetComponent<MeshCollider>().sharedMesh = GeoTools.MeshFromObj(chara[3]);
+                                    meshes[i].GetComponent<MeshCollider>().sharedMesh = GeoTools.MeshFromObj(chara[3]);                               
+                                }
+                                else if (chara[2] == "wmeshcollider")
+                                {
+                                    meshes[i].GetComponent<MeshCollider>().sharedMesh = GeoTools.WMeshFromObj(chara[3]);
                                 }
                                 else if (chara[2] == "dynamicFriction")
                                 {
@@ -240,7 +246,7 @@ namespace Besiege_Sky_and_Cloud_Mod
         {
             try
             {
-                if (MeshSize > 30) MeshSize = 30;
+                if (MeshSize > 100) MeshSize = 100;
                 if (MeshSize < 5) MeshSize = 5;
 
                 ClearMeshes();

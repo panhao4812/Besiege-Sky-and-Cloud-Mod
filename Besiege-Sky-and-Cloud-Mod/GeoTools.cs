@@ -157,6 +157,106 @@ namespace Besiege_Sky_and_Cloud_Mod
             srd.Close();
             mesh.RecalculateBounds();
             mesh.RecalculateNormals();
+            mesh.Optimize();
+            return mesh;
+        }
+
+        public static Mesh WMeshFromObj(string Objname)
+        {
+         
+            List<Vector3> newVertices = new List<Vector3>();      
+            List<Vector2> newUV = new List<Vector2>();
+            List<int> triangleslist = new List<int>();
+            List<Vector3> newNormals = new List<Vector3>();
+            Mesh mesh = new Mesh();
+            StreamReader srd;
+            try
+            {
+                srd = File.OpenText(Application.dataPath + "/Mods/Blocks/Floor/" + Objname + ".obj");
+            }
+            catch
+            {
+                Debug.Log("Besiege_Sky_and_Cloud_Mod==> File open failed");
+                return null;
+            }
+            try
+            {
+                while (srd.Peek() != -1)
+                {
+                    string str = srd.ReadLine();
+                    string[] chara = str.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                    if (chara.Length > 2)
+                    {
+                        if (chara[0] == "v")
+                        {
+                            Vector3 v1 = new Vector3(
+                              Convert.ToSingle(chara[1]),
+                              Convert.ToSingle(chara[2]),
+                              Convert.ToSingle(chara[3]));
+                            newVertices.Add(v1);
+                        }
+                        else if (chara[0] == "vt")
+                        {
+                            Vector2 uv1 = new Vector2(
+                              Convert.ToSingle(chara[1]),
+                              Convert.ToSingle(chara[2]));
+
+                            newUV.Add(uv1);
+                        }
+                        else if (chara[0] == "vn")
+                        {
+                            Vector3 v2 = new Vector3(
+                              Convert.ToSingle(chara[1]),
+                              Convert.ToSingle(chara[2]),
+                              Convert.ToSingle(chara[3]));
+
+                            newNormals.Add(v2);
+                        }
+                        else if (chara[0] == "f")
+                        {
+                            if (chara.Length == 4)
+                            {
+                                int a = Convert.ToInt32(chara[1].Split('/')[0]);
+                                int b = Convert.ToInt32(chara[2].Split('/')[0]);
+                                int c = Convert.ToInt32(chara[3].Split('/')[0]);
+                                
+                            }
+                            if (chara.Length == 5)
+                            {
+                                int a = Convert.ToInt32(chara[1].Split('/')[0]);
+                                int b = Convert.ToInt32(chara[2].Split('/')[0]);
+                                int c = Convert.ToInt32(chara[3].Split('/')[0]);
+                                int d = Convert.ToInt32(chara[4].Split('/')[0]);
+                                triangleslist.Add(a-1);
+                                triangleslist.Add(b-1);
+                                triangleslist.Add(c-1);
+                                triangleslist.Add(a-1);
+                                triangleslist.Add(c-1);
+                                triangleslist.Add(d-1);                       
+                               
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.Log("Obj model error!");
+                Debug.Log(ex.ToString());
+            }
+            Debug.Log("newVertices==>" + newVertices.Count.ToString());
+            Debug.Log("newUV==>" + newUV.Count.ToString());
+            Debug.Log("triangleslist==>" + triangleslist.Count.ToString());
+            Debug.Log("newNormals==>" + newNormals.Count.ToString());
+            mesh.vertices = newVertices.ToArray();
+            mesh.uv = newUV.ToArray();
+            mesh.triangles = triangleslist.ToArray();
+            mesh.normals = newNormals.ToArray();
+            Debug.Log("Besiege_Sky_and_Cloud_Mod==>ReadFile Completed!");
+            srd.Close();
+            mesh.RecalculateBounds();
+            mesh.RecalculateNormals();
+            mesh.Optimize();
             return mesh;
         }
         public static Texture LoadTexture(string TextureName)
