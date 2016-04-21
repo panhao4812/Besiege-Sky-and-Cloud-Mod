@@ -20,7 +20,7 @@ namespace Besiege_Sky_and_Cloud_Mod
         private Vector3 floorScale = new Vector3(1000, 200, 1000);
         private int MeshSize = 10;
         private int CloudSize = 30;
-        public string DefaultSceneName = "SteelHill";
+        public string DefaultSceneName = "GreenHill";
         void LoadScene(string SceneName)
         {
             try
@@ -143,11 +143,14 @@ namespace Besiege_Sky_and_Cloud_Mod
                                     Convert.ToSingle(chara[6]));
                                 }
                             }
-                            else if (chara[0] == "cloud")
+                            else if (chara[0] == "Cloud")
                             {
+                               
                                 if (chara[1] == "size")
                                 {
                                     this.CloudSize = Convert.ToInt32(chara[2]);
+                                    ClearCloud();
+                                    LoadCloud();
                                 }
                                 else if (chara[1] == "location")
                                 {
@@ -162,8 +165,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                                     Convert.ToSingle(chara[2]),
                                     Convert.ToSingle(chara[3]),
                                     Convert.ToSingle(chara[4]));
-                                }
-                                ClearCloud();
+                                }           
                             }
                             else if (chara[0] == "Camera")
                             {
