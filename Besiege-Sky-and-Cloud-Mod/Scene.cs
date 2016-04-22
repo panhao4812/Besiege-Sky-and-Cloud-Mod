@@ -1,5 +1,6 @@
 ﻿//using System.Threading.Tasks;
 using spaar;
+using spaar.ModLoader.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace Besiege_Sky_and_Cloud_Mod
         private GameObject cloudTemp;
         private bool IsCloudActice = true;
         private Color CloudsColor = new Color(1f, 1f, 1f, 1);
-        private Vector3 floorScale = new Vector3(1000, 200, 1000);
+        public Vector3 floorScale = new Vector3(1000, 200, 1000);
         private int MeshSize = 10;
         private int CloudSize = 30;
         public string DefaultSceneName = "GreenHill";
@@ -150,7 +151,13 @@ namespace Besiege_Sky_and_Cloud_Mod
                                 {
                                     this.CloudSize = Convert.ToInt32(chara[2]);
                                     ClearCloud();
-                                    LoadCloud();
+                                }                               
+                                else if (chara[1] == "floorScale")
+                                {
+                                    floorScale = new Vector3(
+                                    Convert.ToSingle(chara[2]),
+                                    Convert.ToSingle(chara[3]),
+                                    Convert.ToSingle(chara[4]));
                                 }
                                 else if (chara[1] == "location")
                                 {
@@ -159,13 +166,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                                     Convert.ToSingle(chara[3]),
                                     Convert.ToSingle(chara[4]));
                                 }
-                                else if (chara[1] == "scale")
-                                {
-                                    this.transform.localScale = new Vector3(
-                                    Convert.ToSingle(chara[2]),
-                                    Convert.ToSingle(chara[3]),
-                                    Convert.ToSingle(chara[4]));
-                                }           
+                               
                             }
                             else if (chara[0] == "Camera")
                             {
@@ -210,9 +211,9 @@ namespace Besiege_Sky_and_Cloud_Mod
                     {
                         GameObject.DontDestroyOnLoad(clouds[i]);
                         clouds[i] = (GameObject)UnityEngine.Object.Instantiate(cloudTemp, new Vector3(
-                            UnityEngine.Random.Range(-floorScale.x, floorScale.x),
-                            UnityEngine.Random.Range(0, floorScale.y),
-                            UnityEngine.Random.Range(-floorScale.z, floorScale.z)),
+                            UnityEngine.Random.Range(-floorScale.x+transform.localPosition.x, floorScale.x+transform.localPosition.x),
+                            UnityEngine.Random.Range(transform.localPosition.y, floorScale.y+transform.localPosition.y),
+                            UnityEngine.Random.Range(-floorScale.z+transform.localPosition.z, floorScale.z+transform.localPosition.z)),
                             new Quaternion(0, 0, 0, 0));
                         clouds[i].layer = 12;
                         clouds[i].SetActive(true);
@@ -233,7 +234,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                     if (clouds[1] == null || IsCloudActice == false) return;
                     for (int i = 0; i < clouds.Length; i++)
                     {
-                        clouds[i].transform.RotateAround(new Vector3(0, 0, 0), axis[i], Time.deltaTime);
+                        clouds[i].transform.RotateAround(this.transform.localPosition, axis[i], Time.deltaTime);
                         clouds[i].GetComponent<ParticleSystem>().startSize = UnityEngine.Random.Range(30, 200);
                     }
                 }
@@ -253,7 +254,6 @@ namespace Besiege_Sky_and_Cloud_Mod
 
                 ClearMeshes();
                 meshes = new GameObject[MeshSize];
-
                 for (int i = 0; i < meshes.Length; i++)
                 {
                     if (meshes[i] == null) meshes[i] = GameObject.CreatePrimitive(PrimitiveType.Plane);
@@ -290,7 +290,7 @@ namespace Besiege_Sky_and_Cloud_Mod
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.F11))
+            if (Input.GetKeyDown(KeyCode.F11) && Input.GetKey(KeyCode.LeftControl))
             {
                 try
                 {
@@ -307,22 +307,24 @@ namespace Besiege_Sky_and_Cloud_Mod
                 }
                 catch { }
             }
-            if (Input.GetKeyDown(KeyCode.F6))
+            if (Input.GetKeyDown(KeyCode.F6) && Input.GetKey(KeyCode.LeftControl))
             {
                 ClearMeshes();
             }
-            if (Input.GetKeyDown(KeyCode.F7))
+            if (Input.GetKeyDown(KeyCode.F7) && Input.GetKey(KeyCode.LeftControl))
             {
                 GeoTools.HideFloorBig();
                 LoadScene(DefaultSceneName);
             }
-            if (Input.GetKeyDown(KeyCode.F10))
+            if (Input.GetKeyDown(KeyCode.F10) && Input.GetKey(KeyCode.LeftControl))
             {
+                this.transform.localPosition = new Vector3(0, 500, 0);
                 ClearMeshes();
             }
         }
         void Start()
         {
+            this.transform.localPosition = new Vector3(0, 500, 0);
             Commands.RegisterCommand("DefaultSceneName", (args, notUses) =>
             {
                 if (args.Length < 1)
@@ -374,6 +376,6 @@ namespace Besiege_Sky_and_Cloud_Mod
         {
             ClearResource();
         }
-    }
+        }
 }
 

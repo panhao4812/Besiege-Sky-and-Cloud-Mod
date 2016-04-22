@@ -67,7 +67,7 @@ namespace Besiege_Sky_and_Cloud_Mod
         }
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.F6))
+            if (Input.GetKeyDown(KeyCode.F6)&& Input.GetKey(KeyCode.LeftControl))
             {
                 GeoTools.HideFloorBig();
                 if (uscale < 2) uscale = 2;
@@ -84,7 +84,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                 if (texturescale < 0.01f) texturescale = 0.01f;
                 LoadHeightMap();
             }
-            if (Input.GetKeyDown(KeyCode.F10))
+            if (Input.GetKeyDown(KeyCode.F10) && Input.GetKey(KeyCode.LeftControl))
             {
                 GroundTexture = "GroundTexture";
                 HeightMap = "HeightMap";   
@@ -94,7 +94,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                 ClearMesh();
                 GeoTools.UnhideFloorBig();
             }
-            if (Input.GetKeyDown(KeyCode.F7))
+            if (Input.GetKeyDown(KeyCode.F7) && Input.GetKey(KeyCode.LeftControl))
             {
                 ClearMesh();
             }

@@ -55,7 +55,7 @@ namespace Besiege_Sky_and_Cloud_Mod
             }
             catch
             {
-                Debug.Log("Besiege_Sky_and_Cloud_Mod==> File open failed");
+                Debug.Log("Open " + Objname + " failed");
                 return null;
             }
             try
@@ -139,32 +139,31 @@ namespace Besiege_Sky_and_Cloud_Mod
                         }
                     }
                 }
+                mesh.vertices = newVertices.ToArray();
+                mesh.uv = newUV.ToArray();
+                mesh.triangles = triangleslist.ToArray();
+                mesh.normals = newNormals.ToArray();
+                Debug.Log("ReadFile " + Objname + " Completed!" + "Vertices:" + newVertices.Count.ToString());
+                srd.Close();
+                mesh.RecalculateBounds();
+                mesh.RecalculateNormals();
+                mesh.Optimize();
             }
             catch (Exception ex)
             {
-                Debug.Log("Obj model error!");
+                Debug.Log("Obj model " + Objname + " error!");
+                Debug.Log("newUV==>" + newUV.Count.ToString());
+                Debug.Log("triangleslist==>" + triangleslist.Count.ToString());
+                Debug.Log("newNormals==>" + newNormals.Count.ToString());
                 Debug.Log(ex.ToString());
             }
-            Debug.Log("newVertices==>" + newVertices.Count.ToString());
-            Debug.Log("newUV==>" + newUV.Count.ToString());
-            Debug.Log("triangleslist==>" + triangleslist.Count.ToString());
-            Debug.Log("newNormals==>" + newNormals.Count.ToString());
-            mesh.vertices = newVertices.ToArray();
-            mesh.uv = newUV.ToArray();
-            mesh.triangles = triangleslist.ToArray();
-            mesh.normals = newNormals.ToArray();
-            Debug.Log("Besiege_Sky_and_Cloud_Mod==>ReadFile Completed!");
-            srd.Close();
-            mesh.RecalculateBounds();
-            mesh.RecalculateNormals();
-            mesh.Optimize();
             return mesh;
         }
 
         public static Mesh WMeshFromObj(string Objname)
         {
-         
-            List<Vector3> newVertices = new List<Vector3>();      
+
+            List<Vector3> newVertices = new List<Vector3>();
             List<Vector2> newUV = new List<Vector2>();
             List<int> triangleslist = new List<int>();
             List<Vector3> newNormals = new List<Vector3>();
@@ -219,7 +218,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                                 int a = Convert.ToInt32(chara[1].Split('/')[0]);
                                 int b = Convert.ToInt32(chara[2].Split('/')[0]);
                                 int c = Convert.ToInt32(chara[3].Split('/')[0]);
-                                
+
                             }
                             if (chara.Length == 5)
                             {
@@ -227,36 +226,34 @@ namespace Besiege_Sky_and_Cloud_Mod
                                 int b = Convert.ToInt32(chara[2].Split('/')[0]);
                                 int c = Convert.ToInt32(chara[3].Split('/')[0]);
                                 int d = Convert.ToInt32(chara[4].Split('/')[0]);
-                                triangleslist.Add(a-1);
-                                triangleslist.Add(b-1);
-                                triangleslist.Add(c-1);
-                                triangleslist.Add(a-1);
-                                triangleslist.Add(c-1);
-                                triangleslist.Add(d-1);                       
-                               
+                                triangleslist.Add(a - 1);
+                                triangleslist.Add(b - 1);
+                                triangleslist.Add(c - 1);
+                                triangleslist.Add(a - 1);
+                                triangleslist.Add(c - 1);
+                                triangleslist.Add(d - 1);
                             }
                         }
                     }
                 }
+                mesh.vertices = newVertices.ToArray();
+                mesh.uv = newUV.ToArray();
+                mesh.triangles = triangleslist.ToArray();
+                mesh.normals = newNormals.ToArray();
+                Debug.Log("ReadFile " + Objname + " Completed!" + "Vertices:" + newVertices.Count.ToString());
+                srd.Close();
+                mesh.RecalculateBounds();
+                mesh.RecalculateNormals();
+                mesh.Optimize();
             }
             catch (Exception ex)
             {
-                Debug.Log("Obj model error!");
+                Debug.Log("Obj model " + Objname + " error!");
+                Debug.Log("newUV==>" + newUV.Count.ToString());
+                Debug.Log("triangleslist==>" + triangleslist.Count.ToString());
+                Debug.Log("newNormals==>" + newNormals.Count.ToString());
                 Debug.Log(ex.ToString());
             }
-            Debug.Log("newVertices==>" + newVertices.Count.ToString());
-            Debug.Log("newUV==>" + newUV.Count.ToString());
-            Debug.Log("triangleslist==>" + triangleslist.Count.ToString());
-            Debug.Log("newNormals==>" + newNormals.Count.ToString());
-            mesh.vertices = newVertices.ToArray();
-            mesh.uv = newUV.ToArray();
-            mesh.triangles = triangleslist.ToArray();
-            mesh.normals = newNormals.ToArray();
-            Debug.Log("Besiege_Sky_and_Cloud_Mod==>ReadFile Completed!");
-            srd.Close();
-            mesh.RecalculateBounds();
-            mesh.RecalculateNormals();
-            mesh.Optimize();
             return mesh;
         }
         public static Texture LoadTexture(string TextureName)
