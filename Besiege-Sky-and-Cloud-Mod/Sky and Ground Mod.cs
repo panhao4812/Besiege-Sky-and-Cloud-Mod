@@ -17,10 +17,11 @@ namespace Besiege_Sky_and_Cloud_Mod
         public override bool CanBeUnloaded { get { return true; } }
         public GameObject temp;
         public override void OnLoad()
-        {
+        {         
             temp = new GameObject(); temp.name = "Sky and Ground Mod";
             temp.AddComponent<Scene>();
             temp.AddComponent<Ground>();
+            temp.AddComponent<SimpleWater>();
             UnityEngine.Object.DontDestroyOnLoad(temp);
         }
         public override void OnUnload()
