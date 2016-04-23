@@ -9,17 +9,17 @@ namespace Besiege_Sky_and_Cloud_Mod
 {
     public class SimpleWater : MonoBehaviour
     {
-        GameObject Pre = null;
+        GameObject Mwater = null;
         void Start()
         {
 
         }
-
+     
         void LoadWater()
         {
+            if (Mwater == null) { Mwater = GameObject.CreatePrimitive(PrimitiveType.Plane); Mwater.name = "Water1"; }
             try {
-                Pre = (GameObject)Instantiate(
-                   new Vector3(0, 3, 0), new Quaternion());  
+                Mwater.transform.localPosition = new Vector3(0, 3, 0);
             }
             catch (Exception ex)
             {
@@ -32,11 +32,32 @@ namespace Besiege_Sky_and_Cloud_Mod
             {
                 LoadWater();
             }
-        }
+            if (Mwater != null)
+            {
+                Renderer r = Mwater.GetComponent<Renderer>();
+                if (!r)
+                {
+                    return;
+                }
+                Material mat = r.sharedMaterial;
+                if (!mat)
+                {
+                    return;
+                }
 
+                Vector4 waveSpeed = mat.GetVector("WaveSpeed");
+                float waveScale = mat.GetFloat("_WaveScale");
+                float t = Time.time / 20.0f;
+
+                Vector4 offset4 = waveSpeed * (t * waveScale);
+                Vector4 offsetClamped = new Vector4(Mathf.Repeat(offset4.x, 1.0f), Mathf.Repeat(offset4.y, 1.0f),
+                    Mathf.Repeat(offset4.z, 1.0f), Mathf.Repeat(offset4.w, 1.0f));
+                mat.SetVector("_WaveOffset", offsetClamped);
+            }
+        }
         void ClearWater()
         {
-            Destroy(Pre);
+            Destroy(Mwater);
         }
         void OnDisable()
         {

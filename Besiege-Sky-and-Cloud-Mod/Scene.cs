@@ -250,7 +250,7 @@ namespace Besiege_Sky_and_Cloud_Mod
             try
             {
                 if (MeshSize > 100) MeshSize = 100;
-                if (MeshSize < 5) MeshSize = 5;
+                if (MeshSize < 2) MeshSize = 2;
 
                 ClearMeshes();
                 meshes = new GameObject[MeshSize];

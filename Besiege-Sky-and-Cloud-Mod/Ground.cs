@@ -87,8 +87,8 @@ namespace Besiege_Sky_and_Cloud_Mod
             if (Input.GetKeyDown(KeyCode.F10) && Input.GetKey(KeyCode.LeftControl))
             {
                 GroundTexture = "GroundTexture";
-                HeightMap = "HeightMap";   
-                u = 200; v = 100;
+                HeightMap = "White";   
+                u = 200; v = 200;
                 uscale = 5; vscale = 5; heightscale = 50;
                 texturescale = 1f;
                 ClearMesh();
