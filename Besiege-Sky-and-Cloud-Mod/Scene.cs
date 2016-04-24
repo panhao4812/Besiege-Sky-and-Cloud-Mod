@@ -21,8 +21,43 @@ namespace Besiege_Sky_and_Cloud_Mod
         private int CloudSize = 0;
         private GameObject Mwater = null;
         private int WaterSize = 0;
-        public string DefaultSceneName = "Ocean";
+        public string DefaultSceneName = "Independence";
         AssetBundle iteratorVariable1;
+        void LoadFloater()
+        {
+            try
+            {
+                MyBlockInfo[] infoArray = UnityEngine.Object.FindObjectsOfType<MyBlockInfo>();                 
+                foreach (MyBlockInfo info in infoArray)
+                {
+                   if( info.gameObject.GetComponent<Floater>()==null){
+                   info.gameObject.AddComponent<Floater>();
+                   }
+                }              
+            }
+            catch
+            {
+                Debug.Log("LoadFloater Failed");
+            }
+        }
+        void ClearFloater()
+        {
+            try
+            {
+                MyBlockInfo[] infoArray = UnityEngine.Object.FindObjectsOfType<MyBlockInfo>();
+                foreach (MyBlockInfo info in infoArray)
+                {
+                    if (info.gameObject.GetComponent<Floater>() != null)
+                    {
+                       Destroy( info.gameObject.GetComponent<Floater>());
+                    }
+                }
+            }
+            catch
+            {
+                Debug.Log("LoadFloater Failed");
+            }
+        }
         void LoadScene(string SceneName)
         {
             try
@@ -70,6 +105,10 @@ namespace Besiege_Sky_and_Cloud_Mod
                                     chara[9]);
                                     meshes[i].GetComponent<MeshFilter>().mesh = mesh;
                                      meshes[i].GetComponent<MeshCollider>().sharedMesh=mesh;
+                                }
+                                else if (chara[2] == "stexture")
+                                {
+                                    meshes[i].GetComponent<MeshRenderer>().sharedMaterial.mainTexture = GeoTools.LoadTexture(chara[3]);
                                 }
                                 else if (chara[2] == "texture")
                                 {
@@ -376,6 +415,14 @@ namespace Besiege_Sky_and_Cloud_Mod
         }
         void Update()
         {
+            if (Input.GetKeyDown(KeyCode.F8) && Input.GetKey(KeyCode.LeftControl))
+            {
+                LoadFloater();
+            }
+            if (Input.GetKeyDown(KeyCode.F9) && Input.GetKey(KeyCode.LeftControl))
+            {
+                ClearFloater();
+            }
             if (Input.GetKeyDown(KeyCode.F7) && Input.GetKey(KeyCode.LeftControl))
             {
                 LoadScene(DefaultSceneName);
