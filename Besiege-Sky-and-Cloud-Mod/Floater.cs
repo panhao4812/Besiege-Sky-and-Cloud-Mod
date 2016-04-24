@@ -18,8 +18,8 @@ namespace Besiege_Sky_and_Cloud_Mod
         {
             if (base.transform.position.y < WaterHeight)
             {
-                base.GetComponent<Rigidbody>().drag = Drag + 2f + Force;
-                base.GetComponent<Rigidbody>().angularDrag = AngularDrag + 2f + Force;         
+                base.GetComponent<Rigidbody>().drag = Drag + 0.5f + Force;
+                base.GetComponent<Rigidbody>().angularDrag = AngularDrag + 0.5f + Force;         
                if (Force>0) base.GetComponent<Rigidbody>().useGravity = false;
             }
             else

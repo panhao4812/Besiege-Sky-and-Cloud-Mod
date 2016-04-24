@@ -23,6 +23,8 @@ namespace Besiege_Sky_and_Cloud_Mod
         private int WaterSize = 0;
         public string DefaultSceneName = "Independence";
         AssetBundle iteratorVariable1;
+        bool isSimulating = false;
+
         void LoadFloater()
         {
             try
@@ -300,7 +302,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                         clouds[i].GetComponent<ParticleSystem>().startSpeed = 1.6f;
                         clouds[i].GetComponent<ParticleSystem>().emissionRate = 3;
                         clouds[i].GetComponent<ParticleSystem>().maxParticles = 18;
-                        axis[i] = new Vector3(UnityEngine.Random.Range(-0.5f, 0.5f), 1f, UnityEngine.Random.Range(-0.5f, 0.5f));
+                        axis[i] = new Vector3(UnityEngine.Random.Range(-0.1f, 0.1f), 1f, UnityEngine.Random.Range(-0.1f, 0.1f));
                     }
                     Debug.Log("Besiege_Sky_and_Cloud_Mod==> Load Cloud Successfully");
                 }
@@ -341,13 +343,11 @@ namespace Besiege_Sky_and_Cloud_Mod
         {
             try
             {
+                ClearFloater();
                 ClearWater();
                 if (WaterSize == 0) return;
                 Mwater = (GameObject)Instantiate(iteratorVariable1.LoadAsset("water4example (advanced)"), new Vector3(0f, 0f, 0f), new Quaternion());
-                Mwater.name = "Water1";
-                
-                
-                 
+                Mwater.name = "Water1";                                
             }
             catch (Exception ex)
             {
@@ -412,17 +412,18 @@ namespace Besiege_Sky_and_Cloud_Mod
                     }
                 }
             }
+            if (AddPiece.isSimulating && isSimulating == false)
+            {
+                if (Mwater != null) { LoadFloater(); }
+                isSimulating = true;
+            }
+            else if (!AddPiece.isSimulating && isSimulating ==true)
+            {
+                isSimulating = false;
+            }
         }
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.F8) && Input.GetKey(KeyCode.LeftControl))
-            {
-                LoadFloater();
-            }
-            if (Input.GetKeyDown(KeyCode.F9) && Input.GetKey(KeyCode.LeftControl))
-            {
-                ClearFloater();
-            }
             if (Input.GetKeyDown(KeyCode.F7) && Input.GetKey(KeyCode.LeftControl))
             {
                 LoadScene(DefaultSceneName);
@@ -433,6 +434,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                 ClearWater();
                 ClearCloud();
                 ClearMeshes();
+                ClearFloater();
                 GeoTools.UnhideFloorBig();
             }
         }
