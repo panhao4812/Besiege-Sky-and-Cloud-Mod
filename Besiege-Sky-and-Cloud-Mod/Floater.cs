@@ -16,6 +16,11 @@ namespace Besiege_Sky_and_Cloud_Mod
         // Methods
          void FixedUpdate()
         {
+            if (base.GetComponent<Rigidbody>() == null)
+            {
+                Destroy(this);
+                return;
+            }
             if (base.transform.position.y < WaterHeight)
             {
                 base.GetComponent<Rigidbody>().drag = Drag + 0.5f + Force;
@@ -29,12 +34,6 @@ namespace Besiege_Sky_and_Cloud_Mod
                 if (this.Force > 0) base.GetComponent<Rigidbody>().useGravity = true;
             }
         }
-
-         void OnDestroy()
-         {
-             base.GetComponent<Rigidbody>().drag = Drag;
-             base.GetComponent<Rigidbody>().angularDrag = AngularDrag;
-         }
          void Start()
         {
                        
@@ -44,6 +43,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                 if (base.GetComponent<Rigidbody>() == null)
                 {
                     Destroy(this);
+                    return;
                 }
                 if (base.GetComponent<MyBlockInfo>().blockName == "SMALL WOOD BLOCK")
                 {
