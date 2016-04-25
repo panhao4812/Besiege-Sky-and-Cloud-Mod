@@ -8,7 +8,7 @@ namespace Besiege_Sky_and_Cloud_Mod
 {
     public class GeoTools
     {
-        public static Mesh MeshFromPoints(int u, int v)
+        public static Mesh MeshFromPoints(int u, int v,float scaleu,float scalev)
         {
             Mesh mesh = new Mesh();
             List<Vector3> newVertices = new List<Vector3>();
@@ -18,7 +18,7 @@ namespace Besiege_Sky_and_Cloud_Mod
             {
                 for (int j = 0; j < v; j++)
                 {
-                    newVertices.Add(new Vector3(i, 0, j));
+                    newVertices.Add(new Vector3(i * scaleu, 0, j * scalev));
                     newUV.Add(new Vector2((float)i / (float)u, (float)j / (float)v));
                     if (i > 0 && j > 0)
                     {

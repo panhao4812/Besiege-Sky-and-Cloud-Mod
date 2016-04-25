@@ -23,8 +23,8 @@ namespace Besiege_Sky_and_Cloud_Mod
             }
             if (base.transform.position.y < WaterHeight)
             {
-                base.GetComponent<Rigidbody>().drag = Drag + 0.5f + Force;
-                base.GetComponent<Rigidbody>().angularDrag = AngularDrag + 0.5f + Force;         
+                base.GetComponent<Rigidbody>().drag = Drag + 1f + Force;
+                base.GetComponent<Rigidbody>().angularDrag = AngularDrag + 1f + Force;         
                if (Force>0) base.GetComponent<Rigidbody>().useGravity = false;
             }
             else
@@ -39,7 +39,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                        
             try
             {
-                this.WaterHeight = GameObject.Find("Water1").transform.localPosition.y;
+                this.WaterHeight = GameObject.Find("water0").transform.localPosition.y;
                 if (base.GetComponent<Rigidbody>() == null)
                 {
                     Destroy(this);

@@ -19,13 +19,14 @@ namespace Besiege_Sky_and_Cloud_Mod
         private GameObject cloudTemp;
         private Color CloudsColor = new Color(1f, 1f, 1f, 1);
         private Vector3 cloudScale = new Vector3(1000, 200, 1000);
-        private Vector3 waterScale = new Vector3(2, 1, 2);
+        private Vector3 waterScale = new Vector3(0, 1, 0);
+        private Vector3 MwaterScale = new Vector3(30, 1, 30);
         private Vector3 waterLocation = new Vector3(0, 0, 0);
 
         private int MeshSize = 0;
         private int CloudSize = 0;
         private int WaterSize = 0;
-        public string DefaultSceneName = "Ocean";
+        public string DefaultSceneName = "Independence";
         AssetBundle iteratorVariable1;
         bool isSimulating = false; public bool ShowGUI = false;
         private Rect windowRect = new Rect(5f, 55f, 900f, 50f);
@@ -118,13 +119,23 @@ namespace Besiege_Sky_and_Cloud_Mod
                                 {
                                     Mesh mesh = GeoTools.MeshFromPoints(
                                     Convert.ToInt32(chara[3]),
-                                    Convert.ToInt32(chara[4]));
+                                    Convert.ToInt32(chara[4]),
+                                    Convert.ToSingle(chara[5]),
+                                    Convert.ToSingle(chara[6]));
                                     meshes[i].GetComponent<MeshFilter>().mesh = mesh;
                                     meshes[i].GetComponent<MeshCollider>().sharedMesh = mesh;
                                 }
                                 else if (chara[2] == "stexture")
                                 {
                                     meshes[i].GetComponent<MeshRenderer>().sharedMaterial.mainTexture = GeoTools.LoadTexture(chara[3]);
+                                }
+                                else if (chara[2] == "shader")
+                                {
+                                    meshes[i].GetComponent<MeshRenderer>().material.shader = Shader.Find(chara[3]);
+                                  // meshes[i].GetComponent<MeshRenderer>().material.EnableKeyword("_NORMALMAP");
+                                 //  meshes[i].GetComponent<MeshRenderer>().material.EnableKeyword("_ALPHAPREMULTIPLY_ON");
+                                  //  meshes[i].GetComponent<MeshRenderer>().material.SetTexture("_BumpMap", GeoTools.LoadTexture("WaterBasicNormals"));
+                                 //  meshes[i].GetComponent<MeshRenderer>().material.SetTexture("_Cube", GeoTools.LoadTexture("WaterBasicDaytimeGradient"));
                                 }
                                 else if (chara[2] == "texture")
                                 {
@@ -258,6 +269,13 @@ namespace Besiege_Sky_and_Cloud_Mod
                                     Convert.ToSingle(chara[3]),
                                     Convert.ToSingle(chara[4]));
                                 }
+                                else if (chara[1] == "mscale")
+                                {
+                                    MwaterScale = new Vector3(
+                                    Convert.ToSingle(chara[2]),
+                                    Convert.ToSingle(chara[3]),
+                                    Convert.ToSingle(chara[4]));
+                                }
                                 else if (chara[1] == "location")
                                 {
                                     waterLocation = new Vector3(
@@ -363,7 +381,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                 Mwater = new GameObject[((int)waterScale.x*2+1) * ((int)waterScale.z*2+1)];
                 Mwater[0] = (GameObject)Instantiate(iteratorVariable1.LoadAsset("water4example (advanced)"), waterLocation, new Quaternion());
                 Mwater[0].name = "water0";
-                Mwater[0].transform.localScale = new Vector3(1f, 1f, 1f);
+                Mwater[0].transform.localScale = MwaterScale;
                 int index = 1;
                 for (float k = -waterScale.x; k <= waterScale.x; k++)
                 {
@@ -373,12 +391,12 @@ namespace Besiege_Sky_and_Cloud_Mod
                         {
                             Mwater[index] = Instantiate(Mwater[0]);
                             Mwater[index].name = "water" + index.ToString();
-                            Mwater[index].transform.position = new Vector3((float)(k * 50) + waterLocation.x, waterLocation.y, (float)(i * 50) + waterLocation.z);     
+                            Mwater[index].transform.position = new Vector3((float)(k * 50 * Mwater[0].transform.localScale.x) + waterLocation.x,
+                                waterLocation.y, (float)(i * 50 * Mwater[0].transform.localScale.z) + waterLocation.z);     
                             index++;
                         }
                     }
                 }
-
             }
             catch (Exception ex)
             {
@@ -451,7 +469,7 @@ namespace Besiege_Sky_and_Cloud_Mod
             }
             if (AddPiece.isSimulating && isSimulating == false)
             {
-                if (Mwater != null) { LoadFloater(); }
+                if (Mwater != null) {if(Mwater[0]!=null) LoadFloater(); }
                 isSimulating = true;
             }
             else if (!AddPiece.isSimulating && isSimulating == true)
@@ -462,7 +480,7 @@ namespace Besiege_Sky_and_Cloud_Mod
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.F7) && Input.GetKey(KeyCode.LeftControl))
-            {
+            {            
                 LoadScene(DefaultSceneName);
             }
             if (Input.GetKeyDown(KeyCode.F10) && Input.GetKey(KeyCode.LeftControl))
@@ -481,14 +499,15 @@ namespace Besiege_Sky_and_Cloud_Mod
         }
         void Start()
         {
+           
             this.transform.localPosition = new Vector3(0, 500, 0);
             WWW iteratorVariable0 = new WWW("file:///" + Application.dataPath + "/Mods/Blocks/Shader/Water.unity3d.dll");
             iteratorVariable1 = iteratorVariable0.assetBundle;
-            /* string[] names = iteratorVariable1.GetAllAssetNames();
+             string[] names = iteratorVariable1.GetAllAssetNames();
             for (int i = 0; i < names.Length; i++)
             {
                 Debug.Log(names[i]);
-            }*/
+            }
             Commands.RegisterCommand("DefaultSceneName", (args, notUses) =>
             {
                 if (args.Length < 1)
