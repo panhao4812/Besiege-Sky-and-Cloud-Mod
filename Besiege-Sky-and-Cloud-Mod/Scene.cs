@@ -16,26 +16,30 @@ namespace Besiege_Sky_and_Cloud_Mod
         private Vector3[] axis;
         private GameObject cloudTemp;
         private Color CloudsColor = new Color(1f, 1f, 1f, 1);
-        private Vector3 floorScale = new Vector3(1000, 200, 1000);
+        private Vector3 cloudScale = new Vector3(1000, 200, 1000);
+        private Vector3 waterScale = new Vector3(2, 1, 2);
         private int MeshSize = 0;
         private int CloudSize = 0;
         private GameObject Mwater = null;
         private int WaterSize = 0;
-        public string DefaultSceneName = "Independence";
+        public string DefaultSceneName = "Ocean";
         AssetBundle iteratorVariable1;
-        bool isSimulating = false;
+        bool isSimulating = false; public bool ShowGUI = false;
+        private Rect windowRect = new Rect(100f, 100f, 300f, 30f);
+        private int windowID = spaar.ModLoader.Util.GetWindowID();
 
         void LoadFloater()
         {
             try
             {
-                MyBlockInfo[] infoArray = UnityEngine.Object.FindObjectsOfType<MyBlockInfo>();                 
+                MyBlockInfo[] infoArray = UnityEngine.Object.FindObjectsOfType<MyBlockInfo>();
                 foreach (MyBlockInfo info in infoArray)
                 {
-                   if( info.gameObject.GetComponent<Floater>()==null){
-                   info.gameObject.AddComponent<Floater>();
-                   }
-                }              
+                    if (info.gameObject.GetComponent<Floater>() == null)
+                    {
+                        info.gameObject.AddComponent<Floater>();
+                    }
+                }
             }
             catch
             {
@@ -51,7 +55,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                 {
                     if (info.gameObject.GetComponent<Floater>() != null)
                     {
-                       Destroy( info.gameObject.GetComponent<Floater>());
+                        Destroy(info.gameObject.GetComponent<Floater>());
                     }
                 }
             }
@@ -64,7 +68,6 @@ namespace Besiege_Sky_and_Cloud_Mod
         {
             try
             {
-              
                 Debug.Log(Application.dataPath);
                 StreamReader srd;
                 try
@@ -97,7 +100,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                                 }
                                 if (chara[2] == "heightmapmesh")
                                 {
-                                    Mesh mesh =GeoTools.LoadHeightMap(
+                                    Mesh mesh = GeoTools.LoadHeightMap(
                                      Convert.ToSingle(chara[3]),
                                     Convert.ToSingle(chara[4]),
                                     Convert.ToInt32(chara[5]),
@@ -106,7 +109,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                                     Convert.ToSingle(chara[8]),
                                     chara[9]);
                                     meshes[i].GetComponent<MeshFilter>().mesh = mesh;
-                                     meshes[i].GetComponent<MeshCollider>().sharedMesh=mesh;
+                                    meshes[i].GetComponent<MeshCollider>().sharedMesh = mesh;
                                 }
                                 else if (chara[2] == "stexture")
                                 {
@@ -208,9 +211,9 @@ namespace Besiege_Sky_and_Cloud_Mod
                                     this.CloudSize = Convert.ToInt32(chara[2]);
                                     LoadCloud();
                                 }
-                                else if (chara[1] == "floorScale")
+                                else if (chara[1] == "floorScale" || chara[1] == "cloudScale")
                                 {
-                                    floorScale = new Vector3(
+                                    cloudScale = new Vector3(
                                     Convert.ToSingle(chara[2]),
                                     Convert.ToSingle(chara[3]),
                                     Convert.ToSingle(chara[4]));
@@ -239,7 +242,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                                 }
                                 else if (chara[1] == "scale")
                                 {
-                                    Mwater.transform.localScale = new Vector3(
+                                    waterScale = new Vector3(
                                     Convert.ToSingle(chara[2]),
                                     Convert.ToSingle(chara[3]),
                                     Convert.ToSingle(chara[4]));
@@ -263,7 +266,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                 }
                 Debug.Log("Besiege_Sky_and_Cloud_Mod==>LoadScene Completed!");
                 srd.Close();
-              
+
             }
             catch (System.Exception ex)
             {
@@ -289,9 +292,9 @@ namespace Besiege_Sky_and_Cloud_Mod
                     for (int i = 0; i < clouds.Length; i++)
                     {
                         clouds[i] = (GameObject)UnityEngine.Object.Instantiate(cloudTemp, new Vector3(
-                            UnityEngine.Random.Range(-floorScale.x + transform.localPosition.x, floorScale.x + transform.localPosition.x),
-                            UnityEngine.Random.Range(transform.localPosition.y, floorScale.y + transform.localPosition.y),
-                            UnityEngine.Random.Range(-floorScale.z + transform.localPosition.z, floorScale.z + transform.localPosition.z)),
+                            UnityEngine.Random.Range(-cloudScale.x + transform.localPosition.x, cloudScale.x + transform.localPosition.x),
+                            UnityEngine.Random.Range(transform.localPosition.y, cloudScale.y + transform.localPosition.y),
+                            UnityEngine.Random.Range(-cloudScale.z + transform.localPosition.z, cloudScale.z + transform.localPosition.z)),
                             new Quaternion(0, 0, 0, 0));
                         clouds[i].transform.SetParent(this.transform);
                         clouds[i].transform.localScale = new Vector3(15, 15, 15);
@@ -347,7 +350,23 @@ namespace Besiege_Sky_and_Cloud_Mod
                 ClearWater();
                 if (WaterSize == 0) return;
                 Mwater = (GameObject)Instantiate(iteratorVariable1.LoadAsset("water4example (advanced)"), new Vector3(0f, 0f, 0f), new Quaternion());
-                Mwater.name = "Water1";                                
+                Mwater.name = "Water1";
+                Mwater.transform.localScale= new Vector3(5f, 1f, 5f);
+
+                for (float k = -waterScale.x; k <= waterScale.x; k++)
+                {
+                    for (float i = -waterScale.z; i <= waterScale.z; i++)
+                    {
+                        if ((k != 0) || (i != 0))
+                        {
+                            GameObject obj2 = Instantiate(Mwater);
+                            obj2.transform.parent = Mwater.transform;
+                            obj2.transform.position = new Vector3((float)(k * 250), Mwater.transform.position.y, (float)(i * 250));
+                            obj2.GetComponentInChildren<Renderer>().material.color = Color.green;
+                        }
+                    }
+                }
+
             }
             catch (Exception ex)
             {
@@ -403,7 +422,7 @@ namespace Besiege_Sky_and_Cloud_Mod
             }
             if (clouds != null)
             {
-                if ( clouds[0] != null)
+                if (clouds[0] != null)
                 {
                     for (int i = 0; i < clouds.Length; i++)
                     {
@@ -417,7 +436,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                 if (Mwater != null) { LoadFloater(); }
                 isSimulating = true;
             }
-            else if (!AddPiece.isSimulating && isSimulating ==true)
+            else if (!AddPiece.isSimulating && isSimulating == true)
             {
                 isSimulating = false;
             }
@@ -437,19 +456,21 @@ namespace Besiege_Sky_and_Cloud_Mod
                 ClearFloater();
                 GeoTools.UnhideFloorBig();
             }
+            if (Input.GetKeyDown(KeyCode.F6) && Input.GetKey(KeyCode.LeftControl))
+            {
+                ShowGUI = !ShowGUI;
+            }
         }
         void Start()
         {
             this.transform.localPosition = new Vector3(0, 500, 0);
             WWW iteratorVariable0 = new WWW("file:///" + Application.dataPath + "/Mods/Blocks/Shader/Water.unity3d.dll");
             iteratorVariable1 = iteratorVariable0.assetBundle;
-
-            string[] names = iteratorVariable1.GetAllAssetNames();
+            /* string[] names = iteratorVariable1.GetAllAssetNames();
             for (int i = 0; i < names.Length; i++)
             {
                 Debug.Log(names[i]);
-            }
-
+            }*/
             Commands.RegisterCommand("DefaultSceneName", (args, notUses) =>
             {
                 if (args.Length < 1)
@@ -476,6 +497,27 @@ namespace Besiege_Sky_and_Cloud_Mod
         {
             ClearResource();
         }
+        ////////////////////////////////////////////////////
+        public void DoWindow(int windowID)
+        {
+            GUILayout.BeginHorizontal(new GUILayoutOption[0]);
+            if (GUILayout.Button("GreenHill", new GUILayoutOption[0])) { DefaultSceneName = "GreenHill"; LoadScene(DefaultSceneName); }
+            if (GUILayout.Button("SteelHill", new GUILayoutOption[0])) { DefaultSceneName = "SteelHill"; LoadScene(DefaultSceneName); }
+            if (GUILayout.Button("Independence", new GUILayoutOption[0])) { DefaultSceneName = "Independence"; LoadScene(DefaultSceneName); }
+            if (GUILayout.Button("Ocean", new GUILayoutOption[0])) { DefaultSceneName = "Ocean"; LoadScene(DefaultSceneName); }
+            if (GUILayout.Button("HeightMap", new GUILayoutOption[0])) { DefaultSceneName = "HeightMap"; LoadScene(DefaultSceneName); }
+            if (GUILayout.Button("Plannar", new GUILayoutOption[0])) { DefaultSceneName = "Plannar"; LoadScene(DefaultSceneName); }
+            GUILayout.EndHorizontal();
+            GUI.DragWindow(new Rect(0f, 0f, this.windowRect.width, this.windowRect.height));
+        }
+        private void OnGUI()
+        {
+            GUI.skin = ModGUI.Skin;
+            if (ShowGUI)
+            {
+                this.windowRect = GUI.Window(this.windowID, this.windowRect, new GUI.WindowFunction(DoWindow), "Scene");
+            }
+        }
     }
-}
 
+}
