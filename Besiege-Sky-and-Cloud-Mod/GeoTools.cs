@@ -159,7 +159,6 @@ namespace Besiege_Sky_and_Cloud_Mod
             }
             return mesh;
         }
-
         public static Mesh WMeshFromObj(string Objname)
         {
 

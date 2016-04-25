@@ -12,20 +12,23 @@ namespace Besiege_Sky_and_Cloud_Mod
     public class Scene : MonoBehaviour
     {
         private GameObject[] clouds;
-        private GameObject[] meshes;
         private Vector3[] axis;
+        private GameObject[] meshes;
+        private GameObject[] Mwater;
+
         private GameObject cloudTemp;
         private Color CloudsColor = new Color(1f, 1f, 1f, 1);
         private Vector3 cloudScale = new Vector3(1000, 200, 1000);
         private Vector3 waterScale = new Vector3(2, 1, 2);
+        private Vector3 waterLocation = new Vector3(0, 0, 0);
+
         private int MeshSize = 0;
         private int CloudSize = 0;
-        private GameObject Mwater = null;
         private int WaterSize = 0;
         public string DefaultSceneName = "Ocean";
         AssetBundle iteratorVariable1;
         bool isSimulating = false; public bool ShowGUI = false;
-        private Rect windowRect = new Rect(100f, 100f, 300f, 30f);
+        private Rect windowRect = new Rect(5f, 55f, 900f, 50f);
         private int windowID = spaar.ModLoader.Util.GetWindowID();
 
         void LoadFloater()
@@ -101,13 +104,21 @@ namespace Besiege_Sky_and_Cloud_Mod
                                 if (chara[2] == "heightmapmesh")
                                 {
                                     Mesh mesh = GeoTools.LoadHeightMap(
-                                     Convert.ToSingle(chara[3]),
+                                    Convert.ToSingle(chara[3]),
                                     Convert.ToSingle(chara[4]),
                                     Convert.ToInt32(chara[5]),
                                     Convert.ToInt32(chara[6]),
-                                     Convert.ToInt32(chara[7]),
+                                    Convert.ToInt32(chara[7]),
                                     Convert.ToSingle(chara[8]),
                                     chara[9]);
+                                    meshes[i].GetComponent<MeshFilter>().mesh = mesh;
+                                    meshes[i].GetComponent<MeshCollider>().sharedMesh = mesh;
+                                }
+                                if (chara[2] == "plannarmesh")
+                                {
+                                    Mesh mesh = GeoTools.MeshFromPoints(
+                                    Convert.ToInt32(chara[3]),
+                                    Convert.ToInt32(chara[4]));
                                     meshes[i].GetComponent<MeshFilter>().mesh = mesh;
                                     meshes[i].GetComponent<MeshCollider>().sharedMesh = mesh;
                                 }
@@ -249,7 +260,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                                 }
                                 else if (chara[1] == "location")
                                 {
-                                    Mwater.transform.localPosition = new Vector3(
+                                    waterLocation = new Vector3(
                                     Convert.ToSingle(chara[2]),
                                     Convert.ToSingle(chara[3]),
                                     Convert.ToSingle(chara[4]));
@@ -349,20 +360,21 @@ namespace Besiege_Sky_and_Cloud_Mod
                 ClearFloater();
                 ClearWater();
                 if (WaterSize == 0) return;
-                Mwater = (GameObject)Instantiate(iteratorVariable1.LoadAsset("water4example (advanced)"), new Vector3(0f, 0f, 0f), new Quaternion());
-                Mwater.name = "Water1";
-                Mwater.transform.localScale= new Vector3(5f, 1f, 5f);
-
+                Mwater = new GameObject[((int)waterScale.x*2+1) * ((int)waterScale.z*2+1)];
+                Mwater[0] = (GameObject)Instantiate(iteratorVariable1.LoadAsset("water4example (advanced)"), waterLocation, new Quaternion());
+                Mwater[0].name = "water0";
+                Mwater[0].transform.localScale = new Vector3(1f, 1f, 1f);
+                int index = 1;
                 for (float k = -waterScale.x; k <= waterScale.x; k++)
                 {
                     for (float i = -waterScale.z; i <= waterScale.z; i++)
                     {
                         if ((k != 0) || (i != 0))
                         {
-                            GameObject obj2 = Instantiate(Mwater);
-                            obj2.transform.parent = Mwater.transform;
-                            obj2.transform.position = new Vector3((float)(k * 250), Mwater.transform.position.y, (float)(i * 250));
-                            obj2.GetComponentInChildren<Renderer>().material.color = Color.green;
+                            Mwater[index] = Instantiate(Mwater[0]);
+                            Mwater[index].name = "water" + index.ToString();
+                            Mwater[index].transform.position = new Vector3((float)(k * 50) + waterLocation.x, waterLocation.y, (float)(i * 50) + waterLocation.z);     
+                            index++;
                         }
                     }
                 }
@@ -377,7 +389,13 @@ namespace Besiege_Sky_and_Cloud_Mod
         void ClearWater()
         {
             if (Mwater == null) return;
-            UnityEngine.Object.Destroy(Mwater);
+            if (Mwater.Length <= 0) return;
+            Debug.Log("ClearWater");
+            for (int i = 0; i < Mwater.Length; i++)
+            {
+                Destroy(GameObject.Find("water"+i.ToString()+"ReflectionMain Camera"));
+                Destroy(Mwater[i]);
+            }
         }
         void ClearCloud()
         {
@@ -385,7 +403,7 @@ namespace Besiege_Sky_and_Cloud_Mod
             if (clouds.Length <= 0) return;
             Debug.Log("ClearCloud");
             for (int i = 0; i < clouds.Length; i++)
-            {
+            {                
                 Destroy(clouds[i]);
             }
 
@@ -404,7 +422,7 @@ namespace Besiege_Sky_and_Cloud_Mod
         void ClearResource()
         {
             UnityEngine.Object.Destroy(this.cloudTemp);
-            UnityEngine.Object.Destroy(Mwater);
+            ClearWater();
             ClearCloud();
             ClearMeshes();
         }
@@ -502,6 +520,7 @@ namespace Besiege_Sky_and_Cloud_Mod
         {
             GUILayout.BeginHorizontal(new GUILayoutOption[0]);
             if (GUILayout.Button("GreenHill", new GUILayoutOption[0])) { DefaultSceneName = "GreenHill"; LoadScene(DefaultSceneName); }
+            if (GUILayout.Button("SteelHillProtoType", new GUILayoutOption[0])) { DefaultSceneName = "SteelHillProtoType"; LoadScene(DefaultSceneName); }
             if (GUILayout.Button("SteelHill", new GUILayoutOption[0])) { DefaultSceneName = "SteelHill"; LoadScene(DefaultSceneName); }
             if (GUILayout.Button("Independence", new GUILayoutOption[0])) { DefaultSceneName = "Independence"; LoadScene(DefaultSceneName); }
             if (GUILayout.Button("Ocean", new GUILayoutOption[0])) { DefaultSceneName = "Ocean"; LoadScene(DefaultSceneName); }
@@ -511,11 +530,11 @@ namespace Besiege_Sky_and_Cloud_Mod
             GUI.DragWindow(new Rect(0f, 0f, this.windowRect.width, this.windowRect.height));
         }
         private void OnGUI()
-        {
+        {         
             GUI.skin = ModGUI.Skin;
             if (ShowGUI)
             {
-                this.windowRect = GUI.Window(this.windowID, this.windowRect, new GUI.WindowFunction(DoWindow), "Scene");
+                this.windowRect = GUI.Window(this.windowID, this.windowRect, new GUI.WindowFunction(DoWindow), "", GUIStyle.none);
             }
         }
     }
