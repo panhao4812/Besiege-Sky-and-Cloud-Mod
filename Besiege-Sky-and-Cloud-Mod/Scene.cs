@@ -213,7 +213,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                                     Convert.ToSingle(chara[5]));
                                     // Debug.Log("meshes" + i.ToString() + ".scale:" + meshes[i].transform.localScale.ToString());
                                 }
-                                else if (chara[2] == "rotaion")
+                                else if (chara[2] == "rotation")
                                 {
                                     meshes[i].transform.localRotation = new Quaternion(
                                     Convert.ToSingle(chara[3]),
@@ -403,7 +403,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                         }
                     }
                 }
-              if(Mwater.Length==1) Mwater[0].transform.localRotation = waterRotation;
+                if (Mwater.Length == 1) Mwater[0].transform.rotation = this.waterRotation;
             }
             catch (Exception ex)
             {

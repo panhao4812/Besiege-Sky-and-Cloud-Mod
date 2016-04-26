@@ -13,6 +13,7 @@ namespace Besiege_Sky_and_Cloud_Mod
         public float Force = 0;
         float Drag = 0;
         float AngularDrag = 0;
+        float ForceScale = 15;
         // Methods
          void FixedUpdate()
         {
@@ -21,17 +22,25 @@ namespace Besiege_Sky_and_Cloud_Mod
                 Destroy(this);
                 return;
             }
-            if (base.transform.position.y < WaterHeight)
+            if (base.transform.position.y < WaterHeight-base.transform.localScale.magnitude / 2)
             {
-                base.GetComponent<Rigidbody>().drag = Drag + 1f + Force;
-                base.GetComponent<Rigidbody>().angularDrag = AngularDrag + 1f + Force;         
-               if (Force>0) base.GetComponent<Rigidbody>().useGravity = false;
+                base.GetComponent<Rigidbody>().drag = Drag + 3f + Force* ForceScale*3;
+                base.GetComponent<Rigidbody>().angularDrag = AngularDrag + 3f + Force* ForceScale*3;
+                if (Force > 0)
+                {                  
+                    base.GetComponent<Rigidbody>().AddForce(new Vector3(0, Force, 0), ForceMode.Impulse);
+                    base.GetComponent<Rigidbody>().useGravity = false;
+                }
+                
             }
-            else
+            else if(base.transform.position.y > WaterHeight + base.transform.localScale.magnitude / 2)
             {
                 base.GetComponent<Rigidbody>().drag = Drag;
                 base.GetComponent<Rigidbody>().angularDrag = AngularDrag;
-                if (this.Force > 0) base.GetComponent<Rigidbody>().useGravity = true;
+                if (Force > 0)
+                {
+                    base.GetComponent<Rigidbody>().useGravity = true;
+                }
             }
         }
          void Start()
@@ -47,39 +56,39 @@ namespace Besiege_Sky_and_Cloud_Mod
                 }
                 if (base.GetComponent<MyBlockInfo>().blockName == "SMALL WOOD BLOCK")
                 {
-                    this.Force = 1f * base.gameObject.transform.localScale.magnitude;
+                    this.Force = 1f * base.gameObject.transform.localScale.magnitude/ForceScale;
                 }
                 else if (base.GetComponent<MyBlockInfo>().blockName == "WOODEN BLOCK")
                 {
-                    this.Force = 2f * base.gameObject.transform.localScale.magnitude;
+                    this.Force = 2f * base.gameObject.transform.localScale.magnitude / ForceScale;
                 }
                 else if (base.GetComponent<MyBlockInfo>().blockName == "WOODEN POLE")
                 {
-                    this.Force = 1f * base.gameObject.transform.localScale.magnitude;
+                    this.Force = 1f * base.gameObject.transform.localScale.magnitude / ForceScale;
                 }
                 else if (base.GetComponent<MyBlockInfo>().blockName == "WOODEN PANEL")
                 {
-                    this.Force = 1f * base.gameObject.transform.localScale.magnitude;
+                    this.Force = 1f * base.gameObject.transform.localScale.magnitude / ForceScale;
                 }
                 else if (base.GetComponent<MyBlockInfo>().blockName == "PROPELLER")
                 {
-                    this.Force = 2f * base.gameObject.transform.localScale.magnitude;
+                    this.Force = 2f * base.gameObject.transform.localScale.magnitude / ForceScale;
                 }
                 else if (base.GetComponent<MyBlockInfo>().blockName == "SMALL PROPELLER")
                 {
-                    this.Force = 1f * base.gameObject.transform.localScale.magnitude;
+                    this.Force = 1f * base.gameObject.transform.localScale.magnitude / ForceScale;
                 }
                 else if (base.GetComponent<MyBlockInfo>().blockName == "WING")
                 {
-                    this.Force = 4f * base.gameObject.transform.localScale.magnitude;
+                    this.Force = 4f * base.gameObject.transform.localScale.magnitude / ForceScale;
                 }
                 else if (base.GetComponent<MyBlockInfo>().blockName == "WING PANEL")
                 {
-                    this.Force = 2f * base.gameObject.transform.localScale.magnitude;
+                    this.Force = 2f * base.gameObject.transform.localScale.magnitude / ForceScale;
                 }
                 else if (base.GetComponent<MyBlockInfo>().blockName == "PROPELLOR SMALL")
                 {
-                    this.Force = 1f * base.gameObject.transform.localScale.magnitude;
+                    this.Force = 1f * base.gameObject.transform.localScale.magnitude / ForceScale;
                 }
                 else
                 {
