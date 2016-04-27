@@ -29,7 +29,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                 if (fireTag) base.GetComponent<FireTag>().WaterHit();
                 base.GetComponent<Rigidbody>().drag = (this.Drag + 3f) + (this.Force * this.ForceScale);
                 base.GetComponent<Rigidbody>().angularDrag = (this.AngularDrag + 3f) + (this.Force * this.ForceScale);
-                base.GetComponent<Rigidbody>().AddForce(new Vector3(0f, this.Force - 0.125f, 0f), ForceMode.Impulse);
+                base.GetComponent<Rigidbody>().AddForce(new Vector3(0f, this.Force - 0.1f, 0f), ForceMode.Impulse);
                 base.GetComponent<Rigidbody>().useGravity = false;
             }
             else if (base.transform.position.y > this.WaterHeight)
@@ -104,11 +104,11 @@ namespace Besiege_Sky_and_Cloud_Mod
                     }
                     else if (base.GetComponent<MyBlockInfo>().blockName == "PROPELLOR SMALL")
                     {
-                        this.Force = (1f * this.volume) / this.ForceScale;
+                        this.Force = (4f * this.volume) / this.ForceScale;
                     }
                     else if (base.GetComponent<MyBlockInfo>().blockName == "Rocket")
                     {
-                        this.Force = (1f * this.volume) / this.ForceScale;
+                        this.Force = (0.8f * this.volume) / this.ForceScale;
                     }
                     else if (base.GetComponent<MyBlockInfo>().blockName == "WHEEL")
                     {
@@ -128,7 +128,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                     }
                     else if (base.GetComponent<MyBlockInfo>().blockName == "FLYING SPIRAL")
                     {
-                        this.Force = (2f * this.volume) / this.ForceScale;
+                        this.Force = (0.8f * this.volume) / this.ForceScale;
                     }
                     else if (base.GetComponent<MyBlockInfo>().blockName == "BALLOON")
                     {
@@ -136,7 +136,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                     }
                     else if (base.GetComponent<MyBlockInfo>().blockName == "FLAMETHROWER")
                     {
-                        this.Force = (1f * this.volume) / this.ForceScale;
+                        this.Force = (0.8f * this.volume) / this.ForceScale;
                     }
                     else
                     {

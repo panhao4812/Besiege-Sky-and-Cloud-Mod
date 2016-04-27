@@ -34,7 +34,7 @@ namespace Besiege_Sky_and_Cloud_Mod
         private AssetBundle iteratorVariable1;
         private bool isSimulating = false;
         private bool ShowGUI = true;
-        private Rect windowRect = new Rect(5f, 60f, 930f, 50f);
+        private Rect windowRect = new Rect(5f, 65f, 930f, 50f);
         private int windowID = spaar.ModLoader.Util.GetWindowID();
         void LoadTrigger()
         {
