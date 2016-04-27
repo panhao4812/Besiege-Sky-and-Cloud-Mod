@@ -29,7 +29,9 @@ namespace Besiege_Sky_and_Cloud_Mod
                 if (fireTag) base.GetComponent<FireTag>().WaterHit();
                 base.GetComponent<Rigidbody>().drag = (this.Drag + 3f) + (this.Force * this.ForceScale);
                 base.GetComponent<Rigidbody>().angularDrag = (this.AngularDrag + 3f) + (this.Force * this.ForceScale);
-                base.GetComponent<Rigidbody>().AddForce(new Vector3(0f, this.Force - 0.1f, 0f), ForceMode.Impulse);
+                base.GetComponent<Rigidbody>().AddForce(new Vector3(UnityEngine.Random.Range(-0.01f,0.01f), 
+                    this.Force - 0.2f* base.GetComponent<Rigidbody>().mass,
+                    UnityEngine.Random.Range(-0.01f, 0.01f)), ForceMode.Impulse);
                 base.GetComponent<Rigidbody>().useGravity = false;
             }
             else if (base.transform.position.y > this.WaterHeight)
@@ -88,11 +90,11 @@ namespace Besiege_Sky_and_Cloud_Mod
                     }
                     else if (base.GetComponent<MyBlockInfo>().blockName == "PROPELLER")
                     {
-                        this.Force = (8f * this.volume) / this.ForceScale;
+                        this.Force = (4f * this.volume) / this.ForceScale;
                     }
                     else if (base.GetComponent<MyBlockInfo>().blockName == "SMALL PROPELLER")
                     {
-                        this.Force = (4f * this.volume) / this.ForceScale;
+                        this.Force = (2f * this.volume) / this.ForceScale;
                     }
                     else if (base.GetComponent<MyBlockInfo>().blockName == "WING")
                     {
@@ -104,7 +106,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                     }
                     else if (base.GetComponent<MyBlockInfo>().blockName == "PROPELLOR SMALL")
                     {
-                        this.Force = (4f * this.volume) / this.ForceScale;
+                        this.Force = (2f * this.volume) / this.ForceScale;
                     }
                     else if (base.GetComponent<MyBlockInfo>().blockName == "Rocket")
                     {

@@ -34,7 +34,7 @@ namespace Besiege_Sky_and_Cloud_Mod
         private AssetBundle iteratorVariable1;
         private bool isSimulating = false;
         private bool ShowGUI = true;
-        private Rect windowRect = new Rect(5f, 65f, 930f, 50f);
+        private Rect windowRect = new Rect(5f, Screen.height-85f, 800f, 30f);
         private int windowID = spaar.ModLoader.Util.GetWindowID();
         void LoadTrigger()
         {
@@ -595,15 +595,19 @@ namespace Besiege_Sky_and_Cloud_Mod
         ////////////////////////////////////////////////////
         public void DoWindow(int windowID)
         {
+            
+            GUIStyle style = new GUIStyle(Elements.Labels.LogEntry) {               
+                fontSize = 14              
+            };
             GUILayout.BeginHorizontal(new GUILayoutOption[0]);
-            if (GUILayout.Button("GreenHill", new GUILayoutOption[0])) { DefaultSceneName = "GreenHill"; LoadScene(DefaultSceneName); }
-            if (GUILayout.Button("SteelHillProtoType", new GUILayoutOption[0])) { DefaultSceneName = "SteelHillProtoType"; LoadScene(DefaultSceneName); }
-            if (GUILayout.Button("SteelHill", new GUILayoutOption[0])) { DefaultSceneName = "SteelHill"; LoadScene(DefaultSceneName); }
-            if (GUILayout.Button("Independence", new GUILayoutOption[0])) { DefaultSceneName = "Independence"; LoadScene(DefaultSceneName); }
-            if (GUILayout.Button("Ocean", new GUILayoutOption[0])) { DefaultSceneName = "Ocean"; LoadScene(DefaultSceneName); }
-            if (GUILayout.Button("HeightMap", new GUILayoutOption[0])) { DefaultSceneName = "HeightMap"; LoadScene(DefaultSceneName); }
-            if (GUILayout.Button("Plannar", new GUILayoutOption[0])) { DefaultSceneName = "Plannar"; LoadScene(DefaultSceneName); }
-            if (GUILayout.Button("FloorBig", new GUILayoutOption[0]))
+            if (GUILayout.Button("GreenHill", style, new GUILayoutOption[0])) { DefaultSceneName = "GreenHill"; LoadScene(DefaultSceneName); }
+            if (GUILayout.Button("SteelHillProtoType", style, new GUILayoutOption[0])) { DefaultSceneName = "SteelHillProtoType"; LoadScene(DefaultSceneName); }
+            if (GUILayout.Button("SteelHill", style, new GUILayoutOption[0])) { DefaultSceneName = "SteelHill"; LoadScene(DefaultSceneName); }
+            if (GUILayout.Button("Independence", style, new GUILayoutOption[0])) { DefaultSceneName = "Independence"; LoadScene(DefaultSceneName); }
+            if (GUILayout.Button("Ocean", style, new GUILayoutOption[0])) { DefaultSceneName = "Ocean"; LoadScene(DefaultSceneName); }
+            if (GUILayout.Button("HeightMap", style, new GUILayoutOption[0])) { DefaultSceneName = "HeightMap"; LoadScene(DefaultSceneName); }
+            if (GUILayout.Button("Plannar", style, new GUILayoutOption[0])) { DefaultSceneName = "Plannar"; LoadScene(DefaultSceneName); }
+            if (GUILayout.Button("FloorBig", style, new GUILayoutOption[0]))
             {
                 this.transform.localPosition = new Vector3(0, 500, 0);
                 ClearWater();

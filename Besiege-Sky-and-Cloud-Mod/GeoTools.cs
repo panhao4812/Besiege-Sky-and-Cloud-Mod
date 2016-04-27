@@ -8,6 +8,8 @@ namespace Besiege_Sky_and_Cloud_Mod
 {
     public class GeoTools
     {
+        public static Vector3 fpos = new Vector3();
+        public static Vector3 gpos = new Vector3();
         public static Mesh MeshFromPoints(int u, int v, float scaleu, float scalev)
         {
             Mesh mesh = new Mesh();
@@ -283,23 +285,24 @@ namespace Besiege_Sky_and_Cloud_Mod
         public static void HideFloorBig()
         {
             try
-            {              
-                GameObject.Find("FloorGrid").transform.localScale = new Vector3(0, 0, 0);
-                GameObject.Find("WORLD BOUNDARIES").transform.localScale = new Vector3(0, 0, 0);
+            {
+                gpos = GameObject.Find("FloorGrid").transform.localScale;
+                GameObject.Find("FloorGrid").transform.localScale = new Vector3(0, 0, 0);            
                 GameObject.Find("Main Camera").GetComponent<Camera>().farClipPlane = 2500;
+                fpos = GameObject.Find("FloorBig").transform.localScale;
                 GameObject.Find("FloorBig").transform.localScale = new Vector3(0, 0, 0);
+                GameObject.Find("WORLD BOUNDARIES").transform.localScale = new Vector3(0, 0, 0);
             }
             catch { }
         }
         public static void UnhideFloorBig()
         {
             try
-            {              
-                GameObject.Find("FloorGrid").transform.localScale = new Vector3(1, 1, 1);
-                GameObject.Find("FloorGrid").transform.localPosition = new Vector3(0, 0, 0);
+            {
+                GameObject.Find("FloorGrid").transform.localScale = gpos;
                 GameObject.Find("Main Camera").GetComponent<Camera>().farClipPlane = 1500;
-                GameObject.Find("FloorBig").transform.localScale = new Vector3(1000, 1, 1000);
-                GameObject.Find("FloorBig").transform.localPosition = new Vector3(0, 0, 0);
+                GameObject.Find("FloorBig").transform.localScale = fpos;
+               
             }
             catch { }
         }
@@ -380,6 +383,7 @@ namespace Besiege_Sky_and_Cloud_Mod
             }
         }
         public static void ResetWaterMaterial(ref Material mat)
+
         {
             try
             {/*
