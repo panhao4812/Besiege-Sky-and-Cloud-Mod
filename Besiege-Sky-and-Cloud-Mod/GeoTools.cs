@@ -379,7 +379,6 @@ namespace Besiege_Sky_and_Cloud_Mod
                 Debug.Log(ex.ToString());
             }
         }
-
         public static void ResetWaterMaterial(ref Material mat)
         {
             try

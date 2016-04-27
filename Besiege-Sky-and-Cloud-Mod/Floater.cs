@@ -9,103 +9,150 @@ namespace Besiege_Sky_and_Cloud_Mod
     public class Floater : MonoBehaviour
     {
         // Fields
-        public float WaterHeight = 0;
-        public float Force = 0;
-        float Drag = 0;
-        float AngularDrag = 0;
-        float ForceScale = 15;
+        private float AngularDrag = 0f;
+        private float Drag = 0f;
+        private float Force = 0f;
+        private float ForceScale = 6f;
+        private float minVolue = 0f;
+        private float volume = 0f;
+        private float WaterHeight = 0f;
+
         // Methods
-         void FixedUpdate()
+        private void FixedUpdate()
         {
             if (base.GetComponent<Rigidbody>() == null)
             {
-                Destroy(this);
-                return;
+                UnityEngine.Object.Destroy(this);
             }
-            if (base.transform.position.y < WaterHeight-base.transform.localScale.magnitude / 2)
+            else if (base.transform.position.y < (this.WaterHeight - this.minVolue))
             {
-                base.GetComponent<Rigidbody>().drag = Drag + 3f + Force* ForceScale*3;
-                base.GetComponent<Rigidbody>().angularDrag = AngularDrag + 3f + Force* ForceScale*3;
-                if (Force > 0)
-                {                  
-                    base.GetComponent<Rigidbody>().AddForce(new Vector3(0, Force, 0), ForceMode.Impulse);
-                    base.GetComponent<Rigidbody>().useGravity = false;
-                }
-                
+                base.GetComponent<Rigidbody>().drag = (this.Drag + 3f) + (this.Force * this.ForceScale);
+                base.GetComponent<Rigidbody>().angularDrag = (this.AngularDrag + 3f) + (this.Force * this.ForceScale);
+                base.GetComponent<Rigidbody>().AddForce(new Vector3(0f, this.Force - 0.1f, 0f), ForceMode.Impulse);
+                base.GetComponent<Rigidbody>().useGravity = false;
             }
-            else if(base.transform.position.y > WaterHeight + base.transform.localScale.magnitude / 2)
+            else if (base.transform.position.y > this.WaterHeight)
             {
-                base.GetComponent<Rigidbody>().drag = Drag;
-                base.GetComponent<Rigidbody>().angularDrag = AngularDrag;
-                if (Force > 0)
-                {
-                    base.GetComponent<Rigidbody>().useGravity = true;
-                }
+                base.GetComponent<Rigidbody>().drag = this.Drag;
+                base.GetComponent<Rigidbody>().angularDrag = this.AngularDrag;
+                base.GetComponent<Rigidbody>().useGravity = true;
             }
         }
-         void Start()
+
+        private void Start()
         {
-                       
             try
             {
                 this.WaterHeight = GameObject.Find("water0").transform.localPosition.y;
                 if (base.GetComponent<Rigidbody>() == null)
                 {
-                    Destroy(this);
-                    return;
-                }
-                if (base.GetComponent<MyBlockInfo>().blockName == "SMALL WOOD BLOCK")
-                {
-                    this.Force = 1f * base.gameObject.transform.localScale.magnitude/ForceScale;
-                }
-                else if (base.GetComponent<MyBlockInfo>().blockName == "WOODEN BLOCK")
-                {
-                    this.Force = 2f * base.gameObject.transform.localScale.magnitude / ForceScale;
-                }
-                else if (base.GetComponent<MyBlockInfo>().blockName == "WOODEN POLE")
-                {
-                    this.Force = 1f * base.gameObject.transform.localScale.magnitude / ForceScale;
-                }
-                else if (base.GetComponent<MyBlockInfo>().blockName == "WOODEN PANEL")
-                {
-                    this.Force = 1f * base.gameObject.transform.localScale.magnitude / ForceScale;
-                }
-                else if (base.GetComponent<MyBlockInfo>().blockName == "PROPELLER")
-                {
-                    this.Force = 2f * base.gameObject.transform.localScale.magnitude / ForceScale;
-                }
-                else if (base.GetComponent<MyBlockInfo>().blockName == "SMALL PROPELLER")
-                {
-                    this.Force = 1f * base.gameObject.transform.localScale.magnitude / ForceScale;
-                }
-                else if (base.GetComponent<MyBlockInfo>().blockName == "WING")
-                {
-                    this.Force = 4f * base.gameObject.transform.localScale.magnitude / ForceScale;
-                }
-                else if (base.GetComponent<MyBlockInfo>().blockName == "WING PANEL")
-                {
-                    this.Force = 2f * base.gameObject.transform.localScale.magnitude / ForceScale;
-                }
-                else if (base.GetComponent<MyBlockInfo>().blockName == "PROPELLOR SMALL")
-                {
-                    this.Force = 1f * base.gameObject.transform.localScale.magnitude / ForceScale;
+                    UnityEngine.Object.Destroy(this);
                 }
                 else
                 {
-                    this.Force = 0;
+                    float x = base.gameObject.transform.localScale.x;
+                    float y = base.gameObject.transform.localScale.y;
+                    float z = base.gameObject.transform.localScale.z;
+                    if ((x >= y) && (x >= z))
+                    {
+                        this.minVolue = x;
+                    }
+                    else if ((y >= x) && (y >= z))
+                    {
+                        this.minVolue = y;
+                    }
+                    else
+                    {
+                        this.minVolue = z;
+                    }
+                    this.volume = (x * y) * z;
+                    if (base.GetComponent<MyBlockInfo>().blockName == "SMALL WOOD BLOCK")
+                    {
+                        this.Force = (2f * this.volume) / this.ForceScale;
+                    }
+                    else if (base.GetComponent<MyBlockInfo>().blockName == "WOODEN BLOCK")
+                    {
+                        this.Force = (4f * this.volume) / this.ForceScale;
+                    }
+                    else if (base.GetComponent<MyBlockInfo>().blockName == "WOODEN POLE")
+                    {
+                        this.Force = (2f * this.volume) / this.ForceScale;
+                    }
+                    else if (base.GetComponent<MyBlockInfo>().blockName == "WOODEN PANEL")
+                    {
+                        this.Force = (2f * this.volume) / this.ForceScale;
+                    }
+                    else if (base.GetComponent<MyBlockInfo>().blockName == "PROPELLER")
+                    {
+                        this.Force = (8f * this.volume) / this.ForceScale;
+                    }
+                    else if (base.GetComponent<MyBlockInfo>().blockName == "SMALL PROPELLER")
+                    {
+                        this.Force = (4f * this.volume) / this.ForceScale;
+                    }
+                    else if (base.GetComponent<MyBlockInfo>().blockName == "WING")
+                    {
+                        this.Force = (8f * this.volume) / this.ForceScale;
+                    }
+                    else if (base.GetComponent<MyBlockInfo>().blockName == "WING PANEL")
+                    {
+                        this.Force = (4f * this.volume) / this.ForceScale;
+                    }
+                    else if (base.GetComponent<MyBlockInfo>().blockName == "PROPELLOR SMALL")
+                    {
+                        this.Force = (1f * this.volume) / this.ForceScale;
+                    }
+                    else if (base.GetComponent<MyBlockInfo>().blockName == "Rocket")
+                    {
+                        this.Force = (1f * this.volume) / this.ForceScale;
+                    }
+                    else if (base.GetComponent<MyBlockInfo>().blockName == "WHEEL")
+                    {
+                        this.Force = (2f * this.volume) / this.ForceScale;
+                    }
+                    else if (base.GetComponent<MyBlockInfo>().blockName == "LARGE WHEEL")
+                    {
+                        this.Force = (2f * this.volume) / this.ForceScale;
+                    }
+                    else if (base.GetComponent<MyBlockInfo>().blockName == "WHEEL FREE")
+                    {
+                        this.Force = (2f * this.volume) / this.ForceScale;
+                    }
+                    else if (base.GetComponent<MyBlockInfo>().blockName == "UNPOWERED LARGE WHEEL")
+                    {
+                        this.Force = (2f * this.volume) / this.ForceScale;
+                    }
+                    else if (base.GetComponent<MyBlockInfo>().blockName == "FLYING SPIRAL")
+                    {
+                        this.Force = (2f * this.volume) / this.ForceScale;
+                    }
+                    else if (base.GetComponent<MyBlockInfo>().blockName == "BALLOON")
+                    {
+                        this.Force = (8f * this.volume) / this.ForceScale;
+                    }
+                    else if (base.GetComponent<MyBlockInfo>().blockName == "FLAMETHROWER")
+                    {
+                        this.Force = (0.6f * this.volume) / this.ForceScale;
+                    }
+                    else
+                    {
+                        this.Force = 0f;
+                    }
+                    this.Drag = base.GetComponent<Rigidbody>().drag;
+                    this.AngularDrag = base.GetComponent<Rigidbody>().angularDrag;
                 }
-                this.Drag = base.GetComponent<Rigidbody>().drag;
-                this.AngularDrag = base.GetComponent<Rigidbody>().angularDrag;
-
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                Debug.Log(ex.ToString());
-                Destroy(this);
+                Debug.Log(exception.ToString());
+                UnityEngine.Object.Destroy(this);
             }
         }
-
     }
+
+
+
+    ///////////////////////////////////////////
 }
 
 

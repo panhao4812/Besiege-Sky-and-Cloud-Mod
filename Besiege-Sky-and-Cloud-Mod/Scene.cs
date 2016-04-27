@@ -11,6 +11,7 @@ namespace Besiege_Sky_and_Cloud_Mod
 {
     public class Scene : MonoBehaviour
     {
+        public string DefaultSceneName = "IndependenceR";
         private GameObject[] clouds;
         private Vector3[] axis;
         private GameObject[] meshes;
@@ -27,10 +28,11 @@ namespace Besiege_Sky_and_Cloud_Mod
         private int MeshSize = 0;
         private int CloudSize = 0;
         private int WaterSize = 0;
-        public string DefaultSceneName = "IndependenceR";
-        AssetBundle iteratorVariable1;
-        bool isSimulating = false; public bool ShowGUI = false;
-        private Rect windowRect = new Rect(5f, 55f, 900f, 50f);
+
+        private AssetBundle iteratorVariable1;
+        private bool isSimulating = false;
+        private bool ShowGUI = true;
+        private Rect windowRect = new Rect(5f, 60f, 900f, 50f);
         private int windowID = spaar.ModLoader.Util.GetWindowID();
 
         void LoadFloater()
@@ -43,24 +45,6 @@ namespace Besiege_Sky_and_Cloud_Mod
                     if (info.gameObject.GetComponent<Floater>() == null)
                     {
                         info.gameObject.AddComponent<Floater>();
-                    }
-                }
-            }
-            catch
-            {
-                Debug.Log("LoadFloater Failed");
-            }
-        }
-        void ClearFloater()
-        {
-            try
-            {
-                MyBlockInfo[] infoArray = UnityEngine.Object.FindObjectsOfType<MyBlockInfo>();
-                foreach (MyBlockInfo info in infoArray)
-                {
-                    if (info.gameObject.GetComponent<Floater>() != null)
-                    {
-                        Destroy(info.gameObject.GetComponent<Floater>());
                     }
                 }
             }
@@ -211,7 +195,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                                     Convert.ToSingle(chara[3]),
                                     Convert.ToSingle(chara[4]),
                                     Convert.ToSingle(chara[5]));
-                                    // Debug.Log("meshes" + i.ToString() + ".scale:" + meshes[i].transform.localScale.ToString());
+                                    //Debug.Log("meshes" + i.ToString() + ".scale:" + meshes[i].transform.localScale.ToString());
                                 }
                                 else if (chara[2] == "rotation")
                                 {
@@ -243,6 +227,14 @@ namespace Besiege_Sky_and_Cloud_Mod
                                     Convert.ToSingle(chara[2]),
                                     Convert.ToSingle(chara[3]),
                                     Convert.ToSingle(chara[4]));
+                                }
+                                else if (chara[1] == "color")
+                                {
+                                    this.CloudsColor = new Color(
+                                    Convert.ToSingle(chara[2]),
+                                    Convert.ToSingle(chara[3]),
+                                    Convert.ToSingle(chara[4]),
+                                    Convert.ToSingle(chara[5]));
                                 }
                             }
                             else if (chara[0] == "Camera")
@@ -298,9 +290,9 @@ namespace Besiege_Sky_and_Cloud_Mod
                     Debug.Log(ex.ToString());
                     return;
                 }
-                Debug.Log("Besiege_Sky_and_Cloud_Mod==>LoadScene Completed!");
                 srd.Close();
-
+                GeoTools.HideFloorBig();
+                Debug.Log("Besiege_Sky_and_Cloud_Mod==>LoadScene Completed!");
             }
             catch (System.Exception ex)
             {
@@ -308,7 +300,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                 Debug.Log(ex.ToString());
                 return;
             }
-            GeoTools.HideFloorBig();
+
         }
         void LoadCloud()
         {
@@ -382,7 +374,11 @@ namespace Besiege_Sky_and_Cloud_Mod
             {
                 ClearFloater();
                 ClearWater();
-                if (WaterSize == 0) return;
+                if (WaterSize <= 0) return;
+                if (waterScale.x < 0) waterScale.x = 0;
+                if (waterScale.x > 9) waterScale.x = 9;
+                if (waterScale.z < 0) waterScale.z = 0;
+                if (waterScale.z > 9) waterScale.z = 9;
                 Mwater = new GameObject[((int)waterScale.x * 2 + 1) * ((int)waterScale.z * 2 + 1)];
                 Mwater[0] = (GameObject)Instantiate(iteratorVariable1.LoadAsset("water4example (advanced)"), waterLocation, new Quaternion());
                 Mwater[0].name = "water0";
@@ -403,7 +399,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                         }
                     }
                 }
-                if (Mwater.Length == 1) Mwater[0].transform.rotation = this.waterRotation;
+                if (Mwater.Length == 1) Mwater[0].transform.localRotation = this.waterRotation;
             }
             catch (Exception ex)
             {
@@ -450,6 +446,24 @@ namespace Besiege_Sky_and_Cloud_Mod
             ClearWater();
             ClearCloud();
             ClearMeshes();
+        }
+        void ClearFloater()
+        {
+            try
+            {
+                MyBlockInfo[] infoArray = UnityEngine.Object.FindObjectsOfType<MyBlockInfo>();
+                foreach (MyBlockInfo info in infoArray)
+                {
+                    if (info.gameObject.GetComponent<Floater>() != null)
+                    {
+                        Destroy(info.gameObject.GetComponent<Floater>());
+                    }
+                }
+            }
+            catch
+            {
+                Debug.Log("LoadFloater Failed");
+            }
         }
         /// <summary>
         /// ///////////////////////////////////////
