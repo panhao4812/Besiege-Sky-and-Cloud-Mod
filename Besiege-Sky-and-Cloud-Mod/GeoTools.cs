@@ -283,23 +283,23 @@ namespace Besiege_Sky_and_Cloud_Mod
         public static void HideFloorBig()
         {
             try
-            {
-                GameObject.Find("FloorBig").transform.localScale = new Vector3(0, 0, 0);
+            {              
                 GameObject.Find("FloorGrid").transform.localScale = new Vector3(0, 0, 0);
                 GameObject.Find("WORLD BOUNDARIES").transform.localScale = new Vector3(0, 0, 0);
                 GameObject.Find("Main Camera").GetComponent<Camera>().farClipPlane = 2500;
+                GameObject.Find("FloorBig").transform.localScale = new Vector3(0, 0, 0);
             }
             catch { }
         }
         public static void UnhideFloorBig()
         {
             try
-            {
-                GameObject.Find("FloorBig").transform.localScale = new Vector3(1000, 1, 1000);
-                GameObject.Find("FloorBig").transform.localPosition = new Vector3(0, 0, 0);
+            {              
                 GameObject.Find("FloorGrid").transform.localScale = new Vector3(1, 1, 1);
                 GameObject.Find("FloorGrid").transform.localPosition = new Vector3(0, 0, 0);
                 GameObject.Find("Main Camera").GetComponent<Camera>().farClipPlane = 1500;
+                GameObject.Find("FloorBig").transform.localScale = new Vector3(1000, 1, 1000);
+                GameObject.Find("FloorBig").transform.localPosition = new Vector3(0, 0, 0);
             }
             catch { }
         }
@@ -383,7 +383,7 @@ namespace Besiege_Sky_and_Cloud_Mod
         {
             try
             {/*
-                _ReflectionTex ("Internal reflection", 2D) = "white" {}
+    _ReflectionTex ("Internal reflection", 2D) = "white" {}
 	
 	_MainTex ("Fallback texture", 2D) = "black" {}
 	_ShoreTex ("Shore & Foam texture ", 2D) = "black" {}
@@ -430,11 +430,11 @@ namespace Besiege_Sky_and_Cloud_Mod
                 mat.SetVector("_DistortParams", new Vector4(0.144f, 1.1428571f, 1.853064f, -0.5314285f));
                 //mat.SetVector("_InvFadeParemeter", new Vector4(0.2189655f, 0.1594483f, 0.04310345f, 0f));
                 //mat.SetVector("_AnimationTiling", new Vector4(2.2f, 2.2f, -1.1f, -1.1f));
-                //  mat.SetVector("_AnimationDirection", new Vector4(1.0f, 1.0f, 1.0f, 1.0f));
-                //  mat.SetVector("_BumpTiling", new Vector4(0.12f, 0.07f, 0.08f, 0.06f));
-                //  mat.SetVector("_BumpDirection", new Vector4(1.0f, 1.0f, -1.0f, 1.0f));
-                //   mat.SetVector("_Foam", new Vector4(0.4266667f, 0.4866667f, 0f, 0.0f));
-                //  mat.SetFloat("_GerstnerIntensity", 2);
+                //mat.SetVector("_AnimationDirection", new Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+                //mat.SetVector("_BumpTiling", new Vector4(0.12f, 0.07f, 0.08f, 0.06f));
+                //mat.SetVector("_BumpDirection", new Vector4(1.0f, 1.0f, -1.0f, 1.0f));
+                //mat.SetVector("_Foam", new Vector4(0.4266667f, 0.4866667f, 0f, 0.0f));
+                //mat.SetFloat("_GerstnerIntensity", 2);
                 //mat.SetVector("_GAmplitude", new Vector4(0.14f, 0.76f, 0.175f, 0.225f));
                 mat.SetVector("_GFrequency", new Vector4(0.15f, 0.138f, 0.159f, 0.6f));
                 mat.SetVector("_GSteepness", new Vector4(9f, 9f, 9f, 9f));

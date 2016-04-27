@@ -16,6 +16,7 @@ namespace Besiege_Sky_and_Cloud_Mod
         private Vector3[] axis;
         private GameObject[] meshes;
         private GameObject[] Mwater;
+        private GameObject[] meshtriggers;
 
         private GameObject cloudTemp;
         private Color CloudsColor = new Color(1f, 1f, 1f, 1);
@@ -28,13 +29,49 @@ namespace Besiege_Sky_and_Cloud_Mod
         private int MeshSize = 0;
         private int CloudSize = 0;
         private int WaterSize = 0;
+        private int TriggerSize = 0;
 
         private AssetBundle iteratorVariable1;
         private bool isSimulating = false;
         private bool ShowGUI = true;
-        private Rect windowRect = new Rect(5f, 60f, 900f, 50f);
+        private Rect windowRect = new Rect(5f, 60f, 930f, 50f);
         private int windowID = spaar.ModLoader.Util.GetWindowID();
-
+        void LoadTrigger()
+        {
+            try
+            {
+                ClearTrigger();
+                if (TriggerSize > 100) TriggerSize = 100;
+                if (TriggerSize < 0) TriggerSize = 0;
+                if (TriggerSize > 0)
+                {
+                    meshtriggers = new GameObject[TriggerSize];
+                    for (int i = 0; i < meshtriggers.Length; i++)
+                    {
+                        meshtriggers[i] = GameObject.CreatePrimitive(PrimitiveType.Plane);
+                        meshtriggers[i].GetComponent<MeshCollider>().sharedMesh.Clear();
+                        meshtriggers[i].GetComponent<MeshFilter>().mesh.Clear();
+                        meshtriggers[i].AddComponent<MTrigger>();
+                        meshtriggers[i].name = "_meshtrigger" + i.ToString();
+                    }
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Debug.Log("LoadTrigger Failed!");
+                Debug.Log(ex.ToString());
+            }
+        }
+        void ClearTrigger()
+        {
+            if (meshtriggers == null) return;
+            if (meshtriggers.Length <= 0) return;
+            Debug.Log("ClearMeshTriggers");
+            for (int i = 0; i < meshtriggers.Length; i++)
+            {
+                Destroy(meshtriggers[i]);
+            }
+        }
         void LoadFloater()
         {
             try
@@ -566,6 +603,15 @@ namespace Besiege_Sky_and_Cloud_Mod
             if (GUILayout.Button("Ocean", new GUILayoutOption[0])) { DefaultSceneName = "Ocean"; LoadScene(DefaultSceneName); }
             if (GUILayout.Button("HeightMap", new GUILayoutOption[0])) { DefaultSceneName = "HeightMap"; LoadScene(DefaultSceneName); }
             if (GUILayout.Button("Plannar", new GUILayoutOption[0])) { DefaultSceneName = "Plannar"; LoadScene(DefaultSceneName); }
+            if (GUILayout.Button("FloorBig", new GUILayoutOption[0]))
+            {
+                this.transform.localPosition = new Vector3(0, 500, 0);
+                ClearWater();
+                ClearCloud();
+                ClearMeshes();
+                ClearFloater();
+                GeoTools.UnhideFloorBig();
+            }
             GUILayout.EndHorizontal();
             GUI.DragWindow(new Rect(0f, 0f, this.windowRect.width, this.windowRect.height));
         }
