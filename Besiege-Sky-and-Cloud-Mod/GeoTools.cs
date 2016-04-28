@@ -271,7 +271,8 @@ namespace Besiege_Sky_and_Cloud_Mod
                 {
                     return jpg.texture;
                 }
-                else {
+                else
+                {
                     Debug.Log("Besiege_Sky_and_Cloud_Mod==>No image in folder or image could not be used!");
                     return GameObject.Find("FloorBig").GetComponent<Renderer>().material.mainTexture;
                 }
@@ -286,11 +287,23 @@ namespace Besiege_Sky_and_Cloud_Mod
         {
             try
             {
-                gpos = GameObject.Find("FloorGrid").transform.localScale;
-                GameObject.Find("FloorGrid").transform.localScale = new Vector3(0, 0, 0);            
+                if (GameObject.Find("FloorGrid").transform.localScale != Vector3.zero) gpos = GameObject.Find("FloorGrid").transform.localScale;
+                GameObject.Find("FloorGrid").transform.localScale = new Vector3(0, 0, 0);
+            }
+            catch { }
+            try
+            {
                 GameObject.Find("Main Camera").GetComponent<Camera>().farClipPlane = 2500;
-                fpos = GameObject.Find("FloorBig").transform.localScale;
+            }
+            catch { }
+            try
+            {
+                if (GameObject.Find("FloorBig").transform.localScale != Vector3.zero) fpos = GameObject.Find("FloorBig").transform.localScale;
                 GameObject.Find("FloorBig").transform.localScale = new Vector3(0, 0, 0);
+            }
+            catch { }
+            try
+            {
                 GameObject.Find("WORLD BOUNDARIES").transform.localScale = new Vector3(0, 0, 0);
             }
             catch { }
@@ -299,12 +312,23 @@ namespace Besiege_Sky_and_Cloud_Mod
         {
             try
             {
-                GameObject.Find("FloorGrid").transform.localScale = gpos;
-                GameObject.Find("Main Camera").GetComponent<Camera>().farClipPlane = 1500;
-                GameObject.Find("FloorBig").transform.localScale = fpos;
-               
+                if (fpos != Vector3.zero) GameObject.Find("FloorBig").transform.localScale = fpos;
             }
             catch { }
+            try
+            {
+                if (fpos != Vector3.zero) GameObject.Find("FloorGrid").transform.localScale = gpos;
+            }
+            catch { }
+            try
+            {
+                GameObject.Find("Main Camera").GetComponent<Camera>().farClipPlane = 1500;
+            }
+            catch { }
+
+
+
+
         }
         public static Mesh LoadHeightMap(float uscale, float vscale, int u, int v, int heightscale, float texturescale, string HeightMap)
         {
@@ -383,7 +407,6 @@ namespace Besiege_Sky_and_Cloud_Mod
             }
         }
         public static void ResetWaterMaterial(ref Material mat)
-
         {
             try
             {/*
@@ -421,10 +444,10 @@ namespace Besiege_Sky_and_Cloud_Mod
 	_GDirectionAB ("Wave Direction", Vector) = (0.3 ,0.85, 0.85, 0.25)
 	_GDirectionCD ("Wave Direction", Vector) = (0.1 ,0.9, 0.5, 0.5)
     */
-             // mat.SetTexture("_BumpMap", LoadTexture("SimpleFoam"));
-             // mat.SetTexture("_ShoreTex", LoadTexture("SmallWaves"));
-             // mat.SetTextureScale("_BumpMap", new Vector2(300, 300));
-             // mat.SetTextureScale("_ShoreTex", new Vector2(300, 300));
+                // mat.SetTexture("_BumpMap", LoadTexture("SimpleFoam"));
+                // mat.SetTexture("_ShoreTex", LoadTexture("SmallWaves"));
+                // mat.SetTextureScale("_BumpMap", new Vector2(300, 300));
+                // mat.SetTextureScale("_ShoreTex", new Vector2(300, 300));
 
                 mat.SetFloat("_Shininess", 500);
                 mat.SetFloat("_FresnelScale", 2f);
