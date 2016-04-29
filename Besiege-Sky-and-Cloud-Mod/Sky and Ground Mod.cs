@@ -20,6 +20,7 @@ namespace Besiege_Sky_and_Cloud_Mod
         {         
             temp = new GameObject(); temp.name = "Sky and Ground Mod";
             temp.AddComponent<Scene>();
+            temp.AddComponent<TimeUI>();
             UnityEngine.Object.DontDestroyOnLoad(temp);
         }
         public override void OnUnload()

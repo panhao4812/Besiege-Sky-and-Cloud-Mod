@@ -17,6 +17,7 @@ namespace Besiege_Sky_and_Cloud_Mod
         private GameObject[] meshes;
         private GameObject[] Mwater;
         private GameObject[] meshtriggers;
+       
 
         private GameObject cloudTemp;
         private Color CloudsColor = new Color(1f, 1f, 1f, 1);
@@ -34,7 +35,7 @@ namespace Besiege_Sky_and_Cloud_Mod
         private AssetBundle iteratorVariable1;
         private bool isSimulating = false;
         private bool ShowGUI = true;
-        private Rect windowRect = new Rect(15f, Screen.height-95f, 600f, 30f);
+        private Rect windowRect = new Rect(15f, Screen.height - 95f, 600f, 30f);
         private int windowID = spaar.ModLoader.Util.GetWindowID();
         void LoadTrigger()
         {
@@ -45,6 +46,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                 if (TriggerSize < 0) TriggerSize = 0;
                 if (TriggerSize > 0)
                 {
+                    TimeUI.Triggers = new bool[TriggerSize];
                     meshtriggers = new GameObject[TriggerSize];
                     for (int i = 0; i < meshtriggers.Length; i++)
                     {
@@ -53,6 +55,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                         meshtriggers[i].GetComponent<MeshFilter>().mesh.Clear();
                         meshtriggers[i].AddComponent<MTrigger>();
                         meshtriggers[i].name = "_meshtrigger" + i.ToString();
+                        TimeUI.Triggers[i] = false;
                     }
                 }
             }
@@ -67,6 +70,7 @@ namespace Besiege_Sky_and_Cloud_Mod
             if (meshtriggers == null) return;
             if (meshtriggers.Length <= 0) return;
             Debug.Log("ClearMeshTriggers");
+            TimeUI.Triggers = null;
             for (int i = 0; i < meshtriggers.Length; i++)
             {
                 Destroy(meshtriggers[i]);
@@ -243,6 +247,69 @@ namespace Besiege_Sky_and_Cloud_Mod
                                     Convert.ToSingle(chara[6]));
                                 }
                             }
+                            else if (chara[0] == "Triggers")
+                            {
+                                if (chara[1] == "size")
+                                {
+                                    this.TriggerSize = Convert.ToInt32(chara[2]);
+                                    LoadTrigger();
+                                }
+                            }
+                            else if (chara[0] == "Trigger")
+                            {
+                                int i = Convert.ToInt32(chara[1]);
+                                if (chara[2] == "mesh")
+                                {
+                                    meshtriggers[i].GetComponent<MeshFilter>().mesh = GeoTools.MeshFromObj(chara[3]);
+                                }
+                                if (chara[2] == "wmesh")
+                                {
+                                    meshtriggers[i].GetComponent<MeshFilter>().mesh = GeoTools.WMeshFromObj(chara[3]);
+                                }
+                                if (chara[2] == "scale")
+                                {
+                                    meshtriggers[i].transform.localScale = new Vector3(
+                                   Convert.ToSingle(chara[3]),
+                                   Convert.ToSingle(chara[4]),
+                                   Convert.ToSingle(chara[5]));
+                                }
+                                if (chara[2] == "location")
+                                {
+                                    meshtriggers[i].transform.localPosition = new Vector3(
+                                    Convert.ToSingle(chara[3]),
+                                    Convert.ToSingle(chara[4]),
+                                    Convert.ToSingle(chara[5]));
+                                }
+                                else if (chara[2] == "stexture")
+                                {
+                                    meshtriggers[i].GetComponent<MeshRenderer>().sharedMaterial.mainTexture = GeoTools.LoadTexture(chara[3]);
+                                }
+                                else if (chara[2] == "shader")
+                                {
+                                    meshtriggers[i].GetComponent<MeshRenderer>().material.shader = Shader.Find("chara[3]");
+                                }
+                                else if (chara[2] == "texture")
+                                {
+                                    meshtriggers[i].GetComponent<MeshRenderer>().material.mainTexture = GeoTools.LoadTexture(chara[3]);
+                                }
+                                else if (chara[2] == "color")
+                                {
+                                    meshtriggers[i].GetComponent<MeshRenderer>().material.color = new Color(
+                                    Convert.ToSingle(chara[3]),
+                                    Convert.ToSingle(chara[4]),
+                                    Convert.ToSingle(chara[5]),
+                                    Convert.ToSingle(chara[6]));
+                                }
+                                else if (chara[2] == "meshcollider")
+                                {
+                                    meshtriggers[i].GetComponent<MeshCollider>().sharedMesh = GeoTools.MeshFromObj(chara[3]);
+                                }
+                                else if (chara[2] == "wmeshcollider")
+                                {
+                                    meshtriggers[i].GetComponent<MeshCollider>().sharedMesh = GeoTools.WMeshFromObj(chara[3]);
+                                }
+                                ///////////////////////////////////////////////
+                            }
                             else if (chara[0] == "Cloud")
                             {
 
@@ -318,9 +385,9 @@ namespace Besiege_Sky_and_Cloud_Mod
                                     Convert.ToSingle(chara[5]));
                                 }
                             }
+                            }
                         }
                     }
-                }
                 catch (Exception ex)
                 {
                     Debug.Log("Scene File error!");
@@ -595,24 +662,28 @@ namespace Besiege_Sky_and_Cloud_Mod
         ////////////////////////////////////////////////////
         public void DoWindow(int windowID)
         {
-            
-            GUIStyle style = new GUIStyle(Elements.Labels.LogEntry) {               
-                fontSize = 15              
+            GUIStyle style = new GUIStyle
+            {
+                normal = { textColor = Color.white },
+                alignment = TextAnchor.MiddleCenter,
+                active = { background = Texture2D.whiteTexture ,textColor = Color.black  },
+                margin = { top = 5 },
+                fontSize = 15
             };
             GUILayout.BeginHorizontal(new GUILayoutOption[0]);
-            if (GUILayout.Button("[翠屏山]", style, new GUILayoutOption[0]) && !AddPiece.isSimulating) 
+            if (GUILayout.Button("[翠屏山]", style, new GUILayoutOption[0]) && !AddPiece.isSimulating)
             { DefaultSceneName = "GreenHill"; LoadScene(DefaultSceneName); }
-            if (GUILayout.Button("[原版铁皮山]", style, new GUILayoutOption[0]) && !AddPiece.isSimulating) 
+            if (GUILayout.Button("[原版铁皮山]", style, new GUILayoutOption[0]) && !AddPiece.isSimulating)
             { DefaultSceneName = "SteelHillProtoType"; LoadScene(DefaultSceneName); }
-            if (GUILayout.Button("[铁皮山]", style, new GUILayoutOption[0]) && !AddPiece.isSimulating) 
+            if (GUILayout.Button("[铁皮山]", style, new GUILayoutOption[0]) && !AddPiece.isSimulating)
             { DefaultSceneName = "SteelHill"; LoadScene(DefaultSceneName); }
-            if (GUILayout.Button("[航母CVL22]", style, new GUILayoutOption[0]) && !AddPiece.isSimulating) 
+            if (GUILayout.Button("[航母CVL22]", style, new GUILayoutOption[0]) && !AddPiece.isSimulating)
             { DefaultSceneName = "Independence"; LoadScene(DefaultSceneName); }
-            if (GUILayout.Button("[赛艇]", style, new GUILayoutOption[0]) && !AddPiece.isSimulating) 
+            if (GUILayout.Button("[赛艇]", style, new GUILayoutOption[0]) && !AddPiece.isSimulating)
             { DefaultSceneName = "Ocean"; LoadScene(DefaultSceneName); }
             if (GUILayout.Button("[灰度图]", style, new GUILayoutOption[0]) && !AddPiece.isSimulating)
             { DefaultSceneName = "HeightMap"; LoadScene(DefaultSceneName); }
-            if (GUILayout.Button("[大平板]", style, new GUILayoutOption[0]) && !AddPiece.isSimulating) 
+            if (GUILayout.Button("[大平板]", style, new GUILayoutOption[0]) && !AddPiece.isSimulating)
             { DefaultSceneName = "Plannar"; LoadScene(DefaultSceneName); }
             if (GUILayout.Button("[还原]", style, new GUILayoutOption[0]) && !AddPiece.isSimulating)
             {
@@ -627,8 +698,7 @@ namespace Besiege_Sky_and_Cloud_Mod
             GUI.DragWindow(new Rect(0f, 0f, this.windowRect.width, this.windowRect.height));
         }
         private void OnGUI()
-        {
-            GUI.skin = ModGUI.Skin;
+        {          
             if (ShowGUI)
             {
                 this.windowRect = GUI.Window(this.windowID, this.windowRect, new GUI.WindowFunction(DoWindow), "", GUIStyle.none);
