@@ -35,7 +35,7 @@ namespace Besiege_Sky_and_Cloud_Mod
         private AssetBundle iteratorVariable1;
         private bool isSimulating = false;
         private bool ShowGUI = true;
-        private Rect windowRect = new Rect(15f, Screen.height - 95f, 600f, 30f);
+        private Rect windowRect = new Rect(15f, Screen.height - 95f, 650f, 30f);
         private int windowID = spaar.ModLoader.Util.GetWindowID();
         void LoadTrigger()
         {
@@ -128,6 +128,10 @@ namespace Besiege_Sky_and_Cloud_Mod
                                 {
                                     meshes[i].GetComponent<MeshFilter>().mesh = GeoTools.WMeshFromObj(chara[3]);
                                 }
+                                if (chara[2] == "emesh")
+                                {
+                                    meshes[i].GetComponent<MeshFilter>().mesh = GeoTools.EMeshFromObj(chara[3]);
+                                }
                                 if (chara[2] == "heightmapmesh")
                                 {
                                     Mesh mesh = GeoTools.LoadHeightMap(
@@ -155,21 +159,47 @@ namespace Besiege_Sky_and_Cloud_Mod
                                 {
                                     meshes[i].GetComponent<MeshRenderer>().sharedMaterial.mainTexture = GeoTools.LoadTexture(chara[3]);
                                 }
+                                else if (chara[2] == "materialcopy")
+                                {
+                                    try
+                                    {
+                                        meshes[i].GetComponent<MeshRenderer>().material = new Material(GameObject.Find(chara[3]).GetComponent<Renderer>().material);
+                                        Debug.Log(meshes[i].GetComponent<MeshRenderer>().material.shader.name);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Debug.Log("MaterialCopy Failed");
+                                        Debug.Log(ex.ToString());
+                                    }
+                                }
+                                    
                                 else if (chara[2] == "shader")
                                 {
-                                    meshes[i].GetComponent<MeshRenderer>().material.shader = Shader.Find("chara[3]");
+                                    meshes[i].GetComponent<MeshRenderer>().material.shader = Shader.Find(chara[3]);
                                 }
                                 else if (chara[2] == "texture")
                                 {
                                     meshes[i].GetComponent<MeshRenderer>().material.mainTexture = GeoTools.LoadTexture(chara[3]);
                                 }
-                                else if (chara[2] == "color")
+                                else if (chara[2] == "setcolor")
                                 {
-                                    meshes[i].GetComponent<MeshRenderer>().material.color = new Color(
-                                    Convert.ToSingle(chara[3]),
+                                    meshes[i].GetComponent<MeshRenderer>().material.SetColor (chara[3],new Color(
                                     Convert.ToSingle(chara[4]),
                                     Convert.ToSingle(chara[5]),
-                                    Convert.ToSingle(chara[6]));
+                                    Convert.ToSingle(chara[6]),
+                                    Convert.ToSingle(chara[7])));
+                                }
+                                else if (chara[2] == "setvector")
+                                {
+                                    meshes[i].GetComponent<MeshRenderer>().material.SetVector(chara[3], new Vector4(
+                                    Convert.ToSingle(chara[4]),
+                                    Convert.ToSingle(chara[5]),
+                                    Convert.ToSingle(chara[6]),
+                                    Convert.ToSingle(chara[7])));
+                                }
+                                else if (chara[2] == "setfloat")
+                                {
+                                    meshes[i].GetComponent<MeshRenderer>().material.SetFloat(chara[3],Convert.ToSingle(chara[4]));
                                 }
                                 else if (chara[2] == "meshcollider")
                                 {
@@ -681,9 +711,13 @@ namespace Besiege_Sky_and_Cloud_Mod
             { DefaultSceneName = "Independence"; LoadScene(DefaultSceneName); }
             if (GUILayout.Button("[赛艇]", style, new GUILayoutOption[0]) && !AddPiece.isSimulating)
             { DefaultSceneName = "Ocean"; LoadScene(DefaultSceneName); }
-            if (GUILayout.Button("[灰度图]", style, new GUILayoutOption[0]) && !AddPiece.isSimulating)
+            if (GUILayout.Button("[湖(夏)]", style, new GUILayoutOption[0]) && !AddPiece.isSimulating)
+            { DefaultSceneName = "Lake"; LoadScene(DefaultSceneName); }
+            if (GUILayout.Button("[湖(冬)]", style, new GUILayoutOption[0]) && !AddPiece.isSimulating)
+            { DefaultSceneName = "LakeWinter"; LoadScene(DefaultSceneName); }
+            if (GUILayout.Button("[越野]", style, new GUILayoutOption[0]) && !AddPiece.isSimulating)
             { DefaultSceneName = "HeightMap"; LoadScene(DefaultSceneName); }
-            if (GUILayout.Button("[大平板]", style, new GUILayoutOption[0]) && !AddPiece.isSimulating)
+            if (GUILayout.Button("[大平地]", style, new GUILayoutOption[0]) && !AddPiece.isSimulating)
             { DefaultSceneName = "Plannar"; LoadScene(DefaultSceneName); }
             if (GUILayout.Button("[还原]", style, new GUILayoutOption[0]) && !AddPiece.isSimulating)
             {

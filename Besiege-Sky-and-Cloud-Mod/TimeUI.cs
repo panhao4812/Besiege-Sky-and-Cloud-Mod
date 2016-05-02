@@ -48,7 +48,7 @@ namespace Besiege_Sky_and_Cloud_Mod
             GUILayout.BeginVertical(new GUILayoutOption[0]);
 
             GUILayout.BeginHorizontal(new GUILayoutOption[0]);
-            GUILayout.Label("(ง •̀_•́)ง", style, new GUILayoutOption[0]);
+            GUILayout.Label("[模式]", style, new GUILayoutOption[0]);
             GUILayout.Label(RealTime, style, new GUILayoutOption[0]);
             GUILayout.EndHorizontal();
 
@@ -70,16 +70,17 @@ namespace Besiege_Sky_and_Cloud_Mod
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal(new GUILayoutOption[0]);
-            if (GUILayout.Button("[自动/手动]", style, new GUILayoutOption[0]))
-            {
-                AutoMode = !AutoMode;
-            }
+         //   if (GUILayout.Button("[自动/手动]", style, new GUILayoutOption[0]))
+          //  {
+        //        AutoMode = !AutoMode;
+        //    }
+            GUILayout.Label("   "+Mtimer, style0, new GUILayoutOption[0]);
             GUILayout.EndHorizontal();
 
-            GUILayout.BeginHorizontal(new GUILayoutOption[0]);
-            GUILayout.Label("", style, new GUILayoutOption[0]);
-            GUILayout.Label(IndexSlider, style, new GUILayoutOption[0]);
-            GUILayout.EndHorizontal();
+            //GUILayout.BeginHorizontal(new GUILayoutOption[0]);
+          //  GUILayout.Label("计时点", style, new GUILayoutOption[0]);
+          //  GUILayout.Label(IndexSlider, style, new GUILayoutOption[0]);
+          //  GUILayout.EndHorizontal();
 
           
             GUILayout.EndVertical();

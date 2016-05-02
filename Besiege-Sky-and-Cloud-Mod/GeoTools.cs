@@ -40,6 +40,127 @@ namespace Besiege_Sky_and_Cloud_Mod
             mesh.RecalculateNormals();
             return mesh;
         }
+        public static Mesh EMeshFromObj(string Objname)
+        {
+            List<Vector3> Normals = new List<Vector3>();
+            List<Vector2> UV = new List<Vector2>();
+            List<Vector3> newVertices = new List<Vector3>();
+            List<Vector3> Vertices = new List<Vector3>();
+            List<Vector2> newUV = new List<Vector2>();
+            List<int> triangleslist = new List<int>();
+            List<Vector3> newNormals = new List<Vector3>();
+            Mesh mesh = new Mesh();
+            StreamReader srd;
+            try
+            {
+                srd = File.OpenText(Application.dataPath + "/Mods/Blocks/Floor/" + Objname + ".obj");
+            }
+            catch
+            {
+                Debug.Log("Open " + Objname + " failed");
+                return null;
+            }
+            try
+            {
+                while (srd.Peek() != -1)
+                {
+                    string str = srd.ReadLine();
+                    string[] chara = str.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                    if (chara.Length > 2)
+                    {
+                        if (chara[0] == "v")
+                        {
+                            Vector3 v1 = new Vector3(
+                              Convert.ToSingle(chara[1]),
+                              Convert.ToSingle(chara[2]),
+                              Convert.ToSingle(chara[3]));
+                            Vertices.Add(v1);
+                        }
+                        else if (chara[0] == "vt")
+                        {
+                            Vector2 uv1 = new Vector2(
+                              Convert.ToSingle(chara[1]),
+                              Convert.ToSingle(chara[2]));
+
+                            UV.Add(uv1);
+                        }
+                        else if (chara[0] == "vn")
+                        {
+                            Vector3 v2 = new Vector3(
+                              Convert.ToSingle(chara[1]),
+                              Convert.ToSingle(chara[2]),
+                              Convert.ToSingle(chara[3]));
+
+                            Normals.Add(v2);
+                        }
+                        else if (chara[0] == "f")
+                        {
+                            if (chara.Length == 4)
+                            {
+                                int a = Convert.ToInt32(chara[1].Split('/')[0]);
+                                int b = Convert.ToInt32(chara[2].Split('/')[0]);
+                                int c = Convert.ToInt32(chara[3].Split('/')[0]);
+                                triangleslist.Add(newVertices.Count);
+                                triangleslist.Add(newVertices.Count + 1);
+                                triangleslist.Add(newVertices.Count + 2);
+                                newVertices.Add(Vertices[a - 1]);
+                                newVertices.Add(Vertices[b - 1]);
+                                newVertices.Add(Vertices[c - 1]);
+                                newNormals.Add(Normals[Convert.ToInt32(chara[1].Split('/')[2]) - 1]);
+                                newNormals.Add(Normals[Convert.ToInt32(chara[2].Split('/')[2]) - 1]);
+                                newNormals.Add(Normals[Convert.ToInt32(chara[3].Split('/')[2]) - 1]);
+                                newUV.Add(UV[Convert.ToInt32(chara[1].Split('/')[1]) - 1]);
+                                newUV.Add(UV[Convert.ToInt32(chara[2].Split('/')[1]) - 1]);
+                                newUV.Add(UV[Convert.ToInt32(chara[3].Split('/')[1]) - 1]);
+                            }
+                            if (chara.Length == 5)
+                            {
+                                int a = Convert.ToInt32(chara[1].Split('/')[0]);
+                                int b = Convert.ToInt32(chara[2].Split('/')[0]);
+                                int c = Convert.ToInt32(chara[3].Split('/')[0]);
+                                int d = Convert.ToInt32(chara[4].Split('/')[0]);
+                                triangleslist.Add(newVertices.Count);
+                                triangleslist.Add(newVertices.Count + 1);
+                                triangleslist.Add(newVertices.Count + 2);
+                                triangleslist.Add(newVertices.Count);
+                                triangleslist.Add(newVertices.Count + 2);
+                                triangleslist.Add(newVertices.Count + 3);
+                                newVertices.Add(Vertices[a - 1]);
+                                newVertices.Add(Vertices[b - 1]);
+                                newVertices.Add(Vertices[c - 1]);
+                                newVertices.Add(Vertices[d - 1]);
+                                newNormals.Add(Normals[Convert.ToInt32(chara[1].Split('/')[2]) - 1]);
+                                newNormals.Add(Normals[Convert.ToInt32(chara[2].Split('/')[2]) - 1]);
+                                newNormals.Add(Normals[Convert.ToInt32(chara[3].Split('/')[2]) - 1]);
+                                newNormals.Add(Normals[Convert.ToInt32(chara[4].Split('/')[2]) - 1]);
+                                newUV.Add(UV[Convert.ToInt32(chara[1].Split('/')[1]) - 1]);
+                                newUV.Add(UV[Convert.ToInt32(chara[2].Split('/')[1]) - 1]);
+                                newUV.Add(UV[Convert.ToInt32(chara[3].Split('/')[1]) - 1]);
+                                newUV.Add(UV[Convert.ToInt32(chara[4].Split('/')[1]) - 1]);
+                            }
+                        }
+                    }
+                }
+                mesh.vertices = newVertices.ToArray();
+                mesh.uv = newUV.ToArray();
+                mesh.triangles = triangleslist.ToArray();
+                mesh.normals = newNormals.ToArray();
+                Debug.Log("ReadFile " + Objname + " Completed!" + "Vertices:" + newVertices.Count.ToString());
+                srd.Close();
+                mesh.RecalculateBounds();
+                mesh.RecalculateNormals();
+               // mesh.Optimize();
+            }
+            catch (Exception ex)
+            {
+                Debug.Log("Obj model " + Objname + " error!");
+                Debug.Log("newUV==>" + newUV.Count.ToString());
+                Debug.Log("triangleslist==>" + triangleslist.Count.ToString());
+                Debug.Log("newNormals==>" + newNormals.Count.ToString());
+                Debug.Log(ex.ToString());
+            }
+            return mesh;
+        }
         public static Mesh MeshFromObj(string Objname)
         {
             List<Vector3> Normals = new List<Vector3>();

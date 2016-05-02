@@ -13,7 +13,7 @@ namespace Besiege_Sky_and_Cloud_Mod
         public override string DisplayName { get { return "Sky and Ground Mod"; } }
         public override string BesiegeVersion { get { return "v0.27"; } }
         public override string Author { get { return "zian1"; } }
-        public override Version Version { get { return new Version("8.01"); } }
+        public override Version Version { get { return new Version("8.02"); } }
         public override bool CanBeUnloaded { get { return true; } }
         public GameObject temp;
         public override void OnLoad()
