@@ -144,7 +144,6 @@ namespace Besiege_Sky_and_Cloud_Mod
                     {
                         this.Force = 0f;
                     }
-
                 }
             }
             catch (Exception exception)

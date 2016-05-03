@@ -10,6 +10,48 @@ namespace Besiege_Sky_and_Cloud_Mod
     {
         public static Vector3 fpos = new Vector3();
         public static Vector3 gpos = new Vector3();
+        public static bool StringToKeyCode(string str, out KeyCode output)
+        {
+            if (str == "F1") { output = KeyCode.F1; return true; }
+            else if (str == "F2") { output = KeyCode.F2; return true; }
+            else if (str == "F3") { output = KeyCode.F3; return true; }
+            else if (str == "F4") { output = KeyCode.F4; return true; }
+            else if (str == "F5") { output = KeyCode.F5; return true; }
+            else if (str == "F6") { output = KeyCode.F6; return true; }
+            else if (str == "F7") { output = KeyCode.F7; return true; }
+            else if (str == "F8") { output = KeyCode.F8; return true; }
+            else if (str == "F9") { output = KeyCode.F9; return true; }
+            else if (str == "F10") { output = KeyCode.F10; return true; }
+            else if (str == "F11") { output = KeyCode.F11; return true; }
+            else if (str == "F12") { output = KeyCode.F12; return true; }
+            else if (str == "Q"|| str == "q") { output = KeyCode.Q; return true; }
+            else if (str == "W" || str == "w") { output = KeyCode.W; return true; }
+            else if (str == "E" || str == "e") { output = KeyCode.E; return true; }
+            else if (str == "R" || str == "r") { output = KeyCode.R; return true; }
+            else if (str == "T" || str == "t") { output = KeyCode.T; return true; }
+            else if (str == "Y" || str == "y") { output = KeyCode.Y; return true; }
+            else if (str == "U" || str == "u") { output = KeyCode.U; return true; }
+            else if (str == "I" || str == "i") { output = KeyCode.I; return true; }
+            else if (str == "O" || str == "o") { output = KeyCode.O; return true; }
+            else if (str == "P" || str == "p") { output = KeyCode.P; return true; }
+            else if (str == "A" || str == "a") { output = KeyCode.A; return true; }
+            else if (str == "S" || str == "s") { output = KeyCode.S; return true; }
+            else if (str == "D" || str == "d") { output = KeyCode.D; return true; }
+            else if (str == "F" || str == "f") { output = KeyCode.F; return true; }
+            else if (str == "G" || str == "g") { output = KeyCode.G; return true; }
+            else if (str == "H" || str == "h") { output = KeyCode.H; return true; }
+            else if (str == "J" || str == "j") { output = KeyCode.J; return true; }
+            else if (str == "K" || str == "k") { output = KeyCode.K; return true; }
+            else if (str == "L" || str == "l") { output = KeyCode.L; return true; }
+            else if (str == "Z" || str == "z") { output = KeyCode.Z; return true; }
+            else if (str == "X" || str == "x") { output = KeyCode.X; return true; }
+            else if (str == "C" || str == "c") { output = KeyCode.C; return true; }
+            else if (str == "V" || str == "v") { output = KeyCode.V; return true; }
+            else if (str == "B" || str == "b") { output = KeyCode.B; return true; }
+            else if (str == "N" || str == "n") { output = KeyCode.N; return true; }
+            else if (str == "M" || str == "m") { output = KeyCode.M; return true; }      
+            else {output = KeyCode.Escape;return false;}
+        }
         public static Mesh MeshFromPoints(int u, int v, float scaleu, float scalev)
         {
             Mesh mesh = new Mesh();
@@ -149,7 +191,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                 srd.Close();
                 mesh.RecalculateBounds();
                 mesh.RecalculateNormals();
-               // mesh.Optimize();
+                // mesh.Optimize();
             }
             catch (Exception ex)
             {

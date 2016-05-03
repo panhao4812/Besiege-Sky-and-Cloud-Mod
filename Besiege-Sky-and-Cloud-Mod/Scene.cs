@@ -1,8 +1,6 @@
 ﻿//using System.Threading.Tasks;
 using spaar;
-using spaar.ModLoader.UI;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -11,13 +9,11 @@ namespace Besiege_Sky_and_Cloud_Mod
 {
     public class Scene : MonoBehaviour
     {
-        public string DefaultSceneName = "SteelHill";
         private GameObject[] clouds;
         private Vector3[] axis;
         private GameObject[] meshes;
         private GameObject[] Mwater;
         private GameObject[] meshtriggers;
-       
 
         private GameObject cloudTemp;
         private Color CloudsColor = new Color(1f, 1f, 1f, 1);
@@ -34,9 +30,123 @@ namespace Besiege_Sky_and_Cloud_Mod
 
         private AssetBundle iteratorVariable1;
         private bool isSimulating = false;
-        private bool ShowGUI = true;
-        private Rect windowRect = new Rect(15f, Screen.height - 95f, 650f, 30f);
+
+        //UI
+        public string DefaultSceneName = "SteelHill";
+        private int _FontSize = 15;
+        private Rect windowRect = new Rect(15f, Screen.height - 95f, 650f, 50f);
         private int windowID = spaar.ModLoader.Util.GetWindowID();
+        private bool ShowGUI = true;
+        List<string> _ButtonName = new List<string>();
+        List<string> _SceneName = new List<string>();
+        string _FloorBig = "[Default]";
+        KeyCode _ReLoadScene = KeyCode.F7;
+        KeyCode _RetrunToFloorBig = KeyCode.F10;
+        KeyCode _DisplayUI = KeyCode.F6;
+        KeyCode _ReloadUI = KeyCode.F5;
+        void DefaultUI()
+        {
+            _ButtonName.Clear(); _SceneName.Clear(); _FloorBig = "[Default]";
+            _FontSize = 15;
+            ShowGUI = true;
+            windowRect = new Rect(15f, Screen.height - 95f, 650f, 50f);
+            _ReLoadScene = KeyCode.F7;
+            _RetrunToFloorBig = KeyCode.F10;
+            _DisplayUI = KeyCode.F6;
+            _ReloadUI = KeyCode.F5;
+        }
+        void ReadUI()
+        {
+            DefaultUI();
+            try
+            {
+                StreamReader srd;
+                string Ci = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
+                if (Ci == "zh-CN")
+                {
+                    srd = File.OpenText(Application.dataPath + "/Mods/Blocks/UI/CHN.txt");
+                }
+                else {
+                    srd = File.OpenText(Application.dataPath + "/Mods/Blocks/UI/EN.txt");
+                }
+                Debug.Log(Ci + "  " + Screen.width.ToString() + "*" + Screen.height.ToString());
+                while (srd.Peek() != -1)
+                {
+                    string str = srd.ReadLine();
+                    string[] chara = str.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+                    if (chara.Length > 2)
+                    {
+                        if (chara[0] == Screen.width.ToString() + "*" + Screen.height.ToString() + "_Scene")
+                        {
+                            if (chara[1] == "fontsize")
+                            {
+                                _FontSize = Convert.ToInt32(chara[2]);
+                            }
+                            else if (chara[1] == "window_poistion")
+                            {
+                                windowRect.x = Convert.ToSingle(chara[2]);
+                                windowRect.y = Convert.ToSingle(chara[3]);
+                            }
+                            else if (chara[1] == "window_scale")
+                            {
+                                windowRect.width = Convert.ToSingle(chara[2]);
+                                windowRect.height = Convert.ToSingle(chara[3]);
+                            }
+                            else if (chara[1] == "show_on_start")
+                            {
+                                if (chara[2] == "0") ShowGUI = false;
+                                else ShowGUI = true;
+                            }
+                            else if (chara[1] == "buttonname")
+                            {
+                                _ButtonName.Add(chara[2]);
+                            }
+                            else if (chara[1] == "scenename")
+                            {
+                                _SceneName.Add(chara[2]);
+                            }
+                            else if (chara[1] == "reLoad_scene")
+                            {
+                                KeyCode outputkey;
+                                if (GeoTools.StringToKeyCode(chara[2], out outputkey)) _ReLoadScene = outputkey;
+                                // Debug.Log("_ReLoadScene:" + _ReLoadScene.ToString());
+                            }
+                            else if (chara[1] == "retrun_to_FloorBig")
+                            {
+                                KeyCode outputkey;
+                                if (GeoTools.StringToKeyCode(chara[2], out outputkey)) _RetrunToFloorBig = outputkey;
+                            }
+                            else if (chara[1] == "display_UI")
+                            {
+                                KeyCode outputkey;
+                                if (GeoTools.StringToKeyCode(chara[2], out outputkey)) _DisplayUI = outputkey;
+                            }
+                            else if (chara[1] == "reload_UI")
+                            {
+                                KeyCode outputkey;
+                                if (GeoTools.StringToKeyCode(chara[2], out outputkey)) _ReloadUI = outputkey;
+                            }
+                        }
+                    }
+                }
+                srd.Close();
+                if (_ButtonName.Count != _SceneName.Count  || _ButtonName.Count < 0)
+                {
+                    Debug.Log("Besiege_Sky_and_Cloud_Mod==>LoadUISetting Failed!Button Error!");
+                    _ButtonName.Clear(); _SceneName.Clear();
+                }
+                else {
+                    Debug.Log("Besiege_Sky_and_Cloud_Mod==>LoadUISetting Completed!");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.Log("Besiege_Sky_and_Cloud_Mod==>LoadUISetting Failed!");
+                Debug.Log(ex.ToString());
+                DefaultUI();
+                return;
+            }
+        }
         void LoadTrigger()
         {
             try
@@ -172,7 +282,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                                         Debug.Log(ex.ToString());
                                     }
                                 }
-                                    
+
                                 else if (chara[2] == "shader")
                                 {
                                     meshes[i].GetComponent<MeshRenderer>().material.shader = Shader.Find(chara[3]);
@@ -183,7 +293,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                                 }
                                 else if (chara[2] == "setcolor")
                                 {
-                                    meshes[i].GetComponent<MeshRenderer>().material.SetColor (chara[3],new Color(
+                                    meshes[i].GetComponent<MeshRenderer>().material.SetColor(chara[3], new Color(
                                     Convert.ToSingle(chara[4]),
                                     Convert.ToSingle(chara[5]),
                                     Convert.ToSingle(chara[6]),
@@ -199,7 +309,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                                 }
                                 else if (chara[2] == "setfloat")
                                 {
-                                    meshes[i].GetComponent<MeshRenderer>().material.SetFloat(chara[3],Convert.ToSingle(chara[4]));
+                                    meshes[i].GetComponent<MeshRenderer>().material.SetFloat(chara[3], Convert.ToSingle(chara[4]));
                                 }
                                 else if (chara[2] == "meshcollider")
                                 {
@@ -415,9 +525,9 @@ namespace Besiege_Sky_and_Cloud_Mod
                                     Convert.ToSingle(chara[5]));
                                 }
                             }
-                            }
                         }
                     }
+                }
                 catch (Exception ex)
                 {
                     Debug.Log("Scene File error!");
@@ -609,7 +719,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                 cloudTemp = (GameObject)UnityEngine.Object.Instantiate(GameObject.Find("CLoud"));
                 cloudTemp.SetActive(false);
                 DontDestroyOnLoad(cloudTemp);
-                Debug.Log(": Besiege_Sky_and_Cloud_Mod==> Get Cloud Temp Successfully");
+                Debug.Log("Besiege_Sky_and_Cloud_Mod==> Get Cloud Temp Successfully");
             }
             if (clouds != null)
             {
@@ -634,11 +744,16 @@ namespace Besiege_Sky_and_Cloud_Mod
         }
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.F7) && Input.GetKey(KeyCode.LeftControl))
+            if (Input.GetKeyDown(_ReloadUI) && Input.GetKey(KeyCode.LeftControl))
             {
+                ReadUI();
+            }
+            if (Input.GetKeyDown(_ReLoadScene) && Input.GetKey(KeyCode.LeftControl))
+            {
+                ReadUI();
                 LoadScene(DefaultSceneName);
             }
-            if (Input.GetKeyDown(KeyCode.F10) && Input.GetKey(KeyCode.LeftControl))
+            if (Input.GetKeyDown(_RetrunToFloorBig) && Input.GetKey(KeyCode.LeftControl))
             {
                 this.transform.localPosition = new Vector3(0, 500, 0);
                 ClearWater();
@@ -647,22 +762,22 @@ namespace Besiege_Sky_and_Cloud_Mod
                 ClearFloater();
                 GeoTools.UnhideFloorBig();
             }
-            if (Input.GetKeyDown(KeyCode.F6) && Input.GetKey(KeyCode.LeftControl))
+            if (Input.GetKeyDown(_DisplayUI) && Input.GetKey(KeyCode.LeftControl))
             {
                 ShowGUI = !ShowGUI;
             }
         }
         void Start()
         {
-
+            ReadUI();
             this.transform.localPosition = new Vector3(0, 500, 0);
             WWW iteratorVariable0 = new WWW("file:///" + Application.dataPath + "/Mods/Blocks/Shader/Water.unity3d.dll");
             iteratorVariable1 = iteratorVariable0.assetBundle;
-            string[] names = iteratorVariable1.GetAllAssetNames();
-            for (int i = 0; i < names.Length; i++)
-            {
-                Debug.Log(names[i]);
-            }
+            /* string[] names = iteratorVariable1.GetAllAssetNames();
+             for (int i = 0; i < names.Length; i++)
+             {
+                 Debug.Log(names[i]);
+             }*/
             Commands.RegisterCommand("DefaultSceneName", (args, notUses) =>
             {
                 if (args.Length < 1)
@@ -696,30 +811,17 @@ namespace Besiege_Sky_and_Cloud_Mod
             {
                 normal = { textColor = Color.white },
                 alignment = TextAnchor.MiddleCenter,
-                active = { background = Texture2D.whiteTexture ,textColor = Color.black  },
+                active = { background = Texture2D.whiteTexture, textColor = Color.black },
                 margin = { top = 5 },
-                fontSize = 15
+                fontSize = _FontSize
             };
             GUILayout.BeginHorizontal(new GUILayoutOption[0]);
-            if (GUILayout.Button("[翠屏山]", style, new GUILayoutOption[0]) && !AddPiece.isSimulating)
-            { DefaultSceneName = "GreenHill"; LoadScene(DefaultSceneName); }
-            if (GUILayout.Button("[原版铁皮山]", style, new GUILayoutOption[0]) && !AddPiece.isSimulating)
-            { DefaultSceneName = "SteelHillProtoType"; LoadScene(DefaultSceneName); }
-            if (GUILayout.Button("[铁皮山]", style, new GUILayoutOption[0]) && !AddPiece.isSimulating)
-            { DefaultSceneName = "SteelHill"; LoadScene(DefaultSceneName); }
-            if (GUILayout.Button("[航母CVL22]", style, new GUILayoutOption[0]) && !AddPiece.isSimulating)
-            { DefaultSceneName = "Independence"; LoadScene(DefaultSceneName); }
-            if (GUILayout.Button("[赛艇]", style, new GUILayoutOption[0]) && !AddPiece.isSimulating)
-            { DefaultSceneName = "Ocean"; LoadScene(DefaultSceneName); }
-            if (GUILayout.Button("[湖(夏)]", style, new GUILayoutOption[0]) && !AddPiece.isSimulating)
-            { DefaultSceneName = "Lake"; LoadScene(DefaultSceneName); }
-            if (GUILayout.Button("[湖(冬)]", style, new GUILayoutOption[0]) && !AddPiece.isSimulating)
-            { DefaultSceneName = "LakeWinter"; LoadScene(DefaultSceneName); }
-            if (GUILayout.Button("[越野]", style, new GUILayoutOption[0]) && !AddPiece.isSimulating)
-            { DefaultSceneName = "HeightMap"; LoadScene(DefaultSceneName); }
-            if (GUILayout.Button("[大平地]", style, new GUILayoutOption[0]) && !AddPiece.isSimulating)
-            { DefaultSceneName = "Plannar"; LoadScene(DefaultSceneName); }
-            if (GUILayout.Button("[还原]", style, new GUILayoutOption[0]) && !AddPiece.isSimulating)
+            GUILayout.Label("MouseDrag", style, new GUILayoutOption[0]);
+            for(int i = 0; i < _SceneName.Count; i++) { 
+            if (GUILayout.Button(_ButtonName[i], style, new GUILayoutOption[0]) && !AddPiece.isSimulating)
+            { DefaultSceneName = _SceneName[i]; LoadScene(DefaultSceneName); }
+            }
+            if (GUILayout.Button(_FloorBig, style, new GUILayoutOption[0]) && !AddPiece.isSimulating)
             {
                 this.transform.localPosition = new Vector3(0, 500, 0);
                 ClearWater();
@@ -732,7 +834,7 @@ namespace Besiege_Sky_and_Cloud_Mod
             GUI.DragWindow(new Rect(0f, 0f, this.windowRect.width, this.windowRect.height));
         }
         private void OnGUI()
-        {          
+        {
             if (ShowGUI)
             {
                 this.windowRect = GUI.Window(this.windowID, this.windowRect, new GUI.WindowFunction(DoWindow), "", GUIStyle.none);
