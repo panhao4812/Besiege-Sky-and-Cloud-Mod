@@ -27,7 +27,7 @@ namespace Besiege_Sky_and_Cloud_Mod
         private int _accstep = 1;
         //private bool _mode = false;
 
-        private Rect windowRect = new Rect(0f, 240f, 150f, 120f);
+        private Rect windowRect = new Rect(15f, 240f, 150f, 150f);
         private ModUnit Unit = ModUnit.kmh;
         KeyCode _DisplayUI = KeyCode.F9;
         KeyCode _ReloadUI = KeyCode.F5;
@@ -40,7 +40,7 @@ namespace Besiege_Sky_and_Cloud_Mod
         private string _coordinatesUI = "Coordinates";
         private string X = "0"; private string Y = "0"; private string Z = "0";
 
-        private string _velocityUI = "Velocity";
+        private string _velocityUI = "Velocity(km/h)";
         private string V = "0";
 
         private string _distanceUI = "Distance";
@@ -50,19 +50,19 @@ namespace Besiege_Sky_and_Cloud_Mod
         private string MTime = "";
 
         private string _timerUI = "Timer";
-        private DateTime _MStartTime; private string MTimer = "";
+        private DateTime _MStartTime; private string MTimer = ""; bool _TimerSwith = false;
         void DefaultUI()
         {
             _FontSize = 15;
             ShowGUI = true;
-            windowRect = new Rect(0f, 240f, 150f, 120f);
+            windowRect = new Rect(15f, 240f, 150f, 150f);
             _DisplayUI = KeyCode.F9;
             _ReloadUI = KeyCode.F5;
             Unit = 0;
 
             _MStartTime = System.DateTime.Now;
             MTime = _MStartTime.ToShortDateString();
-            MTimer = "00:00:00:00";
+            MTimer = "00:00:00";
 
             _timeUI = "Time";
             _coordinatesUI = "Coordinates";
@@ -83,7 +83,8 @@ namespace Besiege_Sky_and_Cloud_Mod
                 {
                     srd = File.OpenText(Application.dataPath + "/Mods/Blocks/UI/CHN.txt");
                 }
-                else {
+                else
+                {
                     srd = File.OpenText(Application.dataPath + "/Mods/Blocks/UI/EN.txt");
                 }
                 //Debug.Log(Ci + "  " + Screen.width.ToString() + "*" + Screen.height.ToString());
@@ -164,6 +165,9 @@ namespace Besiege_Sky_and_Cloud_Mod
                     }
                 }
                 srd.Close();
+                if (Unit == ModUnit.kmh) { _velocityUI += "(km/h)"; }
+                else if (Unit == ModUnit.ms) { _velocityUI += "(m/s)"; }
+                else if (Unit == ModUnit.mach) { _velocityUI += "(mach)"; }
                 Debug.Log("Besiege_Sky_and_Cloud_Mod==>TimerUISetting Completed!");
             }
             catch (Exception ex)
@@ -177,7 +181,7 @@ namespace Besiege_Sky_and_Cloud_Mod
         void Start()
         {
             ReadUI();
-            Commands.RegisterCommand("VP_GetCenter", delegate (string[] args, IDictionary<string, string> notUses)
+            Commands.RegisterCommand("VP_GetCenter", delegate(string[] args, IDictionary<string, string> notUses)
             {
                 try
                 {
@@ -229,42 +233,52 @@ namespace Besiege_Sky_and_Cloud_Mod
             {
                 GUILayout.BeginHorizontal(new GUILayoutOption[0]);
                 GUILayout.Label(_coordinatesUI, style, new GUILayoutOption[0]);
-                GUILayout.Label(X + " / " + Y + " / " + Z, style, new GUILayoutOption[0]);
+                GUILayout.Label(X + " / " + Y + " / " + Z, style1, new GUILayoutOption[0]);
                 GUILayout.EndHorizontal();
             }
             if (_velocityUI.Length != 0)
             {
                 GUILayout.BeginHorizontal(new GUILayoutOption[0]);
-                GUILayout.Label(_velocityUI + "(" + Unit.ToString() + ")", style, new GUILayoutOption[0]);
-                GUILayout.Label(V, style, new GUILayoutOption[0]);
+                GUILayout.Label(_velocityUI, style, new GUILayoutOption[0]);
+                GUILayout.Label(V, style1, new GUILayoutOption[0]);
                 GUILayout.EndHorizontal();
             }
             if (_distanceUI.Length != 0)
             {
                 GUILayout.BeginHorizontal(new GUILayoutOption[0]);
                 GUILayout.Label(_distanceUI + "(km)", style, new GUILayoutOption[0]);
-                GUILayout.Label(Distance, style, new GUILayoutOption[0]);
+                GUILayout.Label(Distance, style1, new GUILayoutOption[0]);
                 GUILayout.EndHorizontal();
             }
             if (_overloadUI.Length != 0)
             {
                 GUILayout.BeginHorizontal(new GUILayoutOption[0]);
                 GUILayout.Label(_overloadUI + "(g)", style, new GUILayoutOption[0]);
-                GUILayout.Label(Overload, style, new GUILayoutOption[0]);
+                GUILayout.Label(Overload, style1, new GUILayoutOption[0]);
                 GUILayout.EndHorizontal();
             }
             if (_timeUI.Length != 0)
             {
                 GUILayout.BeginHorizontal(new GUILayoutOption[0]);
                 GUILayout.Label(_timeUI, style, new GUILayoutOption[0]);
-                GUILayout.Label(MTime, style, new GUILayoutOption[0]);
+                GUILayout.Label(MTime, style1, new GUILayoutOption[0]);
                 GUILayout.EndHorizontal();
             }
             if (_timerUI.Length != 0)
             {
                 GUILayout.BeginHorizontal(new GUILayoutOption[0]);
-                GUILayout.Label(_timerUI, style, new GUILayoutOption[0]);
-                GUILayout.Label(MTimer, style, new GUILayoutOption[0]);
+                if (GUILayout.Button(_timerUI, style, new GUILayoutOption[0]))
+                {
+                    _TimerSwith = false; MTimer = "00:00:00";
+
+
+                }
+                if (GUILayout.Button("[" + MTimer + "]", style1, new GUILayoutOption[0]))
+                {
+                    _TimerSwith = !_TimerSwith;
+                    if (_TimerSwith && MTimer == "00:00:00") { _MStartTime = DateTime.Now; }
+
+                }
                 GUILayout.EndHorizontal();
             }
             GUILayout.EndVertical();
@@ -298,81 +312,128 @@ namespace Besiege_Sky_and_Cloud_Mod
                 {
                     validBlock = false; return validBlock;
                 }
-                else {
+                else
+                {
                     validBlock = true; return validBlock;
                 }
             }
-            else {
+            else
+            {
                 validBlock = true; return validBlock;
             }
         }
         void FixedUpdate()
         {
+            if (!ShowGUI) return;
             if (AddPiece.isSimulating && isSimulating == false)
             {
                 LoadBlock();
-                _Distance = 0; Distance = "0";
+                if (validBlock) { _Position = startingBlock.GetComponent<Rigidbody>().position; }
+                else { _Position = new Vector3(0, 0, 0); }
                 isSimulating = true;
+                Debug.Log("isSimulating:" + validBlock.ToString());
             }
             else if (!AddPiece.isSimulating && isSimulating == true)
-            {
+            {                        
+                _Distance = 0;
+                Distance = "0";
+                X = "0"; Y = "0"; Z = "0";
+                V = "0";
+                Distance = "0";
+                Overload = "0";
                 isSimulating = false;
+                validBlock = false;
+                
             }
-            if (_coordinatesUI.Length != 0 && validBlock)
+            if (_coordinatesUI.Length != 0)
             {
-                float t1 = startingBlock.GetComponent<Rigidbody>().position.x;
-                float t2 = startingBlock.GetComponent<Rigidbody>().position.y;
-                float t3 = startingBlock.GetComponent<Rigidbody>().position.z;
-                X = string.Format("{0:N0}", t1);
-                Y = string.Format("{0:N0}", t2);
-                Z = string.Format("{0:N0}", t3);
-            }
-            if (_velocityUI.Length != 0 && validBlock)
-            {
-                if (_accstep == 5 || _accstep == 10 || _accstep == 15 || _accstep == 20)
+                if (validBlock)
                 {
-                    Vector3 v1 = startingBlock.GetComponent<Rigidbody>().velocity;
-                    if (Unit == ModUnit.kmh) { V = string.Format("{0:N0}", v1.magnitude * 3.6f); }
-                    if (Unit == ModUnit.ms) { V = string.Format("{0:N0}", v1.magnitude); }
-                    if (Unit == ModUnit.mach) { V = string.Format("{0:N2}", v1.magnitude / 340f); }
+                    float t1 = startingBlock.GetComponent<Rigidbody>().position.x;
+                    float t2 = startingBlock.GetComponent<Rigidbody>().position.y;
+                    float t3 = startingBlock.GetComponent<Rigidbody>().position.z;
+                    X = string.Format("{0:N0}", t1);
+                    Y = string.Format("{0:N0}", t2);
+                    Z = string.Format("{0:N0}", t3);
+                }
+                else
+                {
+                    X = "0"; Y = "0"; Z = "0";
                 }
             }
-            if (_distanceUI.Length != 0 && validBlock)
+            if (_velocityUI.Length != 0)
             {
-                Distance = string.Format("{0:N2}", _Distance / 1000f);
-                Vector3 v2 = _Position - startingBlock.GetComponent<Rigidbody>().position;
-                _Distance += v2.magnitude;
-                _Position = startingBlock.GetComponent<Rigidbody>().position;
-            }
-            if (_overloadUI.Length != 0 && validBlock)
-            {
-                if (_accstep == 10 || _accstep == 20)
+                if (_accstep == 10 || _accstep == 30 ||  _accstep == 50)
                 {
-                    Vector3 v1 = startingBlock.GetComponent<Rigidbody>().velocity;
-                    float _overload = 0;
-                    if (Time.fixedDeltaTime > 0) _overload =
-                               Vector3.Dot((_V - v1), base.transform.up) / Time.fixedDeltaTime / 38.5f + Vector3.Dot(Vector3.up, base.transform.up) - 1;
-                    _V = v1;
-                    Overload = string.Format("{0:N2}", _overload);
+                    if (validBlock)
+                    {
+                        Vector3 v1 = startingBlock.GetComponent<Rigidbody>().velocity;
+                        if (Unit == ModUnit.kmh) { V = string.Format("{0:N0}", v1.magnitude * 3.6f); }
+                        else if (Unit == ModUnit.ms) { V = string.Format("{0:N0}", v1.magnitude); }
+                        else if (Unit == ModUnit.mach) { V = string.Format("{0:N2}", v1.magnitude / 340f); }
+                    }
+                    else
+                    {
+                        V = "0";
+                    }
+                }
+            }
+            if (_distanceUI.Length != 0)
+            {
+                if (_accstep == 10 || _accstep == 20 || _accstep == 30 || _accstep == 40 || _accstep == 50)
+                {
+                    if (validBlock)
+                    {
+                        Distance = string.Format("{0:N2}", _Distance / 1000f);
+                        Vector3 v2 = _Position - startingBlock.GetComponent<Rigidbody>().position;
+                        _Distance += v2.magnitude;
+                        _Position = startingBlock.GetComponent<Rigidbody>().position;
+                    }
+                    else
+                    {
+                        Distance = "0";
+                    }
+                }
+            }
+            if (_overloadUI.Length != 0)
+            {
+                if (_accstep == 10 || _accstep == 30 || _accstep == 50)
+                {
+                    if (validBlock)
+                    {
+                        Vector3 v1 = startingBlock.GetComponent<Rigidbody>().velocity;
+                        float _overload = 0;
+                        if (Time.fixedDeltaTime > 0) _overload =
+                                   Vector3.Dot((_V - v1), base.transform.up) / Time.fixedDeltaTime / 38.5f + Vector3.Dot(Vector3.up, base.transform.up) - 1;
+                        _V = v1;
+                        Overload = string.Format("{0:N2}", _overload);
+                    }
+                    else
+                    {
+                        Overload = "0";
+                    }
                 }
             }
             if (_timeUI.Length != 0)
             {
-                if (_accstep == 20)
+                if (_accstep == 50)
                 {
                     MTime = System.DateTime.Now.ToString("HH:mm:ss");
                 }
             }
             if (_timerUI.Length != 0)
             {
-                if (_accstep == 3 || _accstep == 6 || _accstep == 9 || _accstep == 12 || _accstep == 15 || _accstep == 18 || _accstep == 21)
+                if (_accstep == 7 || _accstep == 14 || _accstep == 21 || _accstep == 28 || _accstep == 35 ||_accstep == 42 || _accstep == 49 )
                 {
-                    TimeSpan span = DateTime.Now - _MStartTime;
-                    DateTime n = new DateTime(span.Ticks);
-                    MTimer = n.ToString("HH:mm:ss:ff");
+                    if (_TimerSwith)
+                    {
+                        TimeSpan span = DateTime.Now - _MStartTime;
+                        DateTime n = new DateTime(span.Ticks);
+                        MTimer = n.ToString("mm:ss:ff");
+                    }
                 }
             }
-            if (_accstep >= 21) _accstep = 0;
+            if (_accstep >= 50) _accstep = 0;
             _accstep++;
         }
     }

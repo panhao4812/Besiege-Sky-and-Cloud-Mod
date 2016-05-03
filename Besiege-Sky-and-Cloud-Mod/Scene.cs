@@ -34,7 +34,7 @@ namespace Besiege_Sky_and_Cloud_Mod
         //UI
         public string DefaultSceneName = "SteelHill";
         private int _FontSize = 15;
-        private Rect windowRect = new Rect(15f, Screen.height - 95f, 650f, 50f);
+        private Rect windowRect = new Rect(15f, Screen.height - 95f, 150f, 50f);
         private int windowID = spaar.ModLoader.Util.GetWindowID();
         private bool ShowGUI = true;
         List<string> _ButtonName = new List<string>();
@@ -49,7 +49,7 @@ namespace Besiege_Sky_and_Cloud_Mod
             _ButtonName.Clear(); _SceneName.Clear(); _FloorBig = "[Default]";
             _FontSize = 15;
             ShowGUI = true;
-            windowRect = new Rect(15f, Screen.height - 95f, 650f, 50f);
+            windowRect = new Rect(15f, Screen.height - 95f, 150f, 50f);
             _ReLoadScene = KeyCode.F7;
             _RetrunToFloorBig = KeyCode.F10;
             _DisplayUI = KeyCode.F6;
