@@ -443,18 +443,21 @@ namespace Besiege_Sky_and_Cloud_Mod
             if (_timerUI.Length != 0)
             {
                 if (_accstep == 7 || _accstep == 14 || _accstep == 21 || _accstep == 28 || _accstep == 35 || _accstep == 42 || _accstep == 49)
-                {                   
-                    if (TriggersIndex == -1)
+                {
+                    if (Triggers != null)
                     {
-                        MTimer = "00:00:00"; _TimerSwith = false;
-                    }
-                    if (TriggersIndex == 0)
-                    {
-                        _MStartTime = DateTime.Now; _TimerSwith = true;
-                    }
-                    if (TriggersIndex==Triggers.Length-1)
-                    {
-                        _TimerSwith = false;
+                        if (TriggersIndex == -1)
+                        {
+                            MTimer = "00:00:00"; _TimerSwith = false;
+                        }
+                        if (TriggersIndex == 0 && _TimerSwith == false)
+                        {
+                            _MStartTime = DateTime.Now; _TimerSwith = true;
+                        }
+                        if (TriggersIndex == Triggers.Length - 1)
+                        {
+                            _TimerSwith = false;
+                        }
                     }
                     if (_TimerSwith)
                     {

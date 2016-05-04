@@ -317,12 +317,12 @@ namespace Besiege_Sky_and_Cloud_Mod
                                 else if (chara[2] == "meshcollider")
                                 {
                                     meshes[i].GetComponent<MeshCollider>().sharedMesh = GeoTools.MeshFromObj(chara[3]);
-                                    meshes[i].GetComponent<MeshCollider>().isTrigger = true;
+                                 
                                 }
                                 else if (chara[2] == "wmeshcollider")
                                 {
                                     meshes[i].GetComponent<MeshCollider>().sharedMesh = GeoTools.WMeshFromObj(chara[3]);
-                                    meshes[i].GetComponent<MeshCollider>().isTrigger = true;
+                                  
                                 }
                                 else if (chara[2] == "dynamicFriction")
                                 {
@@ -448,10 +448,14 @@ namespace Besiege_Sky_and_Cloud_Mod
                                 else if (chara[2] == "meshcollider")
                                 {
                                     meshtriggers[i].GetComponent<MeshCollider>().sharedMesh = GeoTools.MeshFromObj(chara[3]);
+                                    meshtriggers[i].GetComponent<MeshCollider>().convex = true;
+                                    meshtriggers[i].GetComponent<MeshCollider>().isTrigger = true;
                                 }
                                 else if (chara[2] == "wmeshcollider")
                                 {
                                     meshtriggers[i].GetComponent<MeshCollider>().sharedMesh = GeoTools.WMeshFromObj(chara[3]);
+                                    meshtriggers[i].GetComponent<MeshCollider>().convex = true;
+                                    meshtriggers[i].GetComponent<MeshCollider>().isTrigger = true;
                                 }
                                 ///////////////////////////////////////////////
                             }
