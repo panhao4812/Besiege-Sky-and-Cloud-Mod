@@ -20,7 +20,7 @@ namespace Besiege_Sky_and_Cloud_Mod
     public class TimeUI : UnityEngine.MonoBehaviour
     {
         public static bool[] Triggers;
-        public static int TriggersIndex = -1;
+        public static int TriggersIndex = -2;
         private GameObject startingBlock;
         bool validBlock = false; bool isSimulating = false;
         private int windowID = spaar.ModLoader.Util.GetWindowID();
@@ -50,7 +50,9 @@ namespace Besiege_Sky_and_Cloud_Mod
         private string MTime = "";
 
         private string _timerUI = "Timer";
-        private DateTime _MStartTime; private string MTimer = ""; bool _TimerSwith = false;
+        private DateTime _MStartTime; bool _TimerSwith = false;
+        private string MTimer = "";
+
         void DefaultUI()
         {
             _FontSize = 15;
@@ -59,6 +61,13 @@ namespace Besiege_Sky_and_Cloud_Mod
             _DisplayUI = KeyCode.F9;
             _ReloadUI = KeyCode.F5;
             Unit = 0;
+
+            _TimerSwith = false;
+            validBlock = false;
+            isSimulating = false;
+            _Position = new Vector3(0, 0, 0);
+            _V = new Vector3(0, 0, 0);
+            _accstep = 1;
 
             _MStartTime = System.DateTime.Now;
             MTime = _MStartTime.ToShortDateString();
@@ -181,7 +190,7 @@ namespace Besiege_Sky_and_Cloud_Mod
         void Start()
         {
             ReadUI();
-            Commands.RegisterCommand("VP_GetCenter", delegate(string[] args, IDictionary<string, string> notUses)
+            Commands.RegisterCommand("VP_GetCenter", delegate (string[] args, IDictionary<string, string> notUses)
             {
                 try
                 {
@@ -267,17 +276,27 @@ namespace Besiege_Sky_and_Cloud_Mod
             if (_timerUI.Length != 0)
             {
                 GUILayout.BeginHorizontal(new GUILayoutOption[0]);
-                if (GUILayout.Button(_timerUI, style, new GUILayoutOption[0]))
+
+                if (TriggersIndex <= -2)
                 {
-                    _TimerSwith = false; MTimer = "00:00:00";
-
-
+                    if (GUILayout.Button(_timerUI, style, new GUILayoutOption[0]))
+                    {
+                        _TimerSwith = false; MTimer = "00:00:00";
+                    }
+                    if (GUILayout.Button("[" + MTimer + "]", style1, new GUILayoutOption[0]))
+                    {
+                        _TimerSwith = !_TimerSwith;
+                        if (_TimerSwith && MTimer == "00:00:00") { _MStartTime = DateTime.Now; }
+                    }
                 }
-                if (GUILayout.Button("[" + MTimer + "]", style1, new GUILayoutOption[0]))
+                else
                 {
-                    _TimerSwith = !_TimerSwith;
-                    if (_TimerSwith && MTimer == "00:00:00") { _MStartTime = DateTime.Now; }
-
+                    if (GUILayout.Button("[" + (TriggersIndex + 1).ToString() + " / " + Triggers.Length.ToString() + "]", style, new GUILayoutOption[0]))
+                    {
+                        MTimer = "00:00:00"; TriggersIndex = -1;
+                        for (int i = 0; i < Triggers.Length; i++) { Triggers[i] = false; }
+                    }
+                    GUILayout.Label(MTimer, style1, new GUILayoutOption[0]);
                 }
                 GUILayout.EndHorizontal();
             }
@@ -334,7 +353,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                 Debug.Log("isSimulating:" + validBlock.ToString());
             }
             else if (!AddPiece.isSimulating && isSimulating == true)
-            {                        
+            {
                 _Distance = 0;
                 Distance = "0";
                 X = "0"; Y = "0"; Z = "0";
@@ -343,7 +362,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                 Overload = "0";
                 isSimulating = false;
                 validBlock = false;
-                
+
             }
             if (_coordinatesUI.Length != 0)
             {
@@ -363,7 +382,7 @@ namespace Besiege_Sky_and_Cloud_Mod
             }
             if (_velocityUI.Length != 0)
             {
-                if (_accstep == 10 || _accstep == 30 ||  _accstep == 50)
+                if (_accstep == 10 || _accstep == 30 || _accstep == 50)
                 {
                     if (validBlock)
                     {
@@ -423,8 +442,20 @@ namespace Besiege_Sky_and_Cloud_Mod
             }
             if (_timerUI.Length != 0)
             {
-                if (_accstep == 7 || _accstep == 14 || _accstep == 21 || _accstep == 28 || _accstep == 35 ||_accstep == 42 || _accstep == 49 )
-                {
+                if (_accstep == 7 || _accstep == 14 || _accstep == 21 || _accstep == 28 || _accstep == 35 || _accstep == 42 || _accstep == 49)
+                {                   
+                    if (TriggersIndex == -1)
+                    {
+                        MTimer = "00:00:00"; _TimerSwith = false;
+                    }
+                    if (TriggersIndex == 0)
+                    {
+                        _MStartTime = DateTime.Now; _TimerSwith = true;
+                    }
+                    if (TriggersIndex==Triggers.Length-1)
+                    {
+                        _TimerSwith = false;
+                    }
                     if (_TimerSwith)
                     {
                         TimeSpan span = DateTime.Now - _MStartTime;

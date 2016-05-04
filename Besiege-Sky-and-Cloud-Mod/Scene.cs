@@ -164,9 +164,11 @@ namespace Besiege_Sky_and_Cloud_Mod
                         meshtriggers[i].GetComponent<MeshCollider>().sharedMesh.Clear();
                         meshtriggers[i].GetComponent<MeshFilter>().mesh.Clear();
                         meshtriggers[i].AddComponent<MTrigger>();
+                        meshtriggers[i].GetComponent<MTrigger>().Index = i;
                         meshtriggers[i].name = "_meshtrigger" + i.ToString();
                         TimeUI.Triggers[i] = false;
                     }
+                    TimeUI.TriggersIndex = -1;
                 }
             }
             catch (System.Exception ex)
@@ -181,6 +183,7 @@ namespace Besiege_Sky_and_Cloud_Mod
             if (meshtriggers.Length <= 0) return;
             Debug.Log("ClearMeshTriggers");
             TimeUI.Triggers = null;
+            TimeUI.TriggersIndex = -2;
             for (int i = 0; i < meshtriggers.Length; i++)
             {
                 Destroy(meshtriggers[i]);
@@ -314,10 +317,12 @@ namespace Besiege_Sky_and_Cloud_Mod
                                 else if (chara[2] == "meshcollider")
                                 {
                                     meshes[i].GetComponent<MeshCollider>().sharedMesh = GeoTools.MeshFromObj(chara[3]);
+                                    meshes[i].GetComponent<MeshCollider>().isTrigger = true;
                                 }
                                 else if (chara[2] == "wmeshcollider")
                                 {
                                     meshes[i].GetComponent<MeshCollider>().sharedMesh = GeoTools.WMeshFromObj(chara[3]);
+                                    meshes[i].GetComponent<MeshCollider>().isTrigger = true;
                                 }
                                 else if (chara[2] == "dynamicFriction")
                                 {
