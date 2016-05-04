@@ -66,7 +66,8 @@ namespace Besiege_Sky_and_Cloud_Mod
                 {
                     srd = File.OpenText(Application.dataPath + "/Mods/Blocks/UI/CHN.txt");
                 }
-                else {
+                else
+                {
                     srd = File.OpenText(Application.dataPath + "/Mods/Blocks/UI/EN.txt");
                 }
                 Debug.Log(Ci + "  " + Screen.width.ToString() + "*" + Screen.height.ToString());
@@ -130,12 +131,13 @@ namespace Besiege_Sky_and_Cloud_Mod
                     }
                 }
                 srd.Close();
-                if (_ButtonName.Count != _SceneName.Count  || _ButtonName.Count < 0)
+                if (_ButtonName.Count != _SceneName.Count || _ButtonName.Count < 0)
                 {
                     Debug.Log("Besiege_Sky_and_Cloud_Mod==>LoadUISetting Failed!Button Error!");
                     _ButtonName.Clear(); _SceneName.Clear();
                 }
-                else {
+                else
+                {
                     Debug.Log("Besiege_Sky_and_Cloud_Mod==>LoadUISetting Completed!");
                 }
             }
@@ -317,12 +319,12 @@ namespace Besiege_Sky_and_Cloud_Mod
                                 else if (chara[2] == "meshcollider")
                                 {
                                     meshes[i].GetComponent<MeshCollider>().sharedMesh = GeoTools.MeshFromObj(chara[3]);
-                                 
+
                                 }
                                 else if (chara[2] == "wmeshcollider")
                                 {
                                     meshes[i].GetComponent<MeshCollider>().sharedMesh = GeoTools.WMeshFromObj(chara[3]);
-                                  
+
                                 }
                                 else if (chara[2] == "dynamicFriction")
                                 {
@@ -396,7 +398,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                                     meshes[i].transform.Rotate(new Vector3(
                                     Convert.ToSingle(chara[3]),
                                     Convert.ToSingle(chara[4]),
-                                    Convert.ToSingle(chara[5])),Space.Self);                                 
+                                    Convert.ToSingle(chara[5])), Space.Self);
                                 }
                                 else if (chara[2] == "euleranglesworld")
                                 {
@@ -404,6 +406,17 @@ namespace Besiege_Sky_and_Cloud_Mod
                                     Convert.ToSingle(chara[3]),
                                     Convert.ToSingle(chara[4]),
                                     Convert.ToSingle(chara[5])), Space.World);
+                                }
+                                else if (chara[2] == "fromtorotation")
+                                {
+                                    meshes[i].transform.rotation = Quaternion.FromToRotation(
+                                  new Vector3(Convert.ToSingle(chara[3]),
+                                    Convert.ToSingle(chara[4]),
+                                    Convert.ToSingle(chara[5])),
+                                    new Vector3(Convert.ToSingle(chara[6]),
+                                    Convert.ToSingle(chara[7]),
+                                    Convert.ToSingle(chara[8]))
+                                    );
                                 }
                             }
                             else if (chara[0] == "Triggers")
@@ -478,6 +491,17 @@ namespace Besiege_Sky_and_Cloud_Mod
                                     Convert.ToSingle(chara[4]),
                                     Convert.ToSingle(chara[5]),
                                     Convert.ToSingle(chara[6]));
+                                }
+                                else if (chara[2] == "fromtorotation")
+                                {
+                                    meshes[i].transform.rotation = Quaternion.FromToRotation(
+                                  new Vector3(Convert.ToSingle(chara[3]),
+                                    Convert.ToSingle(chara[4]),
+                                    Convert.ToSingle(chara[5])),
+                                    new Vector3(Convert.ToSingle(chara[6]),
+                                    Convert.ToSingle(chara[7]),
+                                    Convert.ToSingle(chara[8]))
+                                    );
                                 }
                                 else if (chara[2] == "eulerangles")
                                 {
@@ -862,9 +886,10 @@ namespace Besiege_Sky_and_Cloud_Mod
             };
             GUILayout.BeginHorizontal(new GUILayoutOption[0]);
             GUILayout.Label("MouseDrag", style, new GUILayoutOption[0]);
-            for(int i = 0; i < _SceneName.Count; i++) { 
-            if (GUILayout.Button(_ButtonName[i], style, new GUILayoutOption[0]) && !AddPiece.isSimulating)
-            { DefaultSceneName = _SceneName[i]; LoadScene(DefaultSceneName); }
+            for (int i = 0; i < _SceneName.Count; i++)
+            {
+                if (GUILayout.Button(_ButtonName[i], style, new GUILayoutOption[0]) && !AddPiece.isSimulating)
+                { DefaultSceneName = _SceneName[i]; LoadScene(DefaultSceneName); }
             }
             if (GUILayout.Button(_FloorBig, style, new GUILayoutOption[0]) && !AddPiece.isSimulating)
             {
