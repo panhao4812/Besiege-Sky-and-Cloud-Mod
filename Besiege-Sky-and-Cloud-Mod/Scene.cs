@@ -385,11 +385,25 @@ namespace Besiege_Sky_and_Cloud_Mod
                                 }
                                 else if (chara[2] == "rotation")
                                 {
-                                    meshes[i].transform.localRotation = new Quaternion(
+                                    meshes[i].transform.rotation = new Quaternion(
                                     Convert.ToSingle(chara[3]),
                                     Convert.ToSingle(chara[4]),
                                     Convert.ToSingle(chara[5]),
                                     Convert.ToSingle(chara[6]));
+                                }
+                                else if (chara[2] == "eulerangles")
+                                {
+                                    meshes[i].transform.Rotate(new Vector3(
+                                    Convert.ToSingle(chara[3]),
+                                    Convert.ToSingle(chara[4]),
+                                    Convert.ToSingle(chara[5])),Space.Self);                                 
+                                }
+                                else if (chara[2] == "euleranglesworld")
+                                {
+                                    meshes[i].transform.Rotate(new Vector3(
+                                    Convert.ToSingle(chara[3]),
+                                    Convert.ToSingle(chara[4]),
+                                    Convert.ToSingle(chara[5])), Space.World);
                                 }
                             }
                             else if (chara[0] == "Triggers")
@@ -456,6 +470,28 @@ namespace Besiege_Sky_and_Cloud_Mod
                                     meshtriggers[i].GetComponent<MeshCollider>().sharedMesh = GeoTools.WMeshFromObj(chara[3]);
                                     meshtriggers[i].GetComponent<MeshCollider>().convex = true;
                                     meshtriggers[i].GetComponent<MeshCollider>().isTrigger = true;
+                                }
+                                else if (chara[2] == "rotation")
+                                {
+                                    meshes[i].transform.rotation = new Quaternion(
+                                    Convert.ToSingle(chara[3]),
+                                    Convert.ToSingle(chara[4]),
+                                    Convert.ToSingle(chara[5]),
+                                    Convert.ToSingle(chara[6]));
+                                }
+                                else if (chara[2] == "eulerangles")
+                                {
+                                    meshes[i].transform.Rotate(new Vector3(
+                                    Convert.ToSingle(chara[3]),
+                                    Convert.ToSingle(chara[4]),
+                                    Convert.ToSingle(chara[5])), Space.Self);
+                                }
+                                else if (chara[2] == "euleranglesworld")
+                                {
+                                    meshes[i].transform.Rotate(new Vector3(
+                                    Convert.ToSingle(chara[3]),
+                                    Convert.ToSingle(chara[4]),
+                                    Convert.ToSingle(chara[5])), Space.World);
                                 }
                                 ///////////////////////////////////////////////
                             }
@@ -673,6 +709,7 @@ namespace Besiege_Sky_and_Cloud_Mod
         }
         void ClearCloud()
         {
+            CloudsColor = new Color(1f, 1f, 1f, 1);
             if (clouds == null) return;
             if (clouds.Length <= 0) return;
             Debug.Log("ClearCloud");
@@ -680,7 +717,6 @@ namespace Besiege_Sky_and_Cloud_Mod
             {
                 Destroy(clouds[i]);
             }
-
         }
         void ClearMeshes()
         {
