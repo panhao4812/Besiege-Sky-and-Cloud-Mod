@@ -88,7 +88,8 @@ namespace Besiege_Sky_and_Cloud_Mod
             {
                 StreamReader srd;
                 string Ci = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
-                if (Ci == "zh-CN")
+                string ParentPath = Directory.GetParent(Application.dataPath).FullName;
+                if (Ci == "zh-CN" || File.Exists(ParentPath + "/steam_api.dll"))
                 {
                     srd = File.OpenText(Application.dataPath + "/Mods/Blocks/UI/CHN.txt");
                 }
