@@ -27,7 +27,7 @@ namespace Besiege_Sky_and_Cloud_Mod
         private int _accstep = 1;
         //private bool _mode = false;
 
-        private Rect windowRect = new Rect(15f, 240f, 150f, 150f);
+        private Rect windowRect = new Rect(15f, 100f, 150f, 150f);
         private ModUnit Unit = ModUnit.kmh;
         KeyCode _DisplayUI = KeyCode.F9;
         KeyCode _ReloadUI = KeyCode.F5;
@@ -57,7 +57,7 @@ namespace Besiege_Sky_and_Cloud_Mod
         {
             _FontSize = 15;
             ShowGUI = true;
-            windowRect = new Rect(15f, 240f, 150f, 150f);
+            windowRect = new Rect(15f, 100f, 150f, 150f);
             _DisplayUI = KeyCode.F9;
             _ReloadUI = KeyCode.F5;
             Unit = 0;
@@ -89,7 +89,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                 StreamReader srd;
                 string Ci = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
                 string ParentPath = Directory.GetParent(Application.dataPath).FullName;
-                if (Ci == "zh-CN" || File.Exists(ParentPath + "/steam_api.dll"))
+                if (Ci == "zh-CN" || File.Exists(ParentPath + "/3DMGAME.ini"))
                 {
                     srd = File.OpenText(Application.dataPath + "/Mods/Blocks/UI/CHN.txt");
                 }

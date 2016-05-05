@@ -34,7 +34,7 @@ namespace Besiege_Sky_and_Cloud_Mod
         //UI
         public string DefaultSceneName = "SteelHill";
         private int _FontSize = 15;
-        private Rect windowRect = new Rect(15f, Screen.height - 95f, 150f, 50f);
+        private Rect windowRect = new Rect(15f, Screen.height - 95f, 800f, 50f);
         private int windowID = spaar.ModLoader.Util.GetWindowID();
         private bool ShowGUI = true;
         List<string> _ButtonName = new List<string>();
@@ -49,7 +49,7 @@ namespace Besiege_Sky_and_Cloud_Mod
             _ButtonName.Clear(); _SceneName.Clear(); _FloorBig = "[Default]";
             _FontSize = 15;
             ShowGUI = true;
-            windowRect = new Rect(15f, Screen.height - 95f, 150f, 50f);
+            windowRect = new Rect(15f, Screen.height - 95f, 800f, 50f);
             _ReLoadScene = KeyCode.F7;
             _RetrunToFloorBig = KeyCode.F10;
             _DisplayUI = KeyCode.F6;
@@ -69,7 +69,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                 // steam_api
                 string Ci = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
                 string ParentPath = Directory.GetParent(Application.dataPath).FullName;
-                if (Ci == "zh-CN" || File.Exists(ParentPath + "/steam_api.dll"))
+                if (Ci == "zh-CN" || File.Exists(ParentPath + "/3DMGAME.ini"))
                 {
                     Debug.Log("zh-CN UI");
                     srd = File.OpenText(Application.dataPath + "/Mods/Blocks/UI/CHN.txt");
@@ -254,17 +254,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                                 else if(chara[2] == "wmesh")
                                 {
                                     meshes[i].GetComponent<MeshFilter>().mesh = GeoTools.WMeshFromObj(chara[3]);
-                                }
-                                else if (chara[2] == "fire")
-                                {
-                                    meshes[i].AddComponent<FireController>();
-                                    meshes[i].AddComponent<FireTag>();
-                                    meshes[i].GetComponent<FireTag>().fireControllerCode = meshes[i].GetComponent<FireController>();
-                                    meshes[i].GetComponent<FireTag>().fireControllerCode.igniteDelay = 0f;
-                                    meshes[i].GetComponent<FireTag>().Ignite();
-                                    meshes[i].GetComponent<FireTag>().fireControllerCode.onFire = true;
-                                    meshes[i].GetComponent<FireTag>().burning = true;
-                                }
+                                }                              
                                 else if(chara[2] == "emesh")
                                 {
                                     meshes[i].GetComponent<MeshFilter>().mesh = GeoTools.EMeshFromObj(chara[3]);
@@ -309,7 +299,14 @@ namespace Besiege_Sky_and_Cloud_Mod
                                         Debug.Log(ex.ToString());
                                     }
                                 }
-
+                                else if (chara[2] == "color")
+                                {
+                                    meshes[i].GetComponent<MeshRenderer>().material.color= new Color(
+                                    Convert.ToSingle(chara[3]),
+                                    Convert.ToSingle(chara[4]),
+                                    Convert.ToSingle(chara[5]),
+                                    Convert.ToSingle(chara[6]));
+                                }
                                 else if (chara[2] == "shader")
                                 {
                                     meshes[i].GetComponent<MeshRenderer>().material.shader = Shader.Find(chara[3]);
