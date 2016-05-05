@@ -104,27 +104,8 @@ namespace Besiege_Sky_and_Cloud_Mod
                     string[] chara = str.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
                     if (chara.Length > 2)
                     {
-                        if (chara[0] == Screen.width.ToString() + "*" + Screen.height.ToString() + "_Timer")
+                        if (chara[0] =="_Timer")
                         {
-                            if (chara[1] == "fontsize")
-                            {
-                                _FontSize = Convert.ToInt32(chara[2]);
-                            }
-                            else if (chara[1] == "window_poistion")
-                            {
-                                windowRect.x = Convert.ToSingle(chara[2]);
-                                windowRect.y = Convert.ToSingle(chara[3]);
-                            }
-                            else if (chara[1] == "window_scale")
-                            {
-                                windowRect.width = Convert.ToSingle(chara[2]);
-                                windowRect.height = Convert.ToSingle(chara[3]);
-                            }
-                            else if (chara[1] == "show_on_start")
-                            {
-                                if (chara[2] == "0") ShowGUI = false;
-                                else ShowGUI = true;
-                            }
                             if (chara[1] == "unit")
                             {
                                 if (chara[2] == "kmh") this.Unit = ModUnit.kmh;
@@ -172,6 +153,28 @@ namespace Besiege_Sky_and_Cloud_Mod
                                 if (GeoTools.StringToKeyCode(chara[2], out outputkey)) _ReloadUI = outputkey;
                             }
                         }
+                        else if (chara[0] == Screen.width.ToString() + "*" + Screen.height.ToString() + "_Timer")
+                        {
+                            if (chara[1] == "fontsize")
+                            {
+                                _FontSize = Convert.ToInt32(chara[2]);
+                            }
+                            else if (chara[1] == "window_poistion")
+                            {
+                                windowRect.x = Convert.ToSingle(chara[2]);
+                                windowRect.y = Convert.ToSingle(chara[3]);
+                            }
+                            else if (chara[1] == "window_scale")
+                            {
+                                windowRect.width = Convert.ToSingle(chara[2]);
+                                windowRect.height = Convert.ToSingle(chara[3]);
+                            }
+                            else if (chara[1] == "show_on_start")
+                            {
+                                if (chara[2] == "0") ShowGUI = false;
+                                else ShowGUI = true;
+                            }                       
+                        }
                     }
                 }
                 srd.Close();
@@ -191,7 +194,7 @@ namespace Besiege_Sky_and_Cloud_Mod
         void Start()
         {
             ReadUI();
-            Commands.RegisterCommand("VP_GetCenter", delegate (string[] args, IDictionary<string, string> notUses)
+            Commands.RegisterCommand("VP_GetCenter", delegate(string[] args, IDictionary<string, string> notUses)
             {
                 try
                 {

@@ -55,18 +55,21 @@ namespace Besiege_Sky_and_Cloud_Mod
             _DisplayUI = KeyCode.F6;
             _ReloadUI = KeyCode.F5;
         }
-      
+        void DefaultItem()
+        {
+            _ButtonName.Clear(); _SceneName.Clear();
+        }
         void ReadUI()
         {
             DefaultUI();
             try
             {
                 StreamReader srd;
-               // Debug.Log(System.Globalization.CultureInfo.InstalledUICulture.NativeName);//CHS
-               // steam_api
+                // Debug.Log(System.Globalization.CultureInfo.InstalledUICulture.NativeName);//CHS
+                // steam_api
                 string Ci = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
                 string ParentPath = Directory.GetParent(Application.dataPath).FullName;
-                if (Ci == "zh-CN" || File.Exists(ParentPath+"/steam_api.dll"))
+                if (Ci == "zh-CN" || File.Exists(ParentPath + "/steam_api.dll"))
                 {
                     Debug.Log("zh-CN UI");
                     srd = File.OpenText(Application.dataPath + "/Mods/Blocks/UI/CHN.txt");
@@ -83,28 +86,9 @@ namespace Besiege_Sky_and_Cloud_Mod
                     string[] chara = str.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
                     if (chara.Length > 2)
                     {
-                        if (chara[0] == Screen.width.ToString() + "*" + Screen.height.ToString() + "_Scene")
+                        if (chara[0] == "_Scene")
                         {
-                            if (chara[1] == "fontsize")
-                            {
-                                _FontSize = Convert.ToInt32(chara[2]);
-                            }
-                            else if (chara[1] == "window_poistion")
-                            {
-                                windowRect.x = Convert.ToSingle(chara[2]);
-                                windowRect.y = Convert.ToSingle(chara[3]);
-                            }
-                            else if (chara[1] == "window_scale")
-                            {
-                                windowRect.width = Convert.ToSingle(chara[2]);
-                                windowRect.height = Convert.ToSingle(chara[3]);
-                            }
-                            else if (chara[1] == "show_on_start")
-                            {
-                                if (chara[2] == "0") ShowGUI = false;
-                                else ShowGUI = true;
-                            }
-                            else if (chara[1] == "buttonname")
+                            if (chara[1] == "buttonname")
                             {
                                 _ButtonName.Add(chara[2]);
                             }
@@ -134,13 +118,35 @@ namespace Besiege_Sky_and_Cloud_Mod
                                 if (GeoTools.StringToKeyCode(chara[2], out outputkey)) _ReloadUI = outputkey;
                             }
                         }
+                        else if (chara[0] == Screen.width.ToString() + "*" + Screen.height.ToString() + "_Scene")
+                        {
+                            if (chara[1] == "fontsize")
+                            {
+                                _FontSize = Convert.ToInt32(chara[2]);
+                            }
+                            else if (chara[1] == "window_poistion")
+                            {
+                                windowRect.x = Convert.ToSingle(chara[2]);
+                                windowRect.y = Convert.ToSingle(chara[3]);
+                            }
+                            else if (chara[1] == "window_scale")
+                            {
+                                windowRect.width = Convert.ToSingle(chara[2]);
+                                windowRect.height = Convert.ToSingle(chara[3]);
+                            }
+                            else if (chara[1] == "show_on_start")
+                            {
+                                if (chara[2] == "0") ShowGUI = false;
+                                else ShowGUI = true;
+                            }
+                        }
                     }
                 }
                 srd.Close();
                 if (_ButtonName.Count != _SceneName.Count || _ButtonName.Count < 0)
                 {
                     Debug.Log("Besiege_Sky_and_Cloud_Mod==>LoadUISetting Failed!Button Error!");
-                    _ButtonName.Clear(); _SceneName.Clear();
+                    DefaultItem();
                 }
                 else
                 {
