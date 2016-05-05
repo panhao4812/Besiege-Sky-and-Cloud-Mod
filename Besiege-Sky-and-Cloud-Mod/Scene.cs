@@ -251,15 +251,25 @@ namespace Besiege_Sky_and_Cloud_Mod
                                 {
                                     meshes[i].GetComponent<MeshFilter>().mesh = GeoTools.MeshFromObj(chara[3]);
                                 }
-                                if (chara[2] == "wmesh")
+                                else if(chara[2] == "wmesh")
                                 {
                                     meshes[i].GetComponent<MeshFilter>().mesh = GeoTools.WMeshFromObj(chara[3]);
                                 }
-                                if (chara[2] == "emesh")
+                                else if (chara[2] == "fire")
+                                {
+                                    meshes[i].AddComponent<FireController>();
+                                    meshes[i].AddComponent<FireTag>();
+                                    meshes[i].GetComponent<FireTag>().fireControllerCode = meshes[i].GetComponent<FireController>();
+                                    meshes[i].GetComponent<FireTag>().fireControllerCode.igniteDelay = 0f;
+                                    meshes[i].GetComponent<FireTag>().Ignite();
+                                    meshes[i].GetComponent<FireTag>().fireControllerCode.onFire = true;
+                                    meshes[i].GetComponent<FireTag>().burning = true;
+                                }
+                                else if(chara[2] == "emesh")
                                 {
                                     meshes[i].GetComponent<MeshFilter>().mesh = GeoTools.EMeshFromObj(chara[3]);
                                 }
-                                if (chara[2] == "heightmapmesh")
+                                else if(chara[2] == "heightmapmesh")
                                 {
                                     Mesh mesh = GeoTools.LoadHeightMap(
                                     Convert.ToSingle(chara[3]),
@@ -272,7 +282,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                                     meshes[i].GetComponent<MeshFilter>().mesh = mesh;
                                     meshes[i].GetComponent<MeshCollider>().sharedMesh = mesh;
                                 }
-                                if (chara[2] == "plannarmesh")
+                                else if (chara[2] == "plannarmesh")
                                 {
                                     Mesh mesh = GeoTools.MeshFromPoints(
                                     Convert.ToInt32(chara[3]),
@@ -307,6 +317,10 @@ namespace Besiege_Sky_and_Cloud_Mod
                                 else if (chara[2] == "texture")
                                 {
                                     meshes[i].GetComponent<MeshRenderer>().material.mainTexture = GeoTools.LoadTexture(chara[3]);
+                                }
+                                else if (chara[2] == "settexture")
+                                {
+                                    meshes[i].GetComponent<MeshRenderer>().material.SetTexture(chara[3],GeoTools.LoadTexture(chara[4]));
                                 }
                                 else if (chara[2] == "setcolor")
                                 {
@@ -446,18 +460,18 @@ namespace Besiege_Sky_and_Cloud_Mod
                                 {
                                     meshtriggers[i].GetComponent<MeshFilter>().mesh = GeoTools.MeshFromObj(chara[3]);
                                 }
-                                if (chara[2] == "wmesh")
+                                else if(chara[2] == "wmesh")
                                 {
                                     meshtriggers[i].GetComponent<MeshFilter>().mesh = GeoTools.WMeshFromObj(chara[3]);
                                 }
-                                if (chara[2] == "scale")
+                                else if(chara[2] == "scale")
                                 {
                                     meshtriggers[i].transform.localScale = new Vector3(
                                    Convert.ToSingle(chara[3]),
                                    Convert.ToSingle(chara[4]),
                                    Convert.ToSingle(chara[5]));
                                 }
-                                if (chara[2] == "location")
+                                else if(chara[2] == "location")
                                 {
                                     meshtriggers[i].transform.localPosition = new Vector3(
                                     Convert.ToSingle(chara[3]),
