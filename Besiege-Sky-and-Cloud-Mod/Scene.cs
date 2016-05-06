@@ -236,6 +236,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                         string[] chara = str.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
                         if (chara.Length > 2)
                         {
+                            #region Meshes
                             if (chara[0] == "Meshes")
                             {
                                 if (chara[1] == "size")
@@ -251,15 +252,15 @@ namespace Besiege_Sky_and_Cloud_Mod
                                 {
                                     meshes[i].GetComponent<MeshFilter>().mesh = GeoTools.MeshFromObj(chara[3]);
                                 }
-                                else if(chara[2] == "wmesh")
+                                else if (chara[2] == "wmesh")
                                 {
                                     meshes[i].GetComponent<MeshFilter>().mesh = GeoTools.WMeshFromObj(chara[3]);
-                                }                              
-                                else if(chara[2] == "emesh")
+                                }
+                                else if (chara[2] == "emesh")
                                 {
                                     meshes[i].GetComponent<MeshFilter>().mesh = GeoTools.EMeshFromObj(chara[3]);
                                 }
-                                else if(chara[2] == "heightmapmesh")
+                                else if (chara[2] == "heightmapmesh")
                                 {
                                     Mesh mesh = GeoTools.LoadHeightMap(
                                     Convert.ToSingle(chara[3]),
@@ -282,6 +283,20 @@ namespace Besiege_Sky_and_Cloud_Mod
                                     meshes[i].GetComponent<MeshFilter>().mesh = mesh;
                                     meshes[i].GetComponent<MeshCollider>().sharedMesh = mesh;
                                 }
+
+                                else if (chara[2] == "color")
+                                {
+                                    meshes[i].GetComponent<MeshRenderer>().material.color = new Color(
+                                    Convert.ToSingle(chara[3]),
+                                    Convert.ToSingle(chara[4]),
+                                    Convert.ToSingle(chara[5]),
+                                    Convert.ToSingle(chara[6]));
+                                }
+
+                                else if (chara[2] == "texture")
+                                {
+                                    meshes[i].GetComponent<MeshRenderer>().material.mainTexture = GeoTools.LoadTexture(chara[3]);
+                                }
                                 else if (chara[2] == "stexture")
                                 {
                                     meshes[i].GetComponent<MeshRenderer>().sharedMaterial.mainTexture = GeoTools.LoadTexture(chara[3]);
@@ -299,25 +314,13 @@ namespace Besiege_Sky_and_Cloud_Mod
                                         Debug.Log(ex.ToString());
                                     }
                                 }
-                                else if (chara[2] == "color")
-                                {
-                                    meshes[i].GetComponent<MeshRenderer>().material.color= new Color(
-                                    Convert.ToSingle(chara[3]),
-                                    Convert.ToSingle(chara[4]),
-                                    Convert.ToSingle(chara[5]),
-                                    Convert.ToSingle(chara[6]));
-                                }
                                 else if (chara[2] == "shader")
                                 {
                                     meshes[i].GetComponent<MeshRenderer>().material.shader = Shader.Find(chara[3]);
                                 }
-                                else if (chara[2] == "texture")
-                                {
-                                    meshes[i].GetComponent<MeshRenderer>().material.mainTexture = GeoTools.LoadTexture(chara[3]);
-                                }
                                 else if (chara[2] == "settexture")
                                 {
-                                    meshes[i].GetComponent<MeshRenderer>().material.SetTexture(chara[3],GeoTools.LoadTexture(chara[4]));
+                                    meshes[i].GetComponent<MeshRenderer>().material.SetTexture(chara[3], GeoTools.LoadTexture(chara[4]));
                                 }
                                 else if (chara[2] == "setcolor")
                                 {
@@ -442,6 +445,8 @@ namespace Besiege_Sky_and_Cloud_Mod
                                     );
                                 }
                             }
+                            #endregion
+                            #region Triggers
                             else if (chara[0] == "Triggers")
                             {
                                 if (chara[1] == "size")
@@ -457,27 +462,56 @@ namespace Besiege_Sky_and_Cloud_Mod
                                 {
                                     meshtriggers[i].GetComponent<MeshFilter>().mesh = GeoTools.MeshFromObj(chara[3]);
                                 }
-                                else if(chara[2] == "wmesh")
+                                else if (chara[2] == "wmesh")
                                 {
                                     meshtriggers[i].GetComponent<MeshFilter>().mesh = GeoTools.WMeshFromObj(chara[3]);
                                 }
-                                else if(chara[2] == "scale")
+                                else if (chara[2] == "scale")
                                 {
                                     meshtriggers[i].transform.localScale = new Vector3(
                                    Convert.ToSingle(chara[3]),
                                    Convert.ToSingle(chara[4]),
                                    Convert.ToSingle(chara[5]));
                                 }
-                                else if(chara[2] == "location")
+                                else if (chara[2] == "location")
                                 {
                                     meshtriggers[i].transform.localPosition = new Vector3(
                                     Convert.ToSingle(chara[3]),
                                     Convert.ToSingle(chara[4]),
                                     Convert.ToSingle(chara[5]));
                                 }
-                                else if (chara[2] == "stexture")
+                                else if (chara[2] == "rotation")
                                 {
-                                    meshtriggers[i].GetComponent<MeshRenderer>().sharedMaterial.mainTexture = GeoTools.LoadTexture(chara[3]);
+                                    meshes[i].transform.rotation = new Quaternion(
+                                    Convert.ToSingle(chara[3]),
+                                    Convert.ToSingle(chara[4]),
+                                    Convert.ToSingle(chara[5]),
+                                    Convert.ToSingle(chara[6]));
+                                }
+                                else if (chara[2] == "eulerangles")
+                                {
+                                    meshes[i].transform.Rotate(new Vector3(
+                                    Convert.ToSingle(chara[3]),
+                                    Convert.ToSingle(chara[4]),
+                                    Convert.ToSingle(chara[5])), Space.Self);
+                                }
+                                else if (chara[2] == "euleranglesworld")
+                                {
+                                    meshes[i].transform.Rotate(new Vector3(
+                                    Convert.ToSingle(chara[3]),
+                                    Convert.ToSingle(chara[4]),
+                                    Convert.ToSingle(chara[5])), Space.World);
+                                }
+                                else if (chara[2] == "fromtorotation")
+                                {
+                                    meshes[i].transform.rotation = Quaternion.FromToRotation(
+                                  new Vector3(Convert.ToSingle(chara[3]),
+                                    Convert.ToSingle(chara[4]),
+                                    Convert.ToSingle(chara[5])),
+                                    new Vector3(Convert.ToSingle(chara[6]),
+                                    Convert.ToSingle(chara[7]),
+                                    Convert.ToSingle(chara[8]))
+                                    );
                                 }
                                 else if (chara[2] == "shader")
                                 {
@@ -486,6 +520,10 @@ namespace Besiege_Sky_and_Cloud_Mod
                                 else if (chara[2] == "texture")
                                 {
                                     meshtriggers[i].GetComponent<MeshRenderer>().material.mainTexture = GeoTools.LoadTexture(chara[3]);
+                                }
+                                else if (chara[2] == "stexture")
+                                {
+                                    meshtriggers[i].GetComponent<MeshRenderer>().sharedMaterial.mainTexture = GeoTools.LoadTexture(chara[3]);
                                 }
                                 else if (chara[2] == "color")
                                 {
@@ -507,41 +545,10 @@ namespace Besiege_Sky_and_Cloud_Mod
                                     meshtriggers[i].GetComponent<MeshCollider>().convex = true;
                                     meshtriggers[i].GetComponent<MeshCollider>().isTrigger = true;
                                 }
-                                else if (chara[2] == "rotation")
-                                {
-                                    meshes[i].transform.rotation = new Quaternion(
-                                    Convert.ToSingle(chara[3]),
-                                    Convert.ToSingle(chara[4]),
-                                    Convert.ToSingle(chara[5]),
-                                    Convert.ToSingle(chara[6]));
-                                }
-                                else if (chara[2] == "fromtorotation")
-                                {
-                                    meshes[i].transform.rotation = Quaternion.FromToRotation(
-                                  new Vector3(Convert.ToSingle(chara[3]),
-                                    Convert.ToSingle(chara[4]),
-                                    Convert.ToSingle(chara[5])),
-                                    new Vector3(Convert.ToSingle(chara[6]),
-                                    Convert.ToSingle(chara[7]),
-                                    Convert.ToSingle(chara[8]))
-                                    );
-                                }
-                                else if (chara[2] == "eulerangles")
-                                {
-                                    meshes[i].transform.Rotate(new Vector3(
-                                    Convert.ToSingle(chara[3]),
-                                    Convert.ToSingle(chara[4]),
-                                    Convert.ToSingle(chara[5])), Space.Self);
-                                }
-                                else if (chara[2] == "euleranglesworld")
-                                {
-                                    meshes[i].transform.Rotate(new Vector3(
-                                    Convert.ToSingle(chara[3]),
-                                    Convert.ToSingle(chara[4]),
-                                    Convert.ToSingle(chara[5])), Space.World);
-                                }
                                 ///////////////////////////////////////////////
                             }
+                            #endregion
+                            #region Cloud
                             else if (chara[0] == "Cloud")
                             {
 
@@ -573,13 +580,62 @@ namespace Besiege_Sky_and_Cloud_Mod
                                     Convert.ToSingle(chara[5]));
                                 }
                             }
+                            #endregion
+                            #region Camera
                             else if (chara[0] == "Camera")
                             {
                                 if (chara[1] == "farClipPlane")
                                 {
-                                    GameObject.Find("Main Camera").GetComponent<Camera>().farClipPlane = Convert.ToInt32(chara[2]);
+                                    try
+                                    {
+                                        GameObject.Find("Main Camera").GetComponent<Camera>().farClipPlane = Convert.ToInt32(chara[2]);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Debug.Log("farClipPlane Error");
+                                        Debug.Log(ex.ToString());
+                                    }
+                                }
+                                else if (chara[1] == "focusLerpSmooth")
+                                {
+                                    try
+                                    {
+                                        if (chara[2] == "Infinity")
+                                        {
+                                            GameObject.Find("Main Camera").GetComponent<MouseOrbit>().focusLerpSmooth = float.PositiveInfinity;
+                                        }
+                                        else
+                                        {
+                                            GameObject.Find("Main Camera").GetComponent<MouseOrbit>().focusLerpSmooth = Convert.ToSingle(chara[2]);
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Debug.Log("focusLerpSmooth Error");
+                                        Debug.Log(ex.ToString());
+                                    }
+                                }
+                                else if (chara[1] == "fog")
+                                {
+                                    try
+                                    {
+                                        GameObject.Find("Fog Volume").transform.localScale = new Vector3(0, 0, 0);
+                                    }
+                                    catch
+                                    {
+                                        try
+                                        {
+                                            GameObject.Find("Fog Volume Dark").transform.localScale = new Vector3(0, 0, 0);
+                                        }
+                                        catch
+                                        {
+                                            Debug.Log("fog error");
+                                        }
+                                    }
                                 }
                             }
+                            #endregion
+                            #region Water
                             else if (chara[0] == "Water")
                             {
                                 if (chara[1] == "size")
@@ -617,6 +673,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                                     Convert.ToSingle(chara[5]));
                                 }
                             }
+                            #endregion
                         }
                     }
                 }
@@ -636,7 +693,6 @@ namespace Besiege_Sky_and_Cloud_Mod
                 Debug.Log(ex.ToString());
                 return;
             }
-
         }
         void LoadCloud()
         {
@@ -735,7 +791,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                         }
                     }
                 }
-                if (Mwater.Length == 1) Mwater[0].transform.localRotation = this.waterRotation;
+                if (Mwater.Length == 1) Mwater[0].transform.rotation = this.waterRotation;
             }
             catch (Exception ex)
             {
