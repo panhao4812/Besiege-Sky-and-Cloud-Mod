@@ -292,7 +292,13 @@ namespace Besiege_Sky_and_Cloud_Mod
                                     Convert.ToSingle(chara[5]),
                                     Convert.ToSingle(chara[6]));
                                 }
-
+                                else if (chara[2] == "shadow")
+                                {
+                                    if (Convert.ToInt32(chara[3]) == 0)
+                                    { meshes[i].GetComponent<MeshRenderer>().receiveShadows = false; }
+                                    else
+                                    { meshes[i].GetComponent<MeshRenderer>().receiveShadows = true; }
+                                }
                                 else if (chara[2] == "texture")
                                 {
                                     meshes[i].GetComponent<MeshRenderer>().material.mainTexture = GeoTools.LoadTexture(chara[3]);
