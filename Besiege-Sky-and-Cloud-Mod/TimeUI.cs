@@ -386,7 +386,7 @@ namespace Besiege_Sky_and_Cloud_Mod
             }
             if (_velocityUI.Length != 0)
             {
-                if (_accstep == 10 || _accstep == 30 || _accstep == 50)
+                if (_accstep == 25 || _accstep == 50)
                 {
                     if (validBlock)
                     {
@@ -420,14 +420,15 @@ namespace Besiege_Sky_and_Cloud_Mod
             }
             if (_overloadUI.Length != 0)
             {
-                if (_accstep == 10 || _accstep == 30 || _accstep == 50)
+                if (_accstep == 25 || _accstep == 50)
                 {
                     if (validBlock)
                     {
                         Vector3 v1 = startingBlock.GetComponent<Rigidbody>().velocity;
                         float _overload = 0;
-                        if (Time.fixedDeltaTime > 0) _overload =
-                                   Vector3.Dot((_V - v1), base.transform.up) / Time.fixedDeltaTime / 38.5f + Vector3.Dot(Vector3.up, base.transform.up) - 1;
+                        float timedomain = Time.fixedDeltaTime * 25f;
+                        if (timedomain > 0) _overload =
+                                   Vector3.Dot((_V - v1), base.transform.up) / timedomain / 38.5f + Vector3.Dot(Vector3.up, base.transform.up) - 1;
                         _V = v1;
                         Overload = string.Format("{0:N2}", _overload);
                     }
