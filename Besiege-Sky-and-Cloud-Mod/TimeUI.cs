@@ -333,7 +333,19 @@ namespace Besiege_Sky_and_Cloud_Mod
                 startingBlock = GameObject.Find("bgeL0");
                 if (startingBlock == null)
                 {
-                    validBlock = false; return validBlock;
+                    MyBlockInfo  info= UnityEngine.Object.FindObjectOfType<MyBlockInfo>();                 
+                        if (info!=null)
+                        {
+                            startingBlock = info.gameObject;
+                        }                   
+                    if (startingBlock == null)
+                    {
+                        validBlock = false; return validBlock;
+                    }
+                    else
+                    {
+                        validBlock = true; return validBlock;
+                    }
                 }
                 else
                 {

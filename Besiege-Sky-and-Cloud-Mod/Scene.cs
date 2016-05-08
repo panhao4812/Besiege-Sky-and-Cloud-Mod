@@ -283,7 +283,53 @@ namespace Besiege_Sky_and_Cloud_Mod
                                     meshes[i].GetComponent<MeshFilter>().mesh = mesh;
                                     meshes[i].GetComponent<MeshCollider>().sharedMesh = mesh;
                                 }
-
+                                else if (chara[2] == "plannarmeshcollider")
+                                {
+                                    Mesh mesh = GeoTools.MeshFromPoints(
+                                    Convert.ToInt32(chara[3]),
+                                    Convert.ToInt32(chara[4]),
+                                    Convert.ToSingle(chara[5]),
+                                    Convert.ToSingle(chara[6]));
+                                   // meshes[i].GetComponent<MeshFilter>().mesh = mesh;
+                                    meshes[i].GetComponent<MeshCollider>().sharedMesh = mesh;
+                                }
+                                else if (chara[2] == "heightmapmeshcollider")
+                                {
+                                    Mesh mesh = GeoTools.LoadHeightMap(
+                                    Convert.ToSingle(chara[3]),
+                                    Convert.ToSingle(chara[4]),
+                                    Convert.ToInt32(chara[5]),
+                                    Convert.ToInt32(chara[6]),
+                                    Convert.ToInt32(chara[7]),
+                                    Convert.ToSingle(chara[8]),
+                                    chara[9]);
+                                   // meshes[i].GetComponent<MeshFilter>().mesh = mesh;
+                                    meshes[i].GetComponent<MeshCollider>().sharedMesh = mesh;
+                                }
+                                else if (chara[2] == "plannarmeshrenderer")
+                                {
+                                    Mesh mesh = GeoTools.MeshFromPoints(
+                                    Convert.ToInt32(chara[3]),
+                                    Convert.ToInt32(chara[4]),
+                                    Convert.ToSingle(chara[5]),
+                                    Convert.ToSingle(chara[6]));
+                                    meshes[i].GetComponent<MeshFilter>().mesh = mesh;
+                                  //  meshes[i].GetComponent<MeshCollider>().sharedMesh = mesh;
+                                }
+                                else if (chara[2] == "heightmapmeshrenderer")
+                                {
+                                    Mesh mesh = GeoTools.LoadHeightMap(
+                                    Convert.ToSingle(chara[3]),
+                                    Convert.ToSingle(chara[4]),
+                                    Convert.ToInt32(chara[5]),
+                                    Convert.ToInt32(chara[6]),
+                                    Convert.ToInt32(chara[7]),
+                                    Convert.ToSingle(chara[8]),
+                                    chara[9]);
+                                    meshes[i].GetComponent<MeshFilter>().mesh = mesh;
+                                    //meshes[i].GetComponent<MeshCollider>().sharedMesh = mesh;
+                                }
+                              
                                 else if (chara[2] == "color")
                                 {
                                     meshes[i].GetComponent<MeshRenderer>().material.color = new Color(
