@@ -67,9 +67,9 @@ namespace Besiege_Sky_and_Cloud_Mod
                 StreamReader srd;
                 // Debug.Log(System.Globalization.CultureInfo.InstalledUICulture.NativeName);//CHS
                 // steam_api
-                string Ci = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
-                string ParentPath = Directory.GetParent(Application.dataPath).FullName;
-                if (Ci == "zh-CN" || File.Exists(ParentPath + "/3DMGAME.ini"))
+                //string Ci = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
+                //string ParentPath = Directory.GetParent(Application.dataPath).FullName;
+                if (File.Exists(Application.dataPath + "/Mods/Blocks/UI/CHN.txt"))
                 {
                     Debug.Log("zh-CN UI");
                     srd = File.OpenText(Application.dataPath + "/Mods/Blocks/UI/CHN.txt");
@@ -79,7 +79,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                     Debug.Log("en-US UI");
                     srd = File.OpenText(Application.dataPath + "/Mods/Blocks/UI/EN.txt");
                 }
-                Debug.Log(Ci + "  " + Screen.width.ToString() + "*" + Screen.height.ToString());
+                Debug.Log(Screen.width.ToString() + "*" + Screen.height.ToString());
                 while (srd.Peek() != -1)
                 {
                     string str = srd.ReadLine();
@@ -95,6 +95,10 @@ namespace Besiege_Sky_and_Cloud_Mod
                             else if (chara[1] == "scenename")
                             {
                                 _SceneName.Add(chara[2]);
+                            }
+                            else if (chara[1] == "floorbig")
+                            {
+                                _FloorBig=chara[2];
                             }
                             else if (chara[1] == "reLoad_scene")
                             {
