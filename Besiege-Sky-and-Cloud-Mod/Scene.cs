@@ -954,7 +954,7 @@ namespace Besiege_Sky_and_Cloud_Mod
             }
             if (Input.GetKeyDown(_ReLoadScene) && Input.GetKey(KeyCode.LeftControl))
             {
-                ReadUI();
+               // ReadUI();
                 LoadScene(DefaultSceneName);
             }
             if (Input.GetKeyDown(_RetrunToFloorBig) && Input.GetKey(KeyCode.LeftControl))
