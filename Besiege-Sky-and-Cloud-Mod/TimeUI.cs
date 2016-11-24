@@ -360,7 +360,7 @@ namespace Besiege_Sky_and_Cloud_Mod
         void FixedUpdate()
         {
             if (!ShowGUI) return;
-            if (AddPiece.isSimulating && isSimulating == false)
+            if (StatMaster.isSimulating && isSimulating == false)
             {
                 LoadBlock();
                 if (validBlock) { _Position = startingBlock.GetComponent<Rigidbody>().position; }
@@ -368,7 +368,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                 isSimulating = true;
                 Debug.Log("isSimulating:" + validBlock.ToString());
             }
-            else if (!AddPiece.isSimulating && isSimulating == true)
+            else if (!StatMaster.isSimulating && isSimulating == true)
             {
                 _Distance = 0;
                 Distance = "0";

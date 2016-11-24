@@ -16,7 +16,7 @@ namespace Besiege_Sky_and_Cloud_Mod
         }
         void OnTriggerEnter(Collider other)
         {
-            if (AddPiece.isSimulating)
+            if (StatMaster.isSimulating)
             {
                 if (TimeUI.Triggers != null && Index != -1)
                 {

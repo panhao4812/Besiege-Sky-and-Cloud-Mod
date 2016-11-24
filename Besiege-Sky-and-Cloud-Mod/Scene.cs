@@ -777,7 +777,7 @@ namespace Besiege_Sky_and_Cloud_Mod
                         clouds[i].GetComponent<ParticleSystem>().startSize = 30;
                         clouds[i].GetComponent<ParticleSystem>().startLifetime = 6;
                         clouds[i].GetComponent<ParticleSystem>().startSpeed = 1.6f;
-                        clouds[i].GetComponent<ParticleSystem>().emissionRate = 3;
+                       // clouds[i].GetComponent<ParticleSystem>().emissionRate = 3;
                         clouds[i].GetComponent<ParticleSystem>().maxParticles = 18;
                         axis[i] = new Vector3(UnityEngine.Random.Range(-0.1f, 0.1f), 1f, UnityEngine.Random.Range(-0.1f, 0.1f));
                     }
@@ -936,12 +936,12 @@ namespace Besiege_Sky_and_Cloud_Mod
                     }
                 }
             }
-            if (AddPiece.isSimulating && isSimulating == false)
+            if (StatMaster.isSimulating && isSimulating == false)
             {
                 if (Mwater != null) { if (Mwater[0] != null) LoadFloater(); }
                 isSimulating = true;
             }
-            else if (!AddPiece.isSimulating && isSimulating == true)
+            else if (!StatMaster.isSimulating && isSimulating == true)
             {
                 isSimulating = false;
             }
@@ -1023,10 +1023,10 @@ namespace Besiege_Sky_and_Cloud_Mod
             GUILayout.Label("MouseDrag", style, new GUILayoutOption[0]);
             for (int i = 0; i < _SceneName.Count; i++)
             {
-                if (GUILayout.Button(_ButtonName[i], style, new GUILayoutOption[0]) && !AddPiece.isSimulating)
+                if (GUILayout.Button(_ButtonName[i], style, new GUILayoutOption[0]) && !StatMaster.isSimulating)
                 { DefaultSceneName = _SceneName[i]; LoadScene(DefaultSceneName); }
             }
-            if (GUILayout.Button(_FloorBig, style, new GUILayoutOption[0]) && !AddPiece.isSimulating)
+            if (GUILayout.Button(_FloorBig, style, new GUILayoutOption[0]) && !StatMaster.isSimulating)
             {
                 this.transform.localPosition = new Vector3(0, 500, 0);
                 ClearWater();
